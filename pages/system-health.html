@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — System health</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">System health</h1>
+        <div class="page-sub">Microservices status · SLOs · infrastructure</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Add new</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi--green"><div class="kpi__label">Services UP</div><div class="kpi__value">14<span class='kpi__unit'>/14</span></div><div class="kpi__meta">100% uptime 30d</div></div>
+<div class="kpi kpi--green"><div class="kpi__label">p99 latency</div><div class="kpi__value">184<span class='kpi__unit'>ms</span></div><div class="kpi__meta">target < 300ms</div></div>
+<div class="kpi kpi--green"><div class="kpi__label">Error rate 1h</div><div class="kpi__value">0.04<span class='kpi__unit'>%</span></div><div class="kpi__meta">target < 0.1%</div></div>
+<div class="kpi kpi--amber"><div class="kpi__label">Active alerts</div><div class="kpi__value">2</div><div class="kpi__meta">1 P3 · 1 P4</div></div>
+
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Microservices · 14 services</div>
+          <div class="panel__sub">Health check status cập nhật mỗi 30s</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Service</th><th>Version</th><th>Replicas</th><th>p50</th><th>p99</th><th>Errors</th><th>Status</th></tr></thead>
+          <tbody><tr><td>catalog-svc <small class='text-mute'>· v2 NEW</small></td><td><span class='mono'>2.0.4</span></td><td><span class='mono'>3</span></td><td><span class='mono'>12ms</span></td><td><span class='mono'>87ms</span></td><td><span class='mono'>0.01%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>dispatch-svc</td><td><span class='mono'>2.1.7</span></td><td><span class='mono'>5</span></td><td><span class='mono'>28ms</span></td><td><span class='mono'>184ms</span></td><td><span class='mono'>0.04%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>pricing-svc <small class='text-mute'>· v2 NEW</small></td><td><span class='mono'>2.0.2</span></td><td><span class='mono'>3</span></td><td><span class='mono'>18ms</span></td><td><span class='mono'>112ms</span></td><td><span class='mono'>0.00%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>order-svc</td><td><span class='mono'>2.1.3</span></td><td><span class='mono'>5</span></td><td><span class='mono'>22ms</span></td><td><span class='mono'>147ms</span></td><td><span class='mono'>0.02%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>payment-svc</td><td><span class='mono'>1.8.4</span></td><td><span class='mono'>3</span></td><td><span class='mono'>41ms</span></td><td><span class='mono'>247ms</span></td><td><span class='mono'>0.03%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>notification-svc</td><td><span class='mono'>1.7.1</span></td><td><span class='mono'>2</span></td><td><span class='mono'>68ms</span></td><td><span class='mono'>421ms</span></td><td><span class='mono'>0.08%</span></td><td><span class='pill pill--amber'>Degraded</span></td></tr>
+<tr><td>webhook-svc</td><td><span class='mono'>1.4.8</span></td><td><span class='mono'>2</span></td><td><span class='mono'>34ms</span></td><td><span class='mono'>318ms</span></td><td><span class='mono'>0.12%</span></td><td><span class='pill pill--amber'>Degraded</span></td></tr>
+<tr><td>search-svc</td><td><span class='mono'>1.6.2</span></td><td><span class='mono'>3</span></td><td><span class='mono'>15ms</span></td><td><span class='mono'>94ms</span></td><td><span class='mono'>0.00%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>agent-svc</td><td><span class='mono'>2.0.9</span></td><td><span class='mono'>3</span></td><td><span class='mono'>19ms</span></td><td><span class='mono'>108ms</span></td><td><span class='mono'>0.01%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>auth-svc</td><td><span class='mono'>1.9.4</span></td><td><span class='mono'>3</span></td><td><span class='mono'>8ms</span></td><td><span class='mono'>52ms</span></td><td><span class='mono'>0.00%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({
+  page: 'health',
+  crumbs: ["SMP", "System", "System health"],
+  search: 'Search...'
+});
+</script>
+</body>
+</html>

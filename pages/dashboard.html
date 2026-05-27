@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Dashboard</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Toàn cảnh vận hành</h1>
+        <div class="page-sub">26 May 2026 · catalog v2 đã rollout 100% · 22 steps, 8 skills, 10 services</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-refresh"></i> Refresh</button>
+        <button class="btn"><i class="ti ti-calendar"></i> Last 24h</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info" style="background:var(--green-bg);border-color:#86efac;color:var(--green-text);">
+      <i class="ti ti-rocket" style="color:var(--green-text);"></i>
+      <div>
+        <strong>Catalog v2 đã live:</strong> Mọi đơn mới đều theo mô hình step-based. Pricing minh bạch hơn, dispatch match theo skill set. <a href="services.html" style="color:inherit;text-decoration:underline;">Xem catalog</a> · <a href="../docs/SPEC.md" style="color:inherit;text-decoration:underline;">Đọc spec</a>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Orders today</div>
+        <div class="kpi__value">4,827</div>
+        <div class="kpi__meta">+12.4% vs hôm qua · avg 4.2 steps/order</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">GMV today</div>
+        <div class="kpi__value">1.84<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">commission · 372M · take 20.2%</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Steps completed</div>
+        <div class="kpi__value">19,847</div>
+        <div class="kpi__meta">avg 28k/step · ▲ chuẩn hoá 99.4%</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Steps cần quote</div>
+        <div class="kpi__value">487</div>
+        <div class="kpi__meta">2.5% tổng · avg quote 12p</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Top services · 24h</div>
+            <div class="panel__sub">Service được đặt nhiều nhất, group theo template</div>
+          </div>
+          <a class="panel__action" href="services.html">Manage →</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>#</th><th>Service</th><th class="num">Orders</th><th class="num">Avg steps</th><th class="num">Avg ticket</th><th class="num">GMV</th></tr></thead>
+            <tbody>
+              <tr><td>01</td><td><span class="id">ac-repair-standard</span><br><small class="text-mute">Sửa điều hoà · tiêu chuẩn</small></td><td class="num mono">1,247</td><td class="num mono">4.8</td><td class="num mono">682k</td><td class="num mono">850M</td></tr>
+              <tr><td>02</td><td><span class="id">ac-cleaning-full</span><br><small class="text-mute">Vệ sinh tổng quát điều hoà</small></td><td class="num mono">847</td><td class="num mono">5.0</td><td class="num mono">335k</td><td class="num mono">284M</td></tr>
+              <tr><td>03</td><td><span class="id">washer-repair-standard</span><br><small class="text-mute">Sửa máy giặt · tiêu chuẩn</small></td><td class="num mono">542</td><td class="num mono">2.4</td><td class="num mono">510k</td><td class="num mono">276M</td></tr>
+              <tr><td>04</td><td><span class="id">washer-clean</span><br><small class="text-mute">Vệ sinh máy giặt</small></td><td class="num mono">421</td><td class="num mono">2.0</td><td class="num mono">320k</td><td class="num mono">135M</td></tr>
+              <tr><td>05</td><td><span class="id">fridge-repair-gas</span><br><small class="text-mute">Sửa tủ lạnh · nạp gas</small></td><td class="num mono">317</td><td class="num mono">2.0</td><td class="num mono">425k</td><td class="num mono">135M</td></tr>
+              <tr><td>06</td><td><span class="id">heater-replace-element</span><br><small class="text-mute">Thay điện trở bình nóng lạnh</small></td><td class="num mono">204</td><td class="num mono">1.0</td><td class="num mono">350k</td><td class="num mono">71M</td></tr>
+              <tr><td>07</td><td><span class="id">house-cleaning</span><br><small class="text-mute">Tổng vệ sinh nhà</small></td><td class="num mono">189</td><td class="num mono">1.0</td><td class="num mono">700k</td><td class="num mono">132M</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Top steps · 24h</div>
+            <div class="panel__sub">Step được thực hiện nhiều nhất</div>
+          </div>
+          <a class="panel__action" href="steps.html">View all →</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Step</th><th class="num">Done</th><th class="num">Avg</th></tr></thead>
+            <tbody>
+              <tr><td><span class="id">ac-inspect-diagnose</span></td><td class="num mono">2,094</td><td class="num mono">15p</td></tr>
+              <tr><td><span class="id">ac-final-test</span></td><td class="num mono">2,094</td><td class="num mono">10p</td></tr>
+              <tr><td><span class="id">ac-clean-indoor-unit</span></td><td class="num mono">847</td><td class="num mono">31p</td></tr>
+              <tr><td><span class="id">ac-clean-outdoor-unit</span></td><td class="num mono">847</td><td class="num mono">26p</td></tr>
+              <tr><td><span class="id">ac-disinfect</span></td><td class="num mono">847</td><td class="num mono">14p</td></tr>
+              <tr><td><span class="id">ac-recharge-r32</span></td><td class="num mono">512</td><td class="num mono">32p</td></tr>
+              <tr><td><span class="id">washer-clean-drum</span></td><td class="num mono">421</td><td class="num mono">91p</td></tr>
+              <tr><td><span class="id">ac-replace-capacitor</span></td><td class="num mono">287</td><td class="num mono">28p</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Top skills · demand</div>
+            <div class="panel__sub">Match volume theo skill</div>
+          </div>
+          <a class="panel__action" href="skills.html">Manage →</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Skill</th><th class="num">Demand</th><th class="num">Supply</th></tr></thead>
+            <tbody>
+              <tr><td>ac-mechanic</td><td class="num mono">3,841</td><td class="num mono text-green">1,247</td></tr>
+              <tr><td>ac-cleaner</td><td class="num mono">2,541</td><td class="num mono text-green">842</td></tr>
+              <tr><td>washer-mechanic</td><td class="num mono">963</td><td class="num mono text-green">521</td></tr>
+              <tr><td>fridge-mechanic</td><td class="num mono">634</td><td class="num mono text-green">387</td></tr>
+              <tr><td>electrician</td><td class="num mono">487</td><td class="num mono text-amber">487</td></tr>
+              <tr><td>plumber</td><td class="num mono">342</td><td class="num mono text-amber">342</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Active incidents</div>
+            <div class="panel__sub">Open right now</div>
+          </div>
+          <span class="pill pill--red">3 open</span>
+        </div>
+        <div>
+          <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--red);"></span>
+            <div style="flex:1;">
+              <div class="mono" style="font-size:12px;font-weight:600;">INC-0517</div>
+              <div style="font-size:11px;color:var(--text-mute);">P2 · Webhook delivery degraded</div>
+            </div>
+            <div style="font-size:11px;text-align:right;">
+              <div style="font-weight:500;">42m</div>
+              <div style="color:var(--text-mute);">open</div>
+            </div>
+          </div>
+          <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--amber);"></span>
+            <div style="flex:1;">
+              <div class="mono" style="font-size:12px;font-weight:600;">INC-0516</div>
+              <div style="font-size:11px;color:var(--text-mute);">P3 · SLO burn dispatch-svc</div>
+            </div>
+            <div style="font-size:11px;text-align:right;">
+              <div style="font-weight:500;">1h 14m</div>
+              <div style="color:var(--text-mute);">open</div>
+            </div>
+          </div>
+          <div style="padding:11px 16px;display:flex;align-items:center;gap:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--amber);"></span>
+            <div style="flex:1;">
+              <div class="mono" style="font-size:12px;font-weight:600;">INC-0515</div>
+              <div style="font-size:11px;color:var(--text-mute);">P4 · Notification lag</div>
+            </div>
+            <div style="font-size:11px;text-align:right;">
+              <div style="font-weight:500;">3h 48m</div>
+              <div style="color:var(--text-mute);">mitigating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Recent admin activity</div>
+          </div>
+          <a class="panel__action" href="audit.html">Audit →</a>
+        </div>
+        <div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border-soft);font-size:12px;">
+            <div><span class="text-primary fw-med">@ngha</span> tạo step <span class="mono text-mute">ac-disinfect-pro</span></div>
+            <div class="mono" style="color:var(--text-faint);font-size:10.5px;margin-top:2px;">08:14:32</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border-soft);font-size:12px;">
+            <div><span class="text-primary fw-med">@minh.tran</span> cập nhật giá L4 cho <span class="mono text-mute">ac-replace-block</span></div>
+            <div class="mono" style="color:var(--text-faint);font-size:10.5px;margin-top:2px;">07:58:11</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border-soft);font-size:12px;">
+            <div><span class="text-primary fw-med">@anh.le</span> publish service <span class="mono text-mute">ac-cleaning-full</span></div>
+            <div class="mono" style="color:var(--text-faint);font-size:10.5px;margin-top:2px;">07:42:09</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border-soft);font-size:12px;">
+            <div><span class="text-primary fw-med">@duy.nguyen</span> approve KYC <span class="mono text-mute">agt_01HX5K</span></div>
+            <div class="mono" style="color:var(--text-faint);font-size:10.5px;margin-top:2px;">07:21:47</div>
+          </div>
+          <div style="padding:10px 16px;font-size:12px;">
+            <div><span class="text-primary fw-med">@system</span> chạy migration v1→v2 cho 14 đơn legacy</div>
+            <div class="mono" style="color:var(--text-faint);font-size:10.5px;margin-top:2px;">06:00:00 · cron</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({
+  page: 'dashboard',
+  crumbs: ['SMP', 'Operations', 'Dashboard'],
+  search: 'Search...'
+});
+</script>
+</body>
+</html>

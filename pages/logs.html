@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Application logs</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Application logs</h1>
+        <div class="page-sub">Aggregated logs · last 24h · 8.4M entries</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Add new</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi "><div class="kpi__label">Logs/sec</div><div class="kpi__value">1,247</div><div class="kpi__meta">avg last hour</div></div>
+<div class="kpi kpi--amber"><div class="kpi__label">Errors today</div><div class="kpi__value">841</div><div class="kpi__meta">0.04% of total</div></div>
+<div class="kpi "><div class="kpi__label">Warnings today</div><div class="kpi__value">4,128</div><div class="kpi__meta">0.21% of total</div></div>
+<div class="kpi kpi--green"><div class="kpi__label">Storage 30d</div><div class="kpi__value">14.2 GB</div><div class="kpi__meta">retention OK</div></div>
+
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Recent log entries</div>
+          <div class="panel__sub">Stream realtime · click row để xem full payload</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Time</th><th>Service</th><th>Level</th><th>Trace</th><th>Message</th></tr></thead>
+          <tbody><tr><td><span class='mono'>08:14:52.821</span></td><td><span class='mono'>catalog-svc</span></td><td><span class='pill pill--blue no-dot'>INFO</span></td><td><span class='mono text-mute'>4a7c...</span></td><td>Step master.update step_id=ac-disinfect-pro by user=ngha</td></tr>
+<tr><td><span class='mono'>08:14:51.402</span></td><td><span class='mono'>dispatch-svc</span></td><td><span class='pill pill--blue no-dot'>INFO</span></td><td><span class='mono text-mute'>8f2e...</span></td><td>Match found order=ord_01HX7K1A agent=agt_W8R2K1 latency=18s</td></tr>
+<tr><td><span class='mono'>08:14:50.117</span></td><td><span class='mono'>pricing-svc</span></td><td><span class='pill pill--blue no-dot'>INFO</span></td><td><span class='mono text-mute'>3b91...</span></td><td>Quote calculated order=ord_01HX7K2M steps=5 total=750000 VND</td></tr>
+<tr><td><span class='mono'>08:14:49.954</span></td><td><span class='mono'>webhook-svc</span></td><td><span class='pill pill--amber no-dot'>WARN</span></td><td><span class='mono text-mute'>5c2a...</span></td><td>Webhook retry endpoint=https://api.pinaco.vn/hook attempt=2</td></tr>
+<tr><td><span class='mono'>08:14:48.211</span></td><td><span class='mono'>order-svc</span></td><td><span class='pill pill--blue no-dot'>INFO</span></td><td><span class='mono text-mute'>2d4f...</span></td><td>Order step completed order_step_id=os_01HX7K1F</td></tr>
+<tr><td><span class='mono'>08:14:47.842</span></td><td><span class='mono'>notification-svc</span></td><td><span class='pill pill--red no-dot'>ERROR</span></td><td><span class='mono text-mute'>7e8b...</span></td><td>SMS send failed provider=vmg phone=+8490•••2841 retry_in=30s</td></tr>
+<tr><td><span class='mono'>08:14:46.521</span></td><td><span class='mono'>catalog-svc</span></td><td><span class='pill pill--blue no-dot'>INFO</span></td><td><span class='mono text-mute'>9f1c...</span></td><td>Service published service_id=ac-cleaning-full version=12</td></tr>
+<tr><td><span class='mono'>08:14:45.118</span></td><td><span class='mono'>agent-svc</span></td><td><span class='pill pill--blue no-dot'>INFO</span></td><td><span class='mono text-mute'>4c8e...</span></td><td>Agent skill upgrade agent=agt_L2X7N5 skill=washer-mechanic L3→L4</td></tr>
+</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({
+  page: 'logs',
+  crumbs: ["SMP", "System", "Logs"],
+  search: 'Search...'
+});
+</script>
+</body>
+</html>

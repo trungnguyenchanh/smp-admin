@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Partners</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Partners</h1>
+        <div class="page-sub">Open Platform · 17 B2B partners · 2.4M API calls/day</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Add new</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi "><div class="kpi__label">Total partners</div><div class="kpi__value">17</div><div class="kpi__meta">12 active · 5 sandbox</div></div>
+<div class="kpi kpi--green"><div class="kpi__label">API calls today</div><div class="kpi__value">2.4M</div><div class="kpi__meta">▲ 12% vs hôm qua</div></div>
+<div class="kpi kpi--violet"><div class="kpi__label">GMV via partner</div><div class="kpi__value">8.4B</div><div class="kpi__meta">20% tổng GMV</div></div>
+<div class="kpi kpi--amber"><div class="kpi__label">Errors (24h)</div><div class="kpi__value">0.04%</div><div class="kpi__meta">target < 0.1%</div></div>
+
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Partners</div>
+          <div class="panel__sub">Đối tác đã integrate API/Webhook</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Partner</th><th>Type</th><th>Endpoint</th><th>Plan</th><th>API calls</th><th>GMV</th><th>Status</th></tr></thead>
+          <tbody><tr><td><span class='id'>prt_pinaco</span><br><small class='text-mute'>Tập đoàn Pinaco</small></td><td>B2B Aggregator</td><td><span class='mono'>api.pinaco.vn</span></td><td><span class='pill pill--violet no-dot'>Enterprise</span></td><td>841k</td><td>2.1B</td><td><span class='pill pill--green'>Active</span></td></tr>
+<tr><td><span class='id'>prt_kangaroo</span><br><small class='text-mute'>Kangaroo Group</small></td><td>Warranty network</td><td><span class='mono'>kgr-api.com</span></td><td><span class='pill pill--violet no-dot'>Enterprise</span></td><td>521k</td><td>1.8B</td><td><span class='pill pill--green'>Active</span></td></tr>
+<tr><td><span class='id'>prt_homecredit</span><br><small class='text-mute'>Home Credit</small></td><td>Financing</td><td><span class='mono'>hc.smp.gateway</span></td><td><span class='pill pill--blue no-dot'>Business</span></td><td>287k</td><td>910M</td><td><span class='pill pill--green'>Active</span></td></tr>
+<tr><td><span class='id'>prt_vinhomes</span><br><small class='text-mute'>Vinhomes Property</small></td><td>Residential bulk</td><td><span class='mono'>vinhomes.api</span></td><td><span class='pill pill--violet no-dot'>Enterprise</span></td><td>412k</td><td>1.4B</td><td><span class='pill pill--green'>Active</span></td></tr>
+<tr><td><span class='id'>prt_lotte</span><br><small class='text-mute'>Lotte Mart VN</small></td><td>Retail post-sale</td><td><span class='mono'>lotte-vn.com</span></td><td><span class='pill pill--blue no-dot'>Business</span></td><td>184k</td><td>620M</td><td><span class='pill pill--green'>Active</span></td></tr>
+<tr><td><span class='id'>prt_dev42</span><br><small class='text-mute'>Dev Sandbox · QA</small></td><td>Sandbox</td><td><span class='mono'>sandbox.dev</span></td><td><span class='pill pill--gray no-dot'>Free</span></td><td>1.2k</td><td>—</td><td><span class='pill pill--amber'>Test</span></td></tr>
+</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({
+  page: 'partners',
+  crumbs: ["SMP", "Modules", "Partners"],
+  search: 'Search...'
+});
+</script>
+</body>
+</html>
