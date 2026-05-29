@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SMP Admin — Dispatch Monitor</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .dispatch-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    gap: 12px;
+    height: calc(100vh - var(--topbar-h) - var(--statusbar-h) - 40px);
+  }
+  .dispatch-side {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .dispatch-map {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .queue-item {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    cursor: pointer;
+    transition: background 100ms;
+  }
+  .queue-item:hover { background: var(--bg-elev); }
+  .queue-item--active {
+    background: var(--bg-elev);
+    border-left: 2px solid var(--c-cyan);
+    padding-left: 12px;
+  }
+  .queue-item__head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .queue-item__id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--c-cyan);
+    font-weight: 500;
+  }
+  .queue-item__time {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-mute);
+  }
+  .queue-item__customer { font-size: 12px; color: var(--text); }
+  .queue-item__addr { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .queue-item__meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .map-overlay-top {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .map-overlay-bottom {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    pointer-events: none;
+  }
+  .map-overlay-card {
+    background: rgba(11, 16, 22, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--line);
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    pointer-events: auto;
+  }
+  .map-overlay-card label {
+    color: var(--text-mute);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .agent-detail-card {
+    background: rgba(11, 16, 22, 0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--c-cyan-dim);
+    padding: 14px 16px;
+    width: 280px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .agent-detail-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .agent-detail-card__name {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+  }
+  .agent-detail-card__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+  .agent-detail-card__key { color: var(--text-mute); }
+  .agent-detail-card__val { color: var(--text); }
+  .legend-strip {
+    display: flex;
+    gap: 16px;
+    padding: 6px 10px;
+    background: rgba(11, 16, 22, 0.7);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    width: fit-content;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR (cùng cấu trúc) ===== -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-mark">SMP</div>
+      <div class="sidebar__brand-text">
+        <div class="sidebar__brand-name">Admin</div>
+        <div class="sidebar__brand-tag">v1.4.2 · production</div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
+        <a class="nav-item nav-item--active" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
+        <a class="nav-item" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
+        <a class="nav-item" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
+        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="service-templates.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
+          <span>Service Templates</span>
+          <span class="nav-item__badge">v3.5</span>
+        </a>
+        <a class="nav-item" href="warranty-packages.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
+          <span>Warranty Packages</span>
+        </a>
+        <a class="nav-item" href="warranty-claims.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          <span>Claim Queue</span>
+          <span class="nav-item__badge nav-item__badge--alert">5</span>
+        </a>
+        <a class="nav-item" href="warranty-revenue.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Warranty Revenue</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Reports</span></div>
+        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
+        <a class="nav-item" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
+        <a class="nav-item" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
+        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
+      </div>
+    </nav>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">LH</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Lê Hùng</div>
+        <div class="sidebar__user-role">Ops Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar">
+    <div class="topbar__breadcrumb">
+      <span>SMP</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span>Operations</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span class="topbar__breadcrumb-current">Dispatch Monitor</span>
+    </div>
+    <div class="topbar__search">
+      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+      <input placeholder="search by order_id, agent_id…">
+      <kbd class="topbar__search-kbd">⌘K</kbd>
+    </div>
+    <div class="topbar__actions">
+      <span class="topbar__env">PROD · VN</span>
+      <span class="pill pill--green" style="font-size:10px;">
+        <span style="width:5px;height:5px;background:currentColor;border-radius:50%;display:inline-block;"></span>
+        LIVE · UPDATING
+      </span>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>Dispatch <em>monitor</em></h1>
+        <div class="page-header__sub">REGION · HCMC · district 1 → district 7 · 24km radius</div>
+      </div>
+      <div class="page-header__right">
+        <div class="legend-strip">
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--c-green);border-radius:50%;box-shadow:0 0 6px var(--c-green);"></span>Agent online</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--c-amber);border-radius:50%;"></span>Order pending</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--c-red);border-radius:50%;"></span>Alert / SLA risk</span>
+        </div>
+        <button class="btn btn--ghost">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1"/></svg>
+          Auto refresh · 5s
+        </button>
+      </div>
+    </div>
+
+    <div class="dispatch-layout">
+
+      <!-- LEFT: Order queue -->
+      <div class="dispatch-side">
+        <div class="panel__head" style="border-bottom:1px solid var(--line);padding:14px 16px;">
+          <div class="panel__title"><span class="panel__title-num">Q</span>Pending Orders</div>
+          <span class="pill pill--amber" style="font-size:10px;">23 · queue</span>
+        </div>
+        <div class="tabs" style="margin:0 16px;">
+          <div class="tab tab--active">All<span class="tab__count">23</span></div>
+          <div class="tab">Urgent<span class="tab__count">4</span></div>
+          <div class="tab">SLA</div>
+        </div>
+        <div style="overflow-y:auto;flex:1;">
+          <div class="queue-item queue-item--active">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7K2M...</span>
+              <span class="queue-item__time">00:42 ago</span>
+            </div>
+            <div class="queue-item__customer">Nguyễn Văn A · Q1</div>
+            <div class="queue-item__addr">15 Lê Lợi, P. Bến Nghé, Q.1</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--red">URGENT</span>
+              <span class="pill pill--mute">AC repair</span>
+              <span class="pill pill--mute">L3+</span>
+            </div>
+          </div>
+          <div class="queue-item">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7JZP...</span>
+              <span class="queue-item__time">01:18 ago</span>
+            </div>
+            <div class="queue-item__customer">Trần Thị B · Q3</div>
+            <div class="queue-item__addr">221 Nguyễn Đình Chiểu, Q.3</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--amber">HIGH</span>
+              <span class="pill pill--mute">washing</span>
+            </div>
+          </div>
+          <div class="queue-item">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7JX1...</span>
+              <span class="queue-item__time">02:04 ago</span>
+            </div>
+            <div class="queue-item__customer">Phạm Quang C · Bình Thạnh</div>
+            <div class="queue-item__addr">88 Xô Viết Nghệ Tĩnh, Bình Thạnh</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--cyan">NORMAL</span>
+              <span class="pill pill--mute">plumbing</span>
+            </div>
+          </div>
+          <div class="queue-item">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7JV8...</span>
+              <span class="queue-item__time">03:11 ago</span>
+            </div>
+            <div class="queue-item__customer">Lê Hoàng D · Q.7</div>
+            <div class="queue-item__addr">Crescent Mall, Phú Mỹ Hưng</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--cyan">NORMAL</span>
+              <span class="pill pill--mute">elec</span>
+            </div>
+          </div>
+          <div class="queue-item">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7JT3...</span>
+              <span class="queue-item__time">05:37 ago</span>
+            </div>
+            <div class="queue-item__customer">Võ Anh E · Tân Bình</div>
+            <div class="queue-item__addr">CMT8, Tân Bình</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--amber">RETRY 2</span>
+              <span class="pill pill--mute">AC install</span>
+            </div>
+          </div>
+          <div class="queue-item">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7JR9...</span>
+              <span class="queue-item__time">07:22 ago</span>
+            </div>
+            <div class="queue-item__customer">Nguyễn Hữu F · Q.2</div>
+            <div class="queue-item__addr">Mai Chí Thọ, Thủ Đức</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--cyan">NORMAL</span>
+            </div>
+          </div>
+          <div class="queue-item">
+            <div class="queue-item__head">
+              <span class="queue-item__id">ord_01HX7JQ2...</span>
+              <span class="queue-item__time">08:46 ago</span>
+            </div>
+            <div class="queue-item__customer">Hoàng Thị G · Q.10</div>
+            <div class="queue-item__addr">3/2, Q.10</div>
+            <div class="queue-item__meta">
+              <span class="pill pill--cyan">NORMAL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER: Map -->
+      <div class="dispatch-map">
+        <div class="map">
+          <!-- Pins -->
+          <div class="map-pin map-pin--alert" style="left:38%;top:42%;"></div>
+          <div class="map-radius" style="left:38%;top:42%;width:240px;height:240px;"></div>
+
+          <div class="map-pin map-pin--order" style="left:25%;top:55%;"></div>
+          <div class="map-pin map-pin--order" style="left:62%;top:30%;"></div>
+          <div class="map-pin map-pin--order" style="left:71%;top:62%;"></div>
+          <div class="map-pin map-pin--order" style="left:48%;top:18%;"></div>
+          <div class="map-pin map-pin--order" style="left:15%;top:35%;"></div>
+          <div class="map-pin map-pin--order" style="left:80%;top:48%;"></div>
+
+          <div class="map-pin map-pin--agent" style="left:30%;top:40%;"></div>
+          <div class="map-pin map-pin--agent" style="left:42%;top:48%;"></div>
+          <div class="map-pin map-pin--agent" style="left:35%;top:35%;"></div>
+          <div class="map-pin map-pin--agent" style="left:45%;top:38%;"></div>
+          <div class="map-pin map-pin--agent" style="left:33%;top:50%;"></div>
+          <div class="map-pin map-pin--agent" style="left:22%;top:48%;"></div>
+          <div class="map-pin map-pin--agent" style="left:55%;top:55%;"></div>
+          <div class="map-pin map-pin--agent" style="left:18%;top:62%;"></div>
+          <div class="map-pin map-pin--agent" style="left:65%;top:42%;"></div>
+          <div class="map-pin map-pin--agent" style="left:75%;top:35%;"></div>
+          <div class="map-pin map-pin--agent" style="left:50%;top:65%;"></div>
+          <div class="map-pin map-pin--agent" style="left:60%;top:70%;"></div>
+          <div class="map-pin map-pin--agent" style="left:28%;top:28%;"></div>
+          <div class="map-pin map-pin--agent" style="left:85%;top:55%;"></div>
+          <div class="map-pin map-pin--agent" style="left:12%;top:50%;"></div>
+
+          <!-- Top overlay: counters -->
+          <div class="map-overlay-top">
+            <div style="display:flex;gap:8px;">
+              <div class="map-overlay-card">
+                <label>Online agents</label>
+                <div style="color:var(--c-green);font-size:18px;font-weight:600;">247</div>
+              </div>
+              <div class="map-overlay-card">
+                <label>Pending orders</label>
+                <div style="color:var(--c-amber);font-size:18px;font-weight:600;">23</div>
+              </div>
+              <div class="map-overlay-card">
+                <label>In progress</label>
+                <div style="color:var(--c-cyan);font-size:18px;font-weight:600;">89</div>
+              </div>
+            </div>
+            <!-- Right: detail of selected -->
+            <div class="agent-detail-card">
+              <div class="agent-detail-card__head">
+                <span class="agent-detail-card__name">ord_01HX7K2M3F</span>
+                <span class="pill pill--red">URGENT</span>
+              </div>
+              <div class="agent-detail-card__row">
+                <span class="agent-detail-card__key">customer</span>
+                <span class="agent-detail-card__val">Nguyễn Văn A</span>
+              </div>
+              <div class="agent-detail-card__row">
+                <span class="agent-detail-card__key">service</span>
+                <span class="agent-detail-card__val">AC repair · L3+</span>
+              </div>
+              <div class="agent-detail-card__row">
+                <span class="agent-detail-card__key">location</span>
+                <span class="agent-detail-card__val">10.7769, 106.7009</span>
+              </div>
+              <div class="agent-detail-card__row">
+                <span class="agent-detail-card__key">round</span>
+                <span class="agent-detail-card__val">2 / 3 · 22.5km</span>
+              </div>
+              <div class="agent-detail-card__row">
+                <span class="agent-detail-card__key">candidates</span>
+                <span class="agent-detail-card__val">17 offered · 0 accepted</span>
+              </div>
+              <div class="agent-detail-card__row">
+                <span class="agent-detail-card__key">elapsed</span>
+                <span class="agent-detail-card__val" style="color:var(--c-amber);">00:42 / 03:00</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:12px;">
+                <button class="btn btn--sm btn--primary" style="flex:1;">Override</button>
+                <button class="btn btn--sm">Detail</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom overlay: zoom / region -->
+          <div class="map-overlay-bottom">
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+              <div class="map-overlay-card">
+                <label>Viewport</label>
+                <div style="color:var(--text);font-size:11px;font-weight:500;">HCMC · CITY · ZOOM 12</div>
+                <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">CTR: 10.776 N · 106.700 E</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;pointer-events:auto;">
+                <button class="icon-btn" style="background:rgba(11,16,22,0.85);border:1px solid var(--line);">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M8 3v10"/></svg>
+                </button>
+                <button class="icon-btn" style="background:rgba(11,16,22,0.85);border:1px solid var(--line);">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"/></svg>
+                </button>
+                <button class="icon-btn" style="background:rgba(11,16,22,0.85);border:1px solid var(--line);" title="Recenter">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="1" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Live activity feed + offers -->
+      <div class="dispatch-side">
+        <div class="panel__head" style="border-bottom:1px solid var(--line);padding:14px 16px;">
+          <div class="panel__title"><span class="panel__title-num">F</span>Live Activity</div>
+          <span class="pill pill--green" style="font-size:10px;">streaming</span>
+        </div>
+        <div style="overflow-y:auto;flex:1;font-family:var(--font-mono);font-size:11.5px;">
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-green);font-size:10px;letter-spacing:1px;">→ MATCH_ACCEPTED</div>
+            <div style="margin-top:3px;color:var(--text);">agt_T4K9 accepted <span class="text-cyan">ord_01HX7JX...</span></div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:17:31 · score 0.84</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-cyan);font-size:10px;letter-spacing:1px;">→ OFFER_SENT</div>
+            <div style="margin-top:3px;color:var(--text);"><span class="text-cyan">ord_01HX7K2...</span> top-3 push (round 2)</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:17:28 · 17 candidates</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-amber);font-size:10px;letter-spacing:1px;">⚠ ROUND_TIMEOUT</div>
+            <div style="margin-top:3px;color:var(--text);"><span class="text-cyan">ord_01HX7K2...</span> round 1 expanded → 22.5km</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:17:01 · 0 / 12 accepted</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-green);font-size:10px;letter-spacing:1px;">→ ORDER_COMPLETED</div>
+            <div style="margin-top:3px;color:var(--text);"><span class="text-cyan">ord_01HX7JN...</span> by agt_L2X7</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:16:54 · 47min</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-red);font-size:10px;letter-spacing:1px;">✕ OFFER_REJECTED</div>
+            <div style="margin-top:3px;color:var(--text);">agt_P9B3 rejected · <span class="text-mute">distance</span></div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:16:48</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-cyan);font-size:10px;letter-spacing:1px;">→ AGENT_ONLINE</div>
+            <div style="margin-top:3px;color:var(--text);">agt_M4N1 came online · Q.7</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:16:32</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-violet);font-size:10px;letter-spacing:1px;">→ INSPECT_SUBMITTED</div>
+            <div style="margin-top:3px;color:var(--text);">agt_K2Z8 submitted quote · 1.2M VND</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:16:19 · awaiting customer</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-green);font-size:10px;letter-spacing:1px;">→ PAYMENT_SUCCEEDED</div>
+            <div style="margin-top:3px;color:var(--text);"><span class="text-cyan">ord_01HX7JL...</span> · 980k VND · stripe</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:16:02</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-cyan);font-size:10px;letter-spacing:1px;">→ MATCH_ACCEPTED</div>
+            <div style="margin-top:3px;color:var(--text);">agt_R7Y4 accepted <span class="text-cyan">ord_01HX7JK...</span></div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:15:58 · score 0.91</div>
+          </div>
+          <div style="padding:10px 16px;border-bottom:1px solid var(--line-soft);">
+            <div style="color:var(--c-amber);font-size:10px;letter-spacing:1px;">⚠ AGENT_TIMEOUT</div>
+            <div style="margin-top:3px;color:var(--text);">agt_Q3X1 no response 30s</div>
+            <div style="color:var(--text-mute);font-size:10px;margin-top:2px;">08:15:42</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== STATUSBAR ===== -->
+  <footer class="statusbar">
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--green"></span>DISPATCH ENGINE · ACTIVE</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">QUEUE · 23</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">P95 MATCH · 1.4s</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">ROUND COMPLETION · 94.2%</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--amber"></span>2 SLA AT RISK</div>
+    <div class="statusbar__right">
+      <div class="statusbar__item">WS · CONNECTED · 4ms</div>
+      <div class="statusbar__item">08:17:42 UTC+7</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SMP Admin — Orders</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--bg-base);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .filter-chip:hover { background: var(--bg-elev); color: var(--text); }
+  .filter-chip__close {
+    color: var(--text-mute);
+    font-size: 13px;
+    line-height: 1;
+    margin-left: 2px;
+  }
+  .filter-chip--active {
+    background: var(--c-cyan-dim);
+    border-color: var(--c-cyan);
+    color: var(--c-cyan);
+  }
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .pipeline-step {
+    text-align: center;
+    padding: 8px 4px;
+    background: var(--bg-base);
+    border-radius: var(--radius);
+    position: relative;
+  }
+  .pipeline-step::after {
+    content: '▶';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--line-strong);
+    font-size: 10px;
+    z-index: 1;
+  }
+  .pipeline-step:last-child::after { display: none; }
+  .pipeline-step__label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .pipeline-step__count {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .pipeline-step--hot { background: rgba(77, 208, 225, 0.08); }
+  .pipeline-step--hot .pipeline-step__count { color: var(--c-cyan); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-mark">SMP</div>
+      <div class="sidebar__brand-text">
+        <div class="sidebar__brand-name">Admin</div>
+        <div class="sidebar__brand-tag">v1.4.2 · production</div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
+        <a class="nav-item" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
+        <a class="nav-item nav-item--active" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
+        <a class="nav-item" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
+        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="service-templates.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
+          <span>Service Templates</span>
+          <span class="nav-item__badge">v3.5</span>
+        </a>
+        <a class="nav-item" href="warranty-packages.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
+          <span>Warranty Packages</span>
+        </a>
+        <a class="nav-item" href="warranty-claims.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          <span>Claim Queue</span>
+          <span class="nav-item__badge nav-item__badge--alert">5</span>
+        </a>
+        <a class="nav-item" href="warranty-revenue.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Warranty Revenue</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Reports</span></div>
+        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
+        <a class="nav-item" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
+        <a class="nav-item" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
+        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
+      </div>
+    </nav>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">LH</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Lê Hùng</div>
+        <div class="sidebar__user-role">Ops Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar__breadcrumb">
+      <span>SMP</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span>Operations</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span class="topbar__breadcrumb-current">Orders</span>
+    </div>
+    <div class="topbar__search">
+      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+      <input placeholder="search by ord_id, phone, customer name…">
+      <kbd class="topbar__search-kbd">⌘K</kbd>
+    </div>
+    <div class="topbar__actions">
+      <span class="topbar__env">PROD · VN</span>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>Service <em>orders</em></h1>
+        <div class="page-header__sub">26 May 2026 · 4,827 orders · 847 active</div>
+      </div>
+      <div class="page-header__right">
+        <button class="btn btn--ghost">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+          Saved Views
+        </button>
+        <button class="btn btn--ghost">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M2 13h12"/></svg>
+          Export CSV
+        </button>
+        <button class="btn btn--primary">+ New Order</button>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-step__label">PENDING</div>
+        <div class="pipeline-step__count">23</div>
+      </div>
+      <div class="pipeline-step pipeline-step--hot">
+        <div class="pipeline-step__label">MATCHING</div>
+        <div class="pipeline-step__count">47</div>
+      </div>
+      <div class="pipeline-step pipeline-step--hot">
+        <div class="pipeline-step__label">ASSIGNED</div>
+        <div class="pipeline-step__count">128</div>
+      </div>
+      <div class="pipeline-step pipeline-step--hot">
+        <div class="pipeline-step__label">EN ROUTE</div>
+        <div class="pipeline-step__count">86</div>
+      </div>
+      <div class="pipeline-step pipeline-step--hot">
+        <div class="pipeline-step__label">INSPECTING</div>
+        <div class="pipeline-step__count">54</div>
+      </div>
+      <div class="pipeline-step pipeline-step--hot">
+        <div class="pipeline-step__label">IN PROGRESS</div>
+        <div class="pipeline-step__count">312</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step__label">COMPLETED</div>
+        <div class="pipeline-step__count">3,981</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step__label">CLOSED</div>
+        <div class="pipeline-step__count">3,847</div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1.5px;margin-right:8px;">FILTERS</span>
+      <span class="filter-chip filter-chip--active">status: matching, assigned, in_progress <span class="filter-chip__close">×</span></span>
+      <span class="filter-chip filter-chip--active">region: HCMC <span class="filter-chip__close">×</span></span>
+      <span class="filter-chip filter-chip--active">created: last 24h <span class="filter-chip__close">×</span></span>
+      <span class="filter-chip">+ priority</span>
+      <span class="filter-chip">+ tenant</span>
+      <span class="filter-chip">+ service type</span>
+      <span class="filter-chip">+ agent</span>
+      <span style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-mute);">847 matched</span>
+        <button class="btn btn--sm btn--ghost">Save view</button>
+        <button class="btn btn--sm btn--ghost">Clear</button>
+      </span>
+    </div>
+
+    <!-- Orders table -->
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__title"><span class="panel__title-num">01</span>Orders · 847 results</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn--sm btn--ghost">Bulk actions ▾</button>
+          <button class="btn btn--sm btn--ghost">Sort · Created ↓</button>
+          <button class="btn btn--sm btn--ghost">Columns ▾</button>
+        </div>
+      </div>
+      <div class="panel__body panel__body--flush">
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th style="width:24px;"><input type="checkbox" style="cursor:pointer;"></th>
+                <th>Order ID</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Agent</th>
+                <th>Tenant</th>
+                <th class="num">Total</th>
+                <th>Created</th>
+                <th>SLA</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7K2M3F</span></td>
+                <td><span class="pill pill--amber">MATCHING</span></td>
+                <td><span class="pill pill--red">URGENT</span></td>
+                <td>Nguyễn Văn A<br><small class="text-mute">+84 90 ••• 7842</small></td>
+                <td>AC repair · L3+</td>
+                <td><span class="text-mute">— pending</span></td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">—</td>
+                <td>00:42 ago</td>
+                <td><span class="text-amber">⏱ 02:18</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7K1B9X</span></td>
+                <td><span class="pill pill--cyan">ASSIGNED</span></td>
+                <td><span class="pill pill--amber">HIGH</span></td>
+                <td>Trần Thị B<br><small class="text-mute">+84 91 ••• 2104</small></td>
+                <td>Washing machine</td>
+                <td>agt_T4K9 · 4.8★</td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">—</td>
+                <td>01:18 ago</td>
+                <td><span class="text-green">on time</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JZP4Q</span></td>
+                <td><span class="pill pill--violet">EN_ROUTE</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Phạm Quang C<br><small class="text-mute">+84 93 ••• 5589</small></td>
+                <td>Plumbing</td>
+                <td>agt_L2X7 · 4.9★</td>
+                <td><span class="text-mute">tnt_HCM_thu_duc</span></td>
+                <td class="num">—</td>
+                <td>02:04 ago</td>
+                <td><span class="text-green">on time</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JX1V7</span></td>
+                <td><span class="pill pill--cyan">INSPECTING</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Lê Hoàng D<br><small class="text-mute">+84 90 ••• 8821</small></td>
+                <td>Electrical</td>
+                <td>agt_R7Y4 · 4.7★</td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">—</td>
+                <td>03:11 ago</td>
+                <td><span class="text-green">on time</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JV8K3</span></td>
+                <td><span class="pill pill--cyan">IN_PROGRESS</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Võ Anh E<br><small class="text-mute">+84 96 ••• 1142</small></td>
+                <td>AC install</td>
+                <td>agt_P9B3 · 4.6★</td>
+                <td><span class="text-mute">tnt_HCM_thu_duc</span></td>
+                <td class="num">1,200,000</td>
+                <td>05:37 ago</td>
+                <td><span class="text-amber">⏱ 12:30</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JT3M1</span></td>
+                <td><span class="pill pill--cyan">IN_PROGRESS</span></td>
+                <td><span class="pill pill--amber">HIGH</span></td>
+                <td>Nguyễn Hữu F<br><small class="text-mute">+84 90 ••• 7011</small></td>
+                <td>Fridge</td>
+                <td>agt_M4N1 · 4.9★</td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">850,000</td>
+                <td>07:22 ago</td>
+                <td><span class="text-green">on time</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JR9P2</span></td>
+                <td><span class="pill pill--green">COMPLETED</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Hoàng Thị G<br><small class="text-mute">+84 91 ••• 3398</small></td>
+                <td>Water heater</td>
+                <td>agt_K2Z8 · 4.8★</td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">2,400,000</td>
+                <td>08:46 ago</td>
+                <td><span class="text-mute">closed</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JQ2L8</span></td>
+                <td><span class="pill pill--red">DISPUTED</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Đinh Khải H<br><small class="text-mute">+84 96 ••• 4477</small></td>
+                <td>AC repair</td>
+                <td>agt_Q3X1 · 4.2★</td>
+                <td><span class="text-mute">tnt_HCM_thu_duc</span></td>
+                <td class="num">680,000</td>
+                <td>2h ago</td>
+                <td><span class="text-red">resolution required</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JN0R5</span></td>
+                <td><span class="pill pill--green">COMPLETED</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Trương Bảo I<br><small class="text-mute">+84 90 ••• 2287</small></td>
+                <td>Washing machine</td>
+                <td>agt_T4K9 · 4.8★</td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">450,000</td>
+                <td>2h ago</td>
+                <td><span class="text-mute">closed</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JM7H4</span></td>
+                <td><span class="pill pill--mute">CANCELLED</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Lý Hà J<br><small class="text-mute">+84 91 ••• 8855</small></td>
+                <td>Plumbing</td>
+                <td><span class="text-mute">—</span></td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">—</td>
+                <td>3h ago</td>
+                <td><span class="text-mute">by customer</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JK3W9</span></td>
+                <td><span class="pill pill--cyan">IN_PROGRESS</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Mai Tuấn K<br><small class="text-mute">+84 96 ••• 9921</small></td>
+                <td>Electrical · L4</td>
+                <td>agt_W8R2 · 4.9★</td>
+                <td><span class="text-mute">tnt_HCM_central</span></td>
+                <td class="num">1,800,000</td>
+                <td>4h ago</td>
+                <td><span class="text-green">on time</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><span class="cell-id">ord_01HX7JJ0F1</span></td>
+                <td><span class="pill pill--cyan">ACCEPTED</span></td>
+                <td><span class="pill pill--mute">NORMAL</span></td>
+                <td>Phan Văn L<br><small class="text-mute">+84 90 ••• 4477</small></td>
+                <td>AC service</td>
+                <td>agt_L2X7 · 4.9★</td>
+                <td><span class="text-mute">tnt_HCM_thu_duc</span></td>
+                <td class="num">320,000</td>
+                <td>4h ago</td>
+                <td><span class="text-mute">awaiting payment</span></td>
+                <td><button class="btn btn--sm btn--ghost">···</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:14px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);">
+          <span>showing 1–12 of 847</span>
+          <div style="display:flex;gap:4px;">
+            <button class="btn btn--sm btn--ghost" disabled>← prev</button>
+            <button class="btn btn--sm" style="background:var(--c-cyan-dim);color:var(--c-cyan);border-color:var(--c-cyan-dim);">1</button>
+            <button class="btn btn--sm btn--ghost">2</button>
+            <button class="btn btn--sm btn--ghost">3</button>
+            <span style="padding:5px 6px;">…</span>
+            <button class="btn btn--sm btn--ghost">71</button>
+            <button class="btn btn--sm btn--ghost">next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- STATUSBAR -->
+  <footer class="statusbar">
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--green"></span>SYSTEM HEALTHY</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">DB · 142ms</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">FILTER · 847/4,827</div>
+    <div class="statusbar__right">
+      <div class="statusbar__item">QUERY · 86ms</div>
+      <div class="statusbar__item">08:17:42 UTC+7</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

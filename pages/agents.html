@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SMP Admin — Agents &amp; KYC</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .kyc-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    padding: 14px;
+    display: flex;
+    gap: 14px;
+    transition: border-color 100ms;
+  }
+  .kyc-card:hover { border-color: var(--c-cyan-dim); }
+  .kyc-card__photo {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--bg-elev), var(--bg-base));
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+    color: var(--text-mute);
+  }
+  .kyc-card__body { flex: 1; min-width: 0; }
+  .kyc-card__name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .kyc-card__meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .kyc-card__props {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .kyc-card__props span { color: var(--text-mute); }
+  .kyc-card__props strong { color: var(--text); font-weight: 500; }
+  .skill-matrix {
+    display: grid;
+    grid-template-columns: 1fr repeat(5, 32px);
+    gap: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .skill-matrix__head {
+    padding: 8px;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--line);
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .skill-matrix__row {
+    display: contents;
+  }
+  .skill-matrix__name {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--text-dim);
+  }
+  .skill-matrix__cell {
+    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid var(--line-soft);
+    border-left: 1px solid var(--line-soft);
+    color: var(--text-faint);
+  }
+  .skill-matrix__cell--has {
+    color: var(--c-cyan);
+    background: rgba(77, 208, 225, 0.06);
+  }
+  .skill-matrix__cell--cert {
+    color: var(--c-green);
+    background: rgba(92, 217, 160, 0.08);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-mark">SMP</div>
+      <div class="sidebar__brand-text">
+        <div class="sidebar__brand-name">Admin</div>
+        <div class="sidebar__brand-tag">v1.4.2 · production</div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
+        <a class="nav-item" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
+        <a class="nav-item" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item nav-item--active" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
+        <a class="nav-item" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
+        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="service-templates.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
+          <span>Service Templates</span>
+          <span class="nav-item__badge">v3.5</span>
+        </a>
+        <a class="nav-item" href="warranty-packages.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
+          <span>Warranty Packages</span>
+        </a>
+        <a class="nav-item" href="warranty-claims.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          <span>Claim Queue</span>
+          <span class="nav-item__badge nav-item__badge--alert">5</span>
+        </a>
+        <a class="nav-item" href="warranty-revenue.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Warranty Revenue</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Reports</span></div>
+        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
+        <a class="nav-item" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
+        <a class="nav-item" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
+        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
+      </div>
+    </nav>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">LH</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Lê Hùng</div>
+        <div class="sidebar__user-role">Ops Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar__breadcrumb">
+      <span>SMP</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span>Modules</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span class="topbar__breadcrumb-current">Agents &amp; KYC</span>
+    </div>
+    <div class="topbar__search">
+      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+      <input placeholder="search by agent_id, name, phone, CMND…">
+      <kbd class="topbar__search-kbd">⌘K</kbd>
+    </div>
+    <div class="topbar__actions">
+      <span class="topbar__env">PROD · VN</span>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>Agents <em>&amp; KYC</em></h1>
+        <div class="page-header__sub">3,891 registered · 247 online now · 12 awaiting review</div>
+      </div>
+      <div class="page-header__right">
+        <button class="btn btn--ghost">Export</button>
+        <button class="btn btn--primary">+ Onboard Agent</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total agents</div>
+        <div class="kpi__value">3,891</div>
+        <div class="kpi__meta">
+          <span class="kpi__delta kpi__delta--up">▲ 142</span>
+          <span class="kpi__caption">this month</span>
+        </div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Online now</div>
+        <div class="kpi__value">247<span class="kpi__unit">/ 3,891</span></div>
+        <div class="kpi__meta">
+          <span class="kpi__caption">32.0% utilization</span>
+        </div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">KYC pending</div>
+        <div class="kpi__value">12</div>
+        <div class="kpi__meta">
+          <span class="kpi__delta kpi__delta--down">▼ avg 1.4h</span>
+          <span class="kpi__caption">SLA review</span>
+        </div>
+      </div>
+      <div class="kpi kpi--red">
+        <div class="kpi__label">Suspended</div>
+        <div class="kpi__value">23</div>
+        <div class="kpi__meta">
+          <span class="kpi__caption">8 in review</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab tab--active">All agents<span class="tab__count">3,891</span></div>
+      <div class="tab">KYC queue<span class="tab__count">12</span></div>
+      <div class="tab">Top performers</div>
+      <div class="tab">Suspended<span class="tab__count">23</span></div>
+      <div class="tab">Skill matrix</div>
+    </div>
+
+    <!-- Two columns: KYC queue + skill matrix -->
+    <div class="grid-2" style="margin-bottom:12px;">
+      <!-- LEFT: KYC review queue -->
+      <div class="panel">
+        <div class="panel__head">
+          <div class="panel__title"><span class="panel__title-num">01</span>KYC Review Queue · 12 pending</div>
+          <button class="panel__action">FILTER →</button>
+        </div>
+        <div class="panel__body" style="display:flex;flex-direction:column;gap:10px;">
+
+          <div class="kyc-card">
+            <div class="kyc-card__photo">
+              <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="5" r="2.5"/><path d="M3 14c0-2.5 2.5-4.5 5-4.5s5 2 5 4.5"/></svg>
+            </div>
+            <div class="kyc-card__body">
+              <div class="kyc-card__name">Nguyễn Hữu Long</div>
+              <div class="kyc-card__meta">agt_01HX7K · submitted 2h ago · HCMC · district 7</div>
+              <div class="kyc-card__props">
+                <span>CMND</span><strong>0****55678</strong>
+                <span>Phone</span><strong>+84 90 ••• 4477</strong>
+                <span>Skills</span><strong>AC L3, Plumbing L2</strong>
+                <span>Bank</span><strong>Vietcombank ****8821</strong>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:10px;">
+                <button class="btn btn--sm btn--primary">Approve</button>
+                <button class="btn btn--sm">Request changes</button>
+                <button class="btn btn--sm btn--danger">Reject</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="kyc-card">
+            <div class="kyc-card__photo">
+              <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="5" r="2.5"/><path d="M3 14c0-2.5 2.5-4.5 5-4.5s5 2 5 4.5"/></svg>
+            </div>
+            <div class="kyc-card__body">
+              <div class="kyc-card__name">Trần Văn Đức</div>
+              <div class="kyc-card__meta">agt_01HX7J · submitted 4h ago · HCMC · Thủ Đức</div>
+              <div class="kyc-card__props">
+                <span>CMND</span><strong>0****12384</strong>
+                <span>Phone</span><strong>+84 91 ••• 2287</strong>
+                <span>Skills</span><strong>Electrical L4</strong>
+                <span>Bank</span><strong>Techcombank ****0019</strong>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:10px;">
+                <button class="btn btn--sm btn--primary">Approve</button>
+                <button class="btn btn--sm">Request changes</button>
+                <button class="btn btn--sm btn--danger">Reject</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="kyc-card">
+            <div class="kyc-card__photo" style="border-color:var(--c-amber-dim);">
+              <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="var(--c-amber)" stroke-width="1.2"><circle cx="8" cy="5" r="2.5"/><path d="M3 14c0-2.5 2.5-4.5 5-4.5s5 2 5 4.5"/></svg>
+            </div>
+            <div class="kyc-card__body">
+              <div class="kyc-card__name">Phạm Hoàng Nam <span class="pill pill--amber" style="margin-left:6px;">FLAG · ID MISMATCH</span></div>
+              <div class="kyc-card__meta">agt_01HX7H · submitted 8h ago · Hà Nội · Đống Đa</div>
+              <div class="kyc-card__props">
+                <span>CMND</span><strong>0****87241</strong>
+                <span>Phone</span><strong>+84 93 ••• 9921</strong>
+                <span>Skills</span><strong>AC L2, Washing L3</strong>
+                <span>Bank</span><strong>MB Bank ****4477</strong>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:10px;">
+                <button class="btn btn--sm">Review manually</button>
+                <button class="btn btn--sm btn--ghost">View ID photos</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="kyc-card">
+            <div class="kyc-card__photo">
+              <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="5" r="2.5"/><path d="M3 14c0-2.5 2.5-4.5 5-4.5s5 2 5 4.5"/></svg>
+            </div>
+            <div class="kyc-card__body">
+              <div class="kyc-card__name">Lê Thị Bích Vân</div>
+              <div class="kyc-card__meta">agt_01HX7G · submitted 12h ago · Đà Nẵng · Hải Châu</div>
+              <div class="kyc-card__props">
+                <span>CMND</span><strong>0****55621</strong>
+                <span>Phone</span><strong>+84 90 ••• 1142</strong>
+                <span>Skills</span><strong>Plumbing L3</strong>
+                <span>Bank</span><strong>ACB ****3398</strong>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:10px;">
+                <button class="btn btn--sm btn--primary">Approve</button>
+                <button class="btn btn--sm">Request changes</button>
+                <button class="btn btn--sm btn--danger">Reject</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT: Skill distribution + top performers -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="panel">
+          <div class="panel__head">
+            <div class="panel__title"><span class="panel__title-num">02</span>Skill Distribution</div>
+          </div>
+          <div class="panel__body panel__body--flush">
+            <div class="skill-matrix">
+              <div class="skill-matrix__head" style="text-align:left;padding-left:12px;">SKILL</div>
+              <div class="skill-matrix__head">L1</div>
+              <div class="skill-matrix__head">L2</div>
+              <div class="skill-matrix__head">L3</div>
+              <div class="skill-matrix__head">L4</div>
+              <div class="skill-matrix__head">L5</div>
+
+              <div class="skill-matrix__row">
+                <div class="skill-matrix__name">AC Repair</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">482</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">621</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">347</div>
+                <div class="skill-matrix__cell skill-matrix__cell--cert">128</div>
+                <div class="skill-matrix__cell skill-matrix__cell--cert">42</div>
+              </div>
+              <div class="skill-matrix__row">
+                <div class="skill-matrix__name">Plumbing</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">311</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">425</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">198</div>
+                <div class="skill-matrix__cell skill-matrix__cell--cert">67</div>
+                <div class="skill-matrix__cell">21</div>
+              </div>
+              <div class="skill-matrix__row">
+                <div class="skill-matrix__name">Electrical</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">256</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">389</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">214</div>
+                <div class="skill-matrix__cell skill-matrix__cell--cert">98</div>
+                <div class="skill-matrix__cell skill-matrix__cell--cert">34</div>
+              </div>
+              <div class="skill-matrix__row">
+                <div class="skill-matrix__name">Washing machine</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">198</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">287</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">142</div>
+                <div class="skill-matrix__cell">38</div>
+                <div class="skill-matrix__cell">9</div>
+              </div>
+              <div class="skill-matrix__row">
+                <div class="skill-matrix__name">Refrigerator</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">167</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">234</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">98</div>
+                <div class="skill-matrix__cell">28</div>
+                <div class="skill-matrix__cell">7</div>
+              </div>
+              <div class="skill-matrix__row">
+                <div class="skill-matrix__name">Water heater</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">142</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">189</div>
+                <div class="skill-matrix__cell skill-matrix__cell--has">76</div>
+                <div class="skill-matrix__cell">22</div>
+                <div class="skill-matrix__cell">5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div class="panel__title"><span class="panel__title-num">03</span>Top Performers · this week</div>
+          </div>
+          <div class="panel__body panel__body--flush">
+            <table class="data">
+              <thead>
+                <tr><th>Agent</th><th class="num">Orders</th><th class="num">Rating</th><th class="num">Earning</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="cell-id">agt_T4K9P2</span><br><small class="text-mute">Trương Minh K.</small></td><td class="num">84</td><td class="num text-green">4.94 ★</td><td class="num">42.8M</td></tr>
+                <tr><td><span class="cell-id">agt_L2X7N5</span><br><small class="text-mute">Lê Văn L.</small></td><td class="num">79</td><td class="num text-green">4.91 ★</td><td class="num">38.4M</td></tr>
+                <tr><td><span class="cell-id">agt_R7Y4M3</span><br><small class="text-mute">Đoàn Hữu R.</small></td><td class="num">74</td><td class="num text-green">4.88 ★</td><td class="num">35.1M</td></tr>
+                <tr><td><span class="cell-id">agt_M4N1B8</span><br><small class="text-mute">Phạm Quốc M.</small></td><td class="num">68</td><td class="num text-green">4.86 ★</td><td class="num">32.7M</td></tr>
+                <tr><td><span class="cell-id">agt_W8R2K1</span><br><small class="text-mute">Nguyễn Thành W.</small></td><td class="num">62</td><td class="num text-green">4.85 ★</td><td class="num">30.2M</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent agents activity -->
+    <div class="panel">
+      <div class="panel__head">
+        <div class="panel__title"><span class="panel__title-num">04</span>Recent Onboarding · last 7 days</div>
+        <button class="panel__action">VIEW ALL →</button>
+      </div>
+      <div class="panel__body panel__body--flush">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Agent ID</th>
+              <th>Name</th>
+              <th>Region</th>
+              <th>Skills</th>
+              <th>KYC</th>
+              <th>Rating</th>
+              <th class="num">Orders</th>
+              <th>Joined</th>
+              <th>Last seen</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="cell-id">agt_01HX5K3F</span></td><td>Bùi Quang Anh</td><td>HCMC · Q.7</td><td>AC L3, Plumbing L2</td><td><span class="pill pill--green">VERIFIED</span></td><td class="num text-green">4.8 ★</td><td class="num">14</td><td>3 days ago</td><td>4m ago</td><td><button class="btn btn--sm btn--ghost">···</button></td></tr>
+            <tr><td><span class="cell-id">agt_01HX5J9P</span></td><td>Đặng Văn Tài</td><td>Hà Nội</td><td>Electrical L4</td><td><span class="pill pill--green">VERIFIED</span></td><td class="num text-green">4.9 ★</td><td class="num">22</td><td>5 days ago</td><td>12m ago</td><td><button class="btn btn--sm btn--ghost">···</button></td></tr>
+            <tr><td><span class="cell-id">agt_01HX5J1V</span></td><td>Hoàng Anh Tuấn</td><td>Đà Nẵng</td><td>AC L4, Washing L3</td><td><span class="pill pill--green">VERIFIED</span></td><td class="num text-green">4.7 ★</td><td class="num">18</td><td>6 days ago</td><td>1h ago</td><td><button class="btn btn--sm btn--ghost">···</button></td></tr>
+            <tr><td><span class="cell-id">agt_01HX4Z8K</span></td><td>Vũ Đình Hùng</td><td>HCMC · Bình Thạnh</td><td>Plumbing L3</td><td><span class="pill pill--green">VERIFIED</span></td><td class="num text-amber">4.3 ★</td><td class="num">8</td><td>6 days ago</td><td>offline 2h</td><td><button class="btn btn--sm btn--ghost">···</button></td></tr>
+            <tr><td><span class="cell-id">agt_01HX4Y2H</span></td><td>Phan Thị Lan</td><td>HCMC · Tân Bình</td><td>AC L2</td><td><span class="pill pill--amber">RE-REVIEW</span></td><td class="num text-mute">— pending</td><td class="num">3</td><td>7 days ago</td><td>offline 1d</td><td><button class="btn btn--sm btn--ghost">···</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="statusbar">
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--green"></span>SYSTEM HEALTHY</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">KYC SLA · 1.4h avg</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">QUEUE · 12 pending</div>
+    <div class="statusbar__right">
+      <div class="statusbar__item">DB · 142ms</div>
+      <div class="statusbar__item">08:17:42 UTC+7</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

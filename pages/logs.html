@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SMP Admin — Log Viewer</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .log-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .log-toolbar__query {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-base);
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .log-toolbar__query input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .log-toolbar__query .kw  { color: var(--c-violet); }
+  .log-toolbar__query .op  { color: var(--c-amber); }
+  .log-toolbar__query .val { color: var(--c-green); }
+  .log-controls {
+    display: flex;
+    gap: 6px;
+  }
+  .log-quickfilter {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .level-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    color: var(--text-dim);
+  }
+  .level-toggle--on { background: var(--bg-elev); color: var(--text); border-color: var(--line-strong); }
+  .level-toggle__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .log-viewer-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 12px;
+    height: 640px;
+  }
+  .log-stream {
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+  .log-detail {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .log-detail__head {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .log-detail__body {
+    padding: 14px;
+    overflow-y: auto;
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .detail-row {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-soft);
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { color: var(--text-mute); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+  .detail-val { color: var(--text); word-break: break-all; }
+  .json-tree {
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    padding: 10px 12px;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    background: rgba(92, 217, 160, 0.1);
+    border: 1px solid var(--c-green-dim);
+    color: var(--c-green);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .live-pill::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-green);
+    box-shadow: 0 0 6px var(--c-green);
+    animation: pulse 1.5s infinite;
+  }
+  .freq-chart {
+    height: 60px;
+    width: 100%;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 14px;
+    position: relative;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-mark">SMP</div>
+      <div class="sidebar__brand-text">
+        <div class="sidebar__brand-name">Admin</div>
+        <div class="sidebar__brand-tag">v1.4.2 · production</div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
+        <a class="nav-item" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
+        <a class="nav-item" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
+        <a class="nav-item" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
+        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="service-templates.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
+          <span>Service Templates</span>
+          <span class="nav-item__badge">v3.5</span>
+        </a>
+        <a class="nav-item" href="warranty-packages.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
+          <span>Warranty Packages</span>
+        </a>
+        <a class="nav-item" href="warranty-claims.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          <span>Claim Queue</span>
+          <span class="nav-item__badge nav-item__badge--alert">5</span>
+        </a>
+        <a class="nav-item" href="warranty-revenue.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Warranty Revenue</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Reports</span></div>
+        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
+        <a class="nav-item nav-item--active" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
+        <a class="nav-item" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
+        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
+      </div>
+    </nav>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">LH</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Lê Hùng</div>
+        <div class="sidebar__user-role">Ops Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar__breadcrumb">
+      <span>SMP</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span>System</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span class="topbar__breadcrumb-current">Logs</span>
+    </div>
+    <div class="topbar__search">
+      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+      <input placeholder="search trace_id, order_id, user_id…">
+      <kbd class="topbar__search-kbd">⌘K</kbd>
+    </div>
+    <div class="topbar__actions">
+      <span class="topbar__env">PROD · VN</span>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>Log <em>viewer</em></h1>
+        <div class="page-header__sub">live tail · 13 services · last 1h · 47.2k entries</div>
+      </div>
+      <div class="page-header__right">
+        <span class="live-pill">LIVE · 247 lines/sec</span>
+        <button class="btn btn--ghost">⏸ Pause</button>
+        <button class="btn btn--ghost">Clear</button>
+        <button class="btn btn--primary">Export</button>
+      </div>
+    </div>
+
+    <!-- Query builder toolbar -->
+    <div class="log-toolbar">
+      <div>
+        <div class="log-toolbar__query">
+          <span style="color:var(--c-cyan);">LogQL</span>
+          <span style="color:var(--text-faint);">›</span>
+          <input value='{service="dispatch-service",env="prod"} |= "tenant_id=tnt_HCM_central" | json | level=~"ERROR|WARN"' />
+          <button class="btn btn--sm btn--primary">RUN</button>
+        </div>
+        <div class="log-quickfilter">
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-mute);letter-spacing:1.5px;text-transform:uppercase;margin-right:4px;">LEVELS</span>
+          <span class="level-toggle level-toggle--on"><span class="level-toggle__dot" style="background:var(--c-red);"></span>ERROR · 142</span>
+          <span class="level-toggle level-toggle--on"><span class="level-toggle__dot" style="background:var(--c-amber);"></span>WARN · 847</span>
+          <span class="level-toggle"><span class="level-toggle__dot" style="background:var(--c-cyan);"></span>INFO · 12.4k</span>
+          <span class="level-toggle"><span class="level-toggle__dot" style="background:var(--text-faint);"></span>DEBUG · 33.8k</span>
+          <span style="margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--text-mute);">window · last 1h · 47,231 entries</span>
+        </div>
+      </div>
+      <div class="log-controls">
+        <button class="btn btn--ghost btn--sm">Saved queries ▾</button>
+        <button class="btn btn--ghost btn--sm">Time range ▾</button>
+      </div>
+    </div>
+
+    <!-- Frequency chart -->
+    <div class="panel" style="margin-bottom:12px;">
+      <div class="freq-chart">
+        <svg viewBox="0 0 1000 44" preserveAspectRatio="none" style="width:100%;height:100%;">
+          <!-- INFO -->
+          <g fill="var(--c-cyan)" opacity="0.4">
+            <rect x="10" y="30" width="14" height="14"/>
+            <rect x="30" y="26" width="14" height="18"/>
+            <rect x="50" y="28" width="14" height="16"/>
+            <rect x="70" y="24" width="14" height="20"/>
+            <rect x="90" y="22" width="14" height="22"/>
+            <rect x="110" y="20" width="14" height="24"/>
+            <rect x="130" y="18" width="14" height="26"/>
+            <rect x="150" y="16" width="14" height="28"/>
+            <rect x="170" y="14" width="14" height="30"/>
+            <rect x="190" y="12" width="14" height="32"/>
+            <rect x="210" y="14" width="14" height="30"/>
+            <rect x="230" y="16" width="14" height="28"/>
+            <rect x="250" y="14" width="14" height="30"/>
+            <rect x="270" y="12" width="14" height="32"/>
+            <rect x="290" y="10" width="14" height="34"/>
+            <rect x="310" y="12" width="14" height="32"/>
+            <rect x="330" y="14" width="14" height="30"/>
+            <rect x="350" y="12" width="14" height="32"/>
+            <rect x="370" y="10" width="14" height="34"/>
+            <rect x="390" y="8" width="14" height="36"/>
+            <rect x="410" y="10" width="14" height="34"/>
+            <rect x="430" y="14" width="14" height="30"/>
+            <rect x="450" y="12" width="14" height="32"/>
+            <rect x="470" y="10" width="14" height="34"/>
+            <rect x="490" y="8" width="14" height="36"/>
+            <rect x="510" y="6" width="14" height="38"/>
+            <rect x="530" y="8" width="14" height="36"/>
+            <rect x="550" y="10" width="14" height="34"/>
+            <rect x="570" y="12" width="14" height="32"/>
+            <rect x="590" y="14" width="14" height="30"/>
+            <rect x="610" y="12" width="14" height="32"/>
+            <rect x="630" y="10" width="14" height="34"/>
+            <rect x="650" y="8" width="14" height="36"/>
+            <rect x="670" y="6" width="14" height="38"/>
+            <rect x="690" y="8" width="14" height="36"/>
+            <rect x="710" y="10" width="14" height="34"/>
+            <rect x="730" y="12" width="14" height="32"/>
+            <rect x="750" y="14" width="14" height="30"/>
+            <rect x="770" y="12" width="14" height="32"/>
+            <rect x="790" y="10" width="14" height="34"/>
+            <rect x="810" y="8" width="14" height="36"/>
+            <rect x="830" y="10" width="14" height="34"/>
+            <rect x="850" y="6" width="14" height="38"/>
+            <rect x="870" y="4" width="14" height="40"/>
+            <rect x="890" y="6" width="14" height="38"/>
+            <rect x="910" y="8" width="14" height="36"/>
+            <rect x="930" y="10" width="14" height="34"/>
+            <rect x="950" y="8" width="14" height="36"/>
+            <rect x="970" y="6" width="14" height="38"/>
+          </g>
+          <!-- WARN overlay (orange spikes) -->
+          <g fill="var(--c-amber)">
+            <rect x="290" y="22" width="14" height="6"/>
+            <rect x="510" y="18" width="14" height="8"/>
+            <rect x="670" y="14" width="14" height="10"/>
+            <rect x="870" y="10" width="14" height="14"/>
+          </g>
+          <!-- ERROR overlay -->
+          <g fill="var(--c-red)">
+            <rect x="510" y="32" width="14" height="4"/>
+            <rect x="670" y="28" width="14" height="6"/>
+            <rect x="870" y="22" width="14" height="8"/>
+            <rect x="970" y="20" width="14" height="10"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Log stream + detail panel -->
+    <div class="log-viewer-layout">
+
+      <div class="log-stream">
+        <div class="logs">
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:17:31</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_c7a2e4f9</span>
+            <span class="log-msg">match.accepted <span class="k">order_id=</span><span class="v">ord_01HX7K2M</span> <span class="k">agent_id=</span><span class="v">agt_T4K9</span> <span class="k">score=</span><span class="v">0.84</span></span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:17:28</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_9b4e1a72</span>
+            <span class="log-msg">offer.sent <span class="k">order_id=</span><span class="v">ord_01HX7K2M</span> <span class="k">candidates=</span><span class="v">17</span> <span class="k">round=</span><span class="v">2</span></span>
+          </div>
+          <div class="log-line log-line--warn">
+            <span class="log-ts">08:17:01</span>
+            <span class="log-level log-level--warn">WARN</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_9b4e1a72</span>
+            <span class="log-msg">round.timeout <span class="k">order_id=</span><span class="v">ord_01HX7K2M</span> <span class="k">round=</span><span class="v">1</span> <span class="k">accepted=</span><span class="v">0/12</span> expand_radius_to=22.5km</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:16:54</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">order-svc</span>
+            <span class="log-trace">trc_1f8c63ad</span>
+            <span class="log-msg">order.completed <span class="k">order_id=</span><span class="v">ord_01HX7JN</span> <span class="k">duration_min=</span><span class="v">47</span> <span class="k">agent=</span><span class="v">agt_L2X7</span></span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:16:54</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">wallet-svc</span>
+            <span class="log-trace">trc_1f8c63ad</span>
+            <span class="log-msg">ledger.posted <span class="k">txn_id=</span><span class="v">txn_01HX7J</span> <span class="k">amount=</span><span class="v">680000</span> <span class="k">dr=</span>escrow <span class="k">cr=</span>agent</span>
+          </div>
+          <div class="log-line log-line--error">
+            <span class="log-ts">08:16:48</span>
+            <span class="log-level log-level--error">ERROR</span>
+            <span class="log-service">webhook-svc</span>
+            <span class="log-trace">trc_4d8a72ef</span>
+            <span class="log-msg">delivery.failed <span class="k">webhook_id=</span><span class="v">whk_01HX7K0U</span> <span class="k">partner=</span><span class="v">prt_tgdd</span> <span class="k">status=</span>5xx <span class="k">attempt=</span>6/6 → DLQ</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:16:32</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">agent-svc</span>
+            <span class="log-trace">trc_5e1f9a3b</span>
+            <span class="log-msg">agent.online <span class="k">agent_id=</span><span class="v">agt_M4N1</span> <span class="k">region=</span><span class="v">HCMC_Q7</span> <span class="k">location=</span>10.732,106.721</span>
+          </div>
+          <div class="log-line log-line--warn">
+            <span class="log-ts">08:16:19</span>
+            <span class="log-level log-level--warn">WARN</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_ab7c2e51</span>
+            <span class="log-msg">candidate.score_low <span class="k">order_id=</span><span class="v">ord_01HX7JV8</span> <span class="k">best_score=</span><span class="v">0.42</span> <span class="k">threshold=</span><span class="v">0.5</span></span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:16:02</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">payment-svc</span>
+            <span class="log-trace">trc_c3f5a872</span>
+            <span class="log-msg">payment.succeeded <span class="k">order_id=</span><span class="v">ord_01HX7JL</span> <span class="k">amount=</span><span class="v">980000</span> <span class="k">method=</span>stripe</span>
+          </div>
+          <div class="log-line log-line--debug">
+            <span class="log-ts">08:15:58</span>
+            <span class="log-level log-level--debug">DEBUG</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_e9b41f25</span>
+            <span class="log-msg">scoring.complete <span class="k">order_id=</span><span class="v">ord_01HX7JK</span> <span class="k">candidates=</span>23 <span class="k">elapsed_ms=</span>87</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:15:58</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_e9b41f25</span>
+            <span class="log-msg">match.accepted <span class="k">order_id=</span><span class="v">ord_01HX7JK</span> <span class="k">agent_id=</span><span class="v">agt_R7Y4</span> <span class="k">score=</span><span class="v">0.91</span></span>
+          </div>
+          <div class="log-line log-line--warn">
+            <span class="log-ts">08:15:42</span>
+            <span class="log-level log-level--warn">WARN</span>
+            <span class="log-service">dispatch-svc</span>
+            <span class="log-trace">trc_7a3d8c14</span>
+            <span class="log-msg">agent.no_response <span class="k">agent_id=</span><span class="v">agt_Q3X1</span> <span class="k">offer_id=</span><span class="v">ofr_01HX7</span> <span class="k">timeout_sec=</span><span class="v">30</span></span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:15:21</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">notification-svc</span>
+            <span class="log-trace">trc_b8e2c1f7</span>
+            <span class="log-msg">push.sent <span class="k">user_id=</span><span class="v">usr_K2M3</span> <span class="k">channel=</span>fcm <span class="k">template=</span>order_assigned</span>
+          </div>
+          <div class="log-line log-line--error">
+            <span class="log-ts">08:15:14</span>
+            <span class="log-level log-level--error">ERROR</span>
+            <span class="log-service">notification-svc</span>
+            <span class="log-trace">trc_f1a2e93c</span>
+            <span class="log-msg">sms.failed <span class="k">user_id=</span><span class="v">usr_R7Y4</span> <span class="k">provider=</span>twilio <span class="k">error=</span>"phone_number_invalid"</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:14:32</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">kyc-svc</span>
+            <span class="log-trace">trc_8d4f2a91</span>
+            <span class="log-msg">kyc.approved <span class="k">agent_id=</span><span class="v">agt_01HX5K</span> <span class="k">approved_by=</span>@ngha <span class="k">duration_min=</span>14</span>
+          </div>
+          <div class="log-line log-line--debug">
+            <span class="log-ts">08:14:18</span>
+            <span class="log-level log-level--debug">DEBUG</span>
+            <span class="log-service">api-gateway</span>
+            <span class="log-trace">trc_3c9e7b48</span>
+            <span class="log-msg">request <span class="k">method=</span>POST <span class="k">path=</span>/v1/orders <span class="k">status=</span>201 <span class="k">duration_ms=</span>142</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:14:18</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">order-svc</span>
+            <span class="log-trace">trc_3c9e7b48</span>
+            <span class="log-msg">order.created <span class="k">order_id=</span><span class="v">ord_01HX7K2M</span> <span class="k">customer=</span><span class="v">usr_K2M3</span> <span class="k">service=</span>ac_repair_l3</span>
+          </div>
+          <div class="log-line log-line--error">
+            <span class="log-ts">08:13:42</span>
+            <span class="log-level log-level--error">ERROR</span>
+            <span class="log-service">webhook-svc</span>
+            <span class="log-trace">trc_5a8f3e2d</span>
+            <span class="log-msg">delivery.timeout <span class="k">webhook_id=</span><span class="v">whk_01HX7JU</span> <span class="k">partner=</span><span class="v">prt_shopee_svc</span> <span class="k">elapsed_ms=</span>30000</span>
+          </div>
+          <div class="log-line log-line--warn">
+            <span class="log-ts">08:13:18</span>
+            <span class="log-level log-level--warn">WARN</span>
+            <span class="log-service">api-gateway</span>
+            <span class="log-trace">trc_b2c7f184</span>
+            <span class="log-msg">rate_limit.throttle <span class="k">partner=</span><span class="v">prt_shopee_svc</span> <span class="k">rate=</span>2884/3000 <span class="k">tier=</span>GROWTH</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:12:54</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">auth-svc</span>
+            <span class="log-trace">trc_9e1c4a73</span>
+            <span class="log-msg">login.success <span class="k">user_id=</span><span class="v">@minh.tran</span> <span class="k">method=</span>sso <span class="k">ip=</span>203.162.•.•</span>
+          </div>
+          <div class="log-line log-line--info">
+            <span class="log-ts">08:12:32</span>
+            <span class="log-level log-level--info">INFO</span>
+            <span class="log-service">payment-svc</span>
+            <span class="log-trace">trc_2f8a5e91</span>
+            <span class="log-msg">refund.initiated <span class="k">order_id=</span><span class="v">ord_01HX7JQ2</span> <span class="k">amount=</span><span class="v">680000</span> <span class="k">authorized_by=</span>@minh.tran</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: detail of selected log -->
+      <div class="log-detail">
+        <div class="log-detail__head">
+          <div>
+            <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-red);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;">ERROR · DETAIL</div>
+            <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:2px;">trc_4d8a72ef · webhook-svc</div>
+          </div>
+          <button class="btn btn--sm btn--ghost">×</button>
+        </div>
+        <div class="log-detail__body">
+          <div class="detail-row"><span class="detail-key">timestamp</span><span class="detail-val">2026-05-26 08:16:48.412</span></div>
+          <div class="detail-row"><span class="detail-key">level</span><span class="detail-val text-red">ERROR</span></div>
+          <div class="detail-row"><span class="detail-key">service</span><span class="detail-val">webhook-service</span></div>
+          <div class="detail-row"><span class="detail-key">version</span><span class="detail-val">1.4.2</span></div>
+          <div class="detail-row"><span class="detail-key">env</span><span class="detail-val">production</span></div>
+          <div class="detail-row"><span class="detail-key">region</span><span class="detail-val">ap-southeast-1</span></div>
+          <div class="detail-row"><span class="detail-key">trace_id</span><span class="detail-val text-cyan">0af7651916cd43dd8448eb211c80319c</span></div>
+          <div class="detail-row"><span class="detail-key">span_id</span><span class="detail-val">b7ad6b7169203331</span></div>
+          <div class="detail-row"><span class="detail-key">tenant_id</span><span class="detail-val">tnt_partner_tgdd</span></div>
+          <div class="detail-row"><span class="detail-key">message</span><span class="detail-val">Webhook delivery exhausted retries</span></div>
+
+          <div style="margin-top:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1.5px;">CONTEXT JSON</div>
+          <div class="json-tree">
+            <div><span style="color:var(--c-violet);">"webhook_id"</span>: <span style="color:var(--c-green);">"whk_01HX7K0U"</span>,</div>
+            <div><span style="color:var(--c-violet);">"endpoint"</span>: <span style="color:var(--c-green);">"https://tgdd.vn/api/smp/hook"</span>,</div>
+            <div><span style="color:var(--c-violet);">"event_type"</span>: <span style="color:var(--c-green);">"order.created"</span>,</div>
+            <div><span style="color:var(--c-violet);">"order_id"</span>: <span style="color:var(--c-green);">"ord_01HX7K0U"</span>,</div>
+            <div><span style="color:var(--c-violet);">"attempts"</span>: <span style="color:var(--c-amber);">6</span>,</div>
+            <div><span style="color:var(--c-violet);">"final_status"</span>: <span style="color:var(--c-green);">"FAILED_DLQ"</span>,</div>
+            <div><span style="color:var(--c-violet);">"error"</span>: <span style="color:var(--c-green);">"connect ETIMEDOUT 14.225.xx.xx:443"</span>,</div>
+            <div><span style="color:var(--c-violet);">"timings"</span>: {</div>
+            <div style="padding-left:16px;"><span style="color:var(--c-violet);">"first_attempt"</span>: <span style="color:var(--c-green);">"08:07:14.221"</span>,</div>
+            <div style="padding-left:16px;"><span style="color:var(--c-violet);">"last_attempt"</span>: <span style="color:var(--c-green);">"08:16:48.412"</span>,</div>
+            <div style="padding-left:16px;"><span style="color:var(--c-violet);">"total_elapsed_ms"</span>: <span style="color:var(--c-amber);">574191</span></div>
+            <div>}</div>
+          </div>
+
+          <div style="margin-top:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1.5px;">RELATED LOGS · same trace</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
+            <div style="font-family:var(--font-mono);font-size:10.5px;padding:4px 6px;border-left:2px solid var(--c-cyan);background:var(--bg-base);color:var(--text-dim);">08:07:14 INFO  api-gateway · request received</div>
+            <div style="font-family:var(--font-mono);font-size:10.5px;padding:4px 6px;border-left:2px solid var(--c-cyan);background:var(--bg-base);color:var(--text-dim);">08:07:14 INFO  webhook-svc · enqueued</div>
+            <div style="font-family:var(--font-mono);font-size:10.5px;padding:4px 6px;border-left:2px solid var(--c-amber);background:var(--bg-base);color:var(--text-dim);">08:07:44 WARN  webhook-svc · attempt 1 failed</div>
+            <div style="font-family:var(--font-mono);font-size:10.5px;padding:4px 6px;border-left:2px solid var(--c-amber);background:var(--bg-base);color:var(--text-dim);">08:08:44 WARN  webhook-svc · attempt 2 failed</div>
+            <div style="font-family:var(--font-mono);font-size:10.5px;padding:4px 6px;border-left:2px solid var(--c-red);background:var(--bg-base);color:var(--text-dim);">08:16:48 ERROR webhook-svc · DLQ</div>
+          </div>
+
+          <div style="display:flex;gap:6px;margin-top:14px;">
+            <button class="btn btn--sm btn--primary" style="flex:1;">View trace ↗</button>
+            <button class="btn btn--sm" style="flex:1;">Retry from DLQ</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="statusbar">
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--green"></span>LOKI · CONNECTED</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">INGEST · 8.2k lines/sec</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">RETENTION · 14d HOT</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">QUERY · 142ms</div>
+    <div class="statusbar__right">
+      <div class="statusbar__item">STORAGE · 1.84TB</div>
+      <div class="statusbar__item">08:17:42 UTC+7</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

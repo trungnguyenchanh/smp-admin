@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SMP Admin — Audit Trail</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .audit-layout {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 12px;
+  }
+  .event-table {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .event-table th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--text-mute);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--line);
+  }
+  .event-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .event-table tr { cursor: pointer; }
+  .event-table tr:hover { background: var(--bg-elev); }
+  .event-table tr.is-active { background: var(--bg-elev); }
+  .event-table tr.is-active td:first-child { border-left: 2px solid var(--c-cyan); padding-left: 12px; }
+  .event-type-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    font-size: 10px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .event-type-pill--auth   { color: var(--c-cyan); border-color: var(--c-cyan-dim); background: rgba(77,208,225,0.05); }
+  .event-type-pill--data   { color: var(--c-violet); border-color: var(--c-violet-dim); background: rgba(181,141,255,0.05); }
+  .event-type-pill--money  { color: var(--c-amber); border-color: var(--c-amber-dim); background: rgba(244,183,64,0.05); }
+  .event-type-pill--perm   { color: var(--c-red); border-color: var(--c-red-dim); background: rgba(255,82,82,0.05); }
+
+  .filter-block {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .filter-block__group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-right: 1px solid var(--line);
+  }
+  .filter-block__group:last-child { border-right: none; }
+  .filter-block__label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-mute);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .actor-search {
+    background: var(--bg-base);
+    border: 1px solid var(--line);
+    padding: 6px 10px 6px 28px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text);
+    outline: none;
+    min-width: 220px;
+    position: relative;
+  }
+
+  .diff-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--bg-deep);
+  }
+  .diff-col {
+    padding: 12px 14px;
+    line-height: 1.8;
+  }
+  .diff-col + .diff-col { border-left: 1px solid var(--line); }
+  .diff-col__head {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .diff-col__head--before { color: var(--c-red); }
+  .diff-col__head--after  { color: var(--c-green); }
+  .diff-line { padding: 0 4px; }
+  .diff-line--rm   { background: rgba(255,82,82,0.08); color: var(--c-red); }
+  .diff-line--rm::before { content: '− '; color: var(--c-red); }
+  .diff-line--add  { background: rgba(92,217,160,0.08); color: var(--c-green); }
+  .diff-line--add::before { content: '+ '; color: var(--c-green); }
+  .diff-line__k { color: var(--c-violet); }
+  .diff-line__v { color: var(--text); }
+
+  .actor-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    cursor: pointer;
+  }
+  .actor-card:hover { background: var(--bg-elev); }
+  .actor-card__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--c-violet), var(--c-cyan));
+    display: grid;
+    place-items: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 10px;
+    color: var(--bg-deep);
+    flex-shrink: 0;
+  }
+  .actor-card__info { flex: 1; min-width: 0; }
+  .actor-card__name { font-size: 12px; color: var(--text); }
+  .actor-card__role { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); letter-spacing: 1px; text-transform: uppercase; }
+  .actor-card__stat { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); text-align: right; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-mark">SMP</div>
+      <div class="sidebar__brand-text">
+        <div class="sidebar__brand-name">Admin</div>
+        <div class="sidebar__brand-tag">v1.4.2 · production</div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
+        <a class="nav-item" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
+        <a class="nav-item" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
+        <a class="nav-item" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
+        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="service-templates.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
+          <span>Service Templates</span>
+          <span class="nav-item__badge">v3.5</span>
+        </a>
+        <a class="nav-item" href="warranty-packages.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
+          <span>Warranty Packages</span>
+        </a>
+        <a class="nav-item" href="warranty-claims.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          <span>Claim Queue</span>
+          <span class="nav-item__badge nav-item__badge--alert">5</span>
+        </a>
+        <a class="nav-item" href="warranty-revenue.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Warranty Revenue</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Reports</span></div>
+        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
+        <a class="nav-item" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
+        <a class="nav-item nav-item--active" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
+        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
+      </div>
+    </nav>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">LH</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Lê Hùng</div>
+        <div class="sidebar__user-role">Ops Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar__breadcrumb">
+      <span>SMP</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span>System</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span class="topbar__breadcrumb-current">Audit Trail</span>
+    </div>
+    <div class="topbar__search">
+      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+      <input placeholder="actor, resource_id, action, ip…">
+      <kbd class="topbar__search-kbd">⌘K</kbd>
+    </div>
+    <div class="topbar__actions">
+      <span class="topbar__env">PROD · VN</span>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>Audit <em>trail</em></h1>
+        <div class="page-header__sub">tamper-proof log · WORM retention 7Y · 12,847 events · last 24h</div>
+      </div>
+      <div class="page-header__right">
+        <button class="btn btn--ghost">Compliance export</button>
+        <button class="btn btn--ghost">SIEM forward</button>
+        <button class="btn btn--primary">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M2 13h12"/></svg>
+          Download · 24h
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Events (24h)</div>
+        <div class="kpi__value">12,847</div>
+        <div class="kpi__meta"><span class="kpi__caption">all actors · all categories</span></div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Sensitive ops</div>
+        <div class="kpi__value">284</div>
+        <div class="kpi__meta"><span class="kpi__caption">RBAC, financial, PII access</span></div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Failed auth</div>
+        <div class="kpi__value">18</div>
+        <div class="kpi__meta"><span class="kpi__delta kpi__delta--up">▲ 4</span><span class="kpi__caption">vs 7-day avg</span></div>
+      </div>
+      <div class="kpi kpi--red">
+        <div class="kpi__label">Anomalies</div>
+        <div class="kpi__value">2</div>
+        <div class="kpi__meta"><span class="kpi__caption">geo-novelty · privileged escalation</span></div>
+      </div>
+    </div>
+
+    <!-- Filter block -->
+    <div class="filter-block">
+      <div class="filter-block__group">
+        <span class="filter-block__label">Actor</span>
+        <div style="position:relative;">
+          <svg style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text-mute);" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+          <input class="actor-search" placeholder="@user, system, partner_id…">
+        </div>
+      </div>
+      <div class="filter-block__group">
+        <span class="filter-block__label">Category</span>
+        <span class="filter-chip filter-chip--active">auth <span class="filter-chip__close">×</span></span>
+        <span class="filter-chip filter-chip--active">permission <span class="filter-chip__close">×</span></span>
+        <span class="filter-chip filter-chip--active">data <span class="filter-chip__close">×</span></span>
+        <span class="filter-chip filter-chip--active">financial <span class="filter-chip__close">×</span></span>
+      </div>
+      <div class="filter-block__group">
+        <span class="filter-block__label">Result</span>
+        <span class="filter-chip filter-chip--active">all</span>
+      </div>
+      <div class="filter-block__group">
+        <span class="filter-block__label">Time</span>
+        <span class="filter-chip">last 24h ▾</span>
+      </div>
+      <button class="btn btn--sm btn--ghost" style="margin-left:auto;">Reset</button>
+      <button class="btn btn--sm">Save filter</button>
+    </div>
+
+    <!-- Layout: events table + side detail -->
+    <div class="audit-layout">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div class="panel__title"><span class="panel__title-num">01</span>Events · 12,847 results</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn--sm btn--ghost">Sort · ts ↓</button>
+            <button class="btn btn--sm btn--ghost">Group ▾</button>
+          </div>
+        </div>
+        <div class="panel__body panel__body--flush">
+          <table class="event-table">
+            <thead>
+              <tr><th>TS (UTC+7)</th><th>Actor</th><th>Action</th><th>Resource</th><th>Result</th><th>IP / Region</th></tr>
+            </thead>
+            <tbody>
+              <tr class="is-active">
+                <td>08:14:32.491</td>
+                <td><span class="text-cyan">@ngha</span><br><small class="text-mute">ops · L2</small></td>
+                <td><span class="event-type-pill event-type-pill--data">DATA</span> kyc.approve</td>
+                <td><span class="text-mute">agent:agt_01HX5K3F</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.• <br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>08:12:32.119</td>
+                <td><span class="text-cyan">@minh.tran</span><br><small class="text-mute">finance · L3</small></td>
+                <td><span class="event-type-pill event-type-pill--money">FINANCIAL</span> refund.authorize</td>
+                <td><span class="text-mute">order:ord_01HX7JQ2 · 680,000 VND</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>08:07:09.482</td>
+                <td><span class="text-cyan">@anh.le</span><br><small class="text-mute">ops · L2</small></td>
+                <td><span class="event-type-pill event-type-pill--data">DATA</span> dispatch.override</td>
+                <td><span class="text-mute">order:ord_01HX7JX1</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>07:42:09.227</td>
+                <td><span class="text-cyan">@duy.nguyen</span><br><small class="text-mute">admin · L4</small></td>
+                <td><span class="event-type-pill event-type-pill--perm">PERMISSION</span> partner.suspend</td>
+                <td><span class="text-mute">partner:prt_xtest</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>07:21:47.881</td>
+                <td><span class="text-violet">@system</span><br><small class="text-mute">cron</small></td>
+                <td><span class="event-type-pill event-type-pill--auth">AUTH</span> apikey.rotate</td>
+                <td><span class="text-mute">tenant:tnt_HCM_central</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>—<br><small class="text-mute">system</small></td>
+              </tr>
+              <tr>
+                <td>07:14:02.501</td>
+                <td><span class="text-cyan">@hung.le</span><br><small class="text-mute">ops · L1</small></td>
+                <td><span class="event-type-pill event-type-pill--data">DATA</span> pii.access</td>
+                <td><span class="text-mute">customer:usr_K2M3 · phone</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>07:08:33.142</td>
+                <td><span class="text-red">unknown</span><br><small class="text-mute">attempted login</small></td>
+                <td><span class="event-type-pill event-type-pill--auth">AUTH</span> login.failed</td>
+                <td><span class="text-mute">user:admin@smp</span></td>
+                <td><span class="pill pill--red">DENIED</span></td>
+                <td>171.244.•.•<br><small class="text-red">Hà Nội · novel</small></td>
+              </tr>
+              <tr>
+                <td>06:54:18.014</td>
+                <td><span class="text-cyan">@cfo.bao</span><br><small class="text-mute">finance · L4</small></td>
+                <td><span class="event-type-pill event-type-pill--money">FINANCIAL</span> refund.l3_approve</td>
+                <td><span class="text-mute">order:ord_01HX7F8L · 3.8M VND</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>06:42:58.722</td>
+                <td><span class="text-cyan">@duy.nguyen</span><br><small class="text-mute">admin · L4</small></td>
+                <td><span class="event-type-pill event-type-pill--perm">PERMISSION</span> role.assign</td>
+                <td><span class="text-mute">user:@thu.pham → finance_admin</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+              <tr>
+                <td>06:21:09.477</td>
+                <td><span class="text-violet">@system</span><br><small class="text-mute">cron</small></td>
+                <td><span class="event-type-pill event-type-pill--data">DATA</span> backup.create</td>
+                <td><span class="text-mute">db:smp_prod · full</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>—<br><small class="text-mute">eks-pod</small></td>
+              </tr>
+              <tr>
+                <td>06:00:00.001</td>
+                <td><span class="text-violet">@system</span><br><small class="text-mute">cron</small></td>
+                <td><span class="event-type-pill event-type-pill--money">FINANCIAL</span> ledger.daily_close</td>
+                <td><span class="text-mute">ledger · 4,827 txns</span></td>
+                <td><span class="pill pill--green">OK</span></td>
+                <td>—<br><small class="text-mute">eks-pod</small></td>
+              </tr>
+              <tr>
+                <td>02:14:33.890</td>
+                <td><span class="text-violet">@system</span><br><small class="text-mute">cron</small></td>
+                <td><span class="event-type-pill event-type-pill--money">FINANCIAL</span> reconcile.run</td>
+                <td><span class="text-mute">provider · stripe + momo + vnpay</span></td>
+                <td><span class="pill pill--green">BALANCED</span></td>
+                <td>—<br><small class="text-mute">eks-pod</small></td>
+              </tr>
+              <tr>
+                <td>00:18:14.220</td>
+                <td><span class="text-amber">@thu.pham</span><br><small class="text-mute">support · L1</small></td>
+                <td><span class="event-type-pill event-type-pill--data">DATA</span> pii.bulk_export</td>
+                <td><span class="text-mute">customers · 142 records</span></td>
+                <td><span class="pill pill--amber">FLAGGED</span></td>
+                <td>203.162.•.•<br><small class="text-mute">HCMC · web</small></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);">
+            <span>showing 1–13 of 12,847</span>
+            <div style="display:flex;gap:4px;">
+              <button class="btn btn--sm btn--ghost" disabled>← prev</button>
+              <button class="btn btn--sm" style="background:var(--c-cyan-dim);color:var(--c-cyan);border-color:var(--c-cyan-dim);">1</button>
+              <button class="btn btn--sm btn--ghost">2</button>
+              <button class="btn btn--sm btn--ghost">3</button>
+              <span style="padding:5px 6px;">…</span>
+              <button class="btn btn--sm btn--ghost">next →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Detail panel + Top actors -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+
+        <!-- Detail panel -->
+        <div class="panel">
+          <div class="panel__head">
+            <div class="panel__title"><span class="panel__title-num">02</span>Event Detail</div>
+            <span class="event-type-pill event-type-pill--data">DATA</span>
+          </div>
+          <div class="panel__body" style="padding-top:8px;">
+            <div style="font-family:var(--font-mono);font-size:11px;">
+              <div class="detail-row"><span class="detail-key">event_id</span><span class="detail-val text-cyan">evt_01HX7K2M3F4Q5R</span></div>
+              <div class="detail-row"><span class="detail-key">timestamp</span><span class="detail-val">2026-05-26 08:14:32.491</span></div>
+              <div class="detail-row"><span class="detail-key">actor</span><span class="detail-val">@ngha (ops·L2)</span></div>
+              <div class="detail-row"><span class="detail-key">session</span><span class="detail-val">sess_4d8a72ef… · sso</span></div>
+              <div class="detail-row"><span class="detail-key">action</span><span class="detail-val">kyc.approve</span></div>
+              <div class="detail-row"><span class="detail-key">resource</span><span class="detail-val">agent:agt_01HX5K3F (Bùi Q.Anh)</span></div>
+              <div class="detail-row"><span class="detail-key">result</span><span class="detail-val text-green">OK · committed</span></div>
+              <div class="detail-row"><span class="detail-key">ip</span><span class="detail-val">203.162.•.• · HCMC</span></div>
+              <div class="detail-row"><span class="detail-key">user_agent</span><span class="detail-val text-mute">Mozilla/5.0 (Macintosh) Chrome/124</span></div>
+              <div class="detail-row"><span class="detail-key">signature</span><span class="detail-val text-green">VALID · sha256:7a4f…b291</span></div>
+              <div class="detail-row" style="border-bottom:none;"><span class="detail-key">trace</span><span class="detail-val text-cyan">trc_8d4f2a91 ↗</span></div>
+            </div>
+
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1.5px;margin-top:14px;margin-bottom:8px;">DIFF · BEFORE / AFTER</div>
+            <div class="diff-view">
+              <div class="diff-col">
+                <div class="diff-col__head diff-col__head--before">BEFORE</div>
+                <div class="diff-line"><span class="diff-line__k">{</span></div>
+                <div class="diff-line" style="padding-left:10px;"><span class="diff-line__k">"agent_id"</span>: "agt_01HX5K3F",</div>
+                <div class="diff-line diff-line--rm" style="padding-left:10px;"><span class="diff-line__k">"kyc_status"</span>: "PENDING",</div>
+                <div class="diff-line diff-line--rm" style="padding-left:10px;"><span class="diff-line__k">"kyc_reviewer"</span>: null,</div>
+                <div class="diff-line diff-line--rm" style="padding-left:10px;"><span class="diff-line__k">"kyc_approved_at"</span>: null,</div>
+                <div class="diff-line diff-line--rm" style="padding-left:10px;"><span class="diff-line__k">"can_dispatch"</span>: false</div>
+                <div class="diff-line"><span class="diff-line__k">}</span></div>
+              </div>
+              <div class="diff-col">
+                <div class="diff-col__head diff-col__head--after">AFTER</div>
+                <div class="diff-line"><span class="diff-line__k">{</span></div>
+                <div class="diff-line" style="padding-left:10px;"><span class="diff-line__k">"agent_id"</span>: "agt_01HX5K3F",</div>
+                <div class="diff-line diff-line--add" style="padding-left:10px;"><span class="diff-line__k">"kyc_status"</span>: "VERIFIED",</div>
+                <div class="diff-line diff-line--add" style="padding-left:10px;"><span class="diff-line__k">"kyc_reviewer"</span>: "@ngha",</div>
+                <div class="diff-line diff-line--add" style="padding-left:10px;"><span class="diff-line__k">"kyc_approved_at"</span>: "2026-05-26T01:14:32Z",</div>
+                <div class="diff-line diff-line--add" style="padding-left:10px;"><span class="diff-line__k">"can_dispatch"</span>: true</div>
+                <div class="diff-line"><span class="diff-line__k">}</span></div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:6px;margin-top:14px;">
+              <button class="btn btn--sm btn--primary" style="flex:1;">View full trace</button>
+              <button class="btn btn--sm" style="flex:1;">Open resource</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top actors -->
+        <div class="panel">
+          <div class="panel__head">
+            <div class="panel__title"><span class="panel__title-num">03</span>Top Actors · 24h</div>
+            <button class="panel__action">ALL →</button>
+          </div>
+          <div class="panel__body panel__body--flush">
+            <div class="actor-card">
+              <div class="actor-card__avatar">SY</div>
+              <div class="actor-card__info">
+                <div class="actor-card__name">@system</div>
+                <div class="actor-card__role">cron / job</div>
+              </div>
+              <div class="actor-card__stat"><strong>4,827</strong><br><small class="text-mute">events</small></div>
+            </div>
+            <div class="actor-card">
+              <div class="actor-card__avatar" style="background:linear-gradient(135deg,#4dd0e1,#5cd9a0);">NG</div>
+              <div class="actor-card__info">
+                <div class="actor-card__name">@ngha</div>
+                <div class="actor-card__role">ops · L2</div>
+              </div>
+              <div class="actor-card__stat"><strong>147</strong><br><small class="text-mute">events</small></div>
+            </div>
+            <div class="actor-card">
+              <div class="actor-card__avatar" style="background:linear-gradient(135deg,#f4b740,#b58dff);">MT</div>
+              <div class="actor-card__info">
+                <div class="actor-card__name">@minh.tran</div>
+                <div class="actor-card__role">finance · L3</div>
+              </div>
+              <div class="actor-card__stat"><strong>89</strong><br><small class="text-mute">events</small></div>
+            </div>
+            <div class="actor-card">
+              <div class="actor-card__avatar" style="background:linear-gradient(135deg,#5cd9a0,#4dd0e1);">AL</div>
+              <div class="actor-card__info">
+                <div class="actor-card__name">@anh.le</div>
+                <div class="actor-card__role">ops · L2</div>
+              </div>
+              <div class="actor-card__stat"><strong>54</strong><br><small class="text-mute">events</small></div>
+            </div>
+            <div class="actor-card">
+              <div class="actor-card__avatar" style="background:linear-gradient(135deg,#b58dff,#ff5252);">DN</div>
+              <div class="actor-card__info">
+                <div class="actor-card__name">@duy.nguyen</div>
+                <div class="actor-card__role">admin · L4</div>
+              </div>
+              <div class="actor-card__stat"><strong>32</strong><br><small class="text-mute">events</small></div>
+            </div>
+            <div class="actor-card" style="border-bottom:none;">
+              <div class="actor-card__avatar" style="background:linear-gradient(135deg,#f4b740,#ff5252);">TP</div>
+              <div class="actor-card__info">
+                <div class="actor-card__name">@thu.pham <span class="pill pill--amber" style="margin-left:4px;font-size:9px;">FLAG</span></div>
+                <div class="actor-card__role">support · L1</div>
+              </div>
+              <div class="actor-card__stat"><strong>28</strong><br><small class="text-mute">events</small></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="statusbar">
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--green"></span>AUDIT LOG · WORM</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">SIGNED CHAIN · INTACT</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item">RETENTION · 7Y</div>
+    <span class="statusbar__sep">|</span>
+    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--amber"></span>2 ANOMALIES</div>
+    <div class="statusbar__right">
+      <div class="statusbar__item">SIEM FORWARD · ACTIVE</div>
+      <div class="statusbar__item">08:17:42 UTC+7</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

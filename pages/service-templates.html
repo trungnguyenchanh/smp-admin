@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>SMP Admin — Service Templates</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .templates-layout { display: grid; grid-template-columns: 320px 1fr; gap: 12px; min-height: calc(100vh - var(--topbar-h) - 100px); }
+  .svc-list { background: var(--bg-panel); border: 1px solid var(--line); padding: 0; overflow-y: auto; }
+  .svc-list__header { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .svc-list__header h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-family: var(--font-mono); }
+  .svc-item { padding: 10px 14px; border-bottom: 1px solid var(--line-soft); cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+  .svc-item:hover { background: var(--bg-hover); }
+  .svc-item--active { background: var(--bg-elev); border-left: 2px solid var(--c-cyan); padding-left: 12px; }
+  .svc-item__code { font-family: var(--font-mono); font-size: 10px; color: var(--c-cyan); letter-spacing: 0.5px; }
+  .svc-item__name { font-size: 13px; color: var(--text); }
+  .svc-item__meta { font-size: 10px; color: var(--text-mute); font-family: var(--font-mono); }
+  
+  .svc-detail { background: var(--bg-panel); border: 1px solid var(--line); padding: 20px; overflow-y: auto; }
+  .svc-detail__header { padding-bottom: 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .svc-detail__title { font-family: var(--font-serif); font-size: 26px; font-weight: 400; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .svc-detail__sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); }
+  
+  .weight-bar { display: flex; height: 28px; border-radius: var(--radius); overflow: hidden; margin: 20px 0 8px; border: 1px solid var(--line-strong); }
+  .weight-segment { display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: var(--bg-deep); font-weight: 600; }
+  .weight-sum-info { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 24px; }
+  .weight-sum-info .sum-ok { color: var(--c-green); }
+  
+  .step-card { background: var(--bg-base); border: 1px solid var(--line); padding: 14px; margin-bottom: 10px; }
+  .step-card__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); }
+  .step-card__title { display: flex; align-items: center; gap: 10px; }
+  .step-card__num { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); padding: 3px 7px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+  .step-card__name { font-size: 14px; color: var(--text); font-weight: 500; }
+  .step-card__weight { font-family: var(--font-mono); font-size: 12px; color: var(--c-cyan); display: flex; align-items: center; gap: 6px; }
+  .step-card__weight input { width: 60px; padding: 4px 6px; background: var(--bg-deep); border: 1px solid var(--line); color: var(--c-cyan); font-family: var(--font-mono); font-size: 12px; text-align: right; }
+  
+  .roles-table { width: 100%; border-collapse: collapse; }
+  .roles-table th { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--line); font-weight: 500; }
+  .roles-table td { padding: 8px; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
+  .roles-table tr:last-child td { border-bottom: none; }
+  .roles-table input[type="number"] { width: 60px; padding: 4px 6px; background: var(--bg-deep); border: 1px solid var(--line); color: var(--text); font-family: var(--font-mono); font-size: 11px; text-align: right; }
+  .roles-table select { padding: 4px 8px; background: var(--bg-deep); border: 1px solid var(--line); color: var(--text); font-family: var(--font-mono); font-size: 11px; }
+  
+  .role-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .role-pill--lead { background: rgba(77,208,225,0.15); color: var(--c-cyan); border: 1px solid var(--c-cyan-dim); }
+  .role-pill--specialist { background: rgba(181,141,255,0.15); color: var(--c-violet); border: 1px solid var(--c-violet-dim); }
+  .role-pill--helper { background: rgba(154,168,182,0.1); color: var(--text-dim); border: 1px solid var(--line-strong); }
+  
+  .save-bar { position: sticky; bottom: 0; background: var(--bg-panel); border-top: 1px solid var(--line); padding: 12px 20px; margin: 20px -20px -20px; display: flex; justify-content: space-between; align-items: center; }
+  .save-bar__hint { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); }
+  .save-bar__actions { display: flex; gap: 8px; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-mark">SMP</div>
+      <div class="sidebar__brand-text">
+        <div class="sidebar__brand-name">Admin</div>
+        <div class="sidebar__brand-tag">v1.5.0 · v3.5+</div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="dashboard.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="dispatch-monitor.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg>
+          <span>Dispatch Monitor</span>
+          <span class="nav-item__badge">LIVE</span>
+        </a>
+        <a class="nav-item" href="orders.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg>
+          <span>Orders</span>
+          <span class="nav-item__badge">847</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
+        <a class="nav-item" href="agents.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg>
+          <span>Agents &amp; KYC</span>
+          <span class="nav-item__badge nav-item__badge--alert">12</span>
+        </a>
+        <a class="nav-item" href="finance.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg>
+          <span>Finance</span>
+        </a>
+        <a class="nav-item" href="partners.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg>
+          <span>Partners</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item nav-item--active" href="service-templates.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
+          <span>Service Templates</span>
+          <span class="nav-item__badge">v3.5</span>
+        </a>
+        <a class="nav-item " href="warranty-packages.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
+          <span>Warranty Packages</span>
+        </a>
+        <a class="nav-item " href="warranty-claims.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          <span>Claim Queue</span>
+          <span class="nav-item__badge nav-item__badge--alert">5</span>
+        </a>
+        <a class="nav-item " href="warranty-revenue.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Warranty Revenue</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>Reports</span></div>
+        <a class="nav-item" href="reports.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
+          <span>Reports</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
+        <a class="nav-item" href="system-health.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg>
+          <span>System Health</span>
+        </a>
+        <a class="nav-item" href="logs.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg>
+          <span>Logs</span>
+        </a>
+        <a class="nav-item" href="audit.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg>
+          <span>Audit Trail</span>
+        </a>
+        <a class="nav-item" href="settings.html">
+          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg>
+          <span>Settings</span>
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">LH</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Lê Hùng</div>
+        <div class="sidebar__user-role">Ops Manager</div>
+      </div>
+      <button class="icon-btn" title="Logout">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H3v12h3M10 5l3 3-3 3M13 8H6"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar__breadcrumb">
+      <span>SMP Admin</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span>v3.5+</span>
+      <span class="topbar__breadcrumb-sep">/</span>
+      <span class="topbar__breadcrumb-current">Service Templates</span>
+    </div>
+    <div class="topbar__search">
+      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
+      <input type="text" placeholder="Search services...">
+      <kbd class="topbar__search-kbd">⌘K</kbd>
+    </div>
+    <div class="topbar__actions">
+      <span class="topbar__env">PROD · VN</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>Service <em>templates</em></h1>
+        <div class="page-header__sub">Cấu hình step weights + role splits cho mỗi service · v3.5+ multi-agent · 10 services</div>
+      </div>
+      <div class="page-header__right">
+        <button class="btn btn--ghost">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l3-3v2h7v2H5v2z"/></svg>
+          Import CSV
+        </button>
+        <button class="btn btn--primary">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M2 8h12"/></svg>
+          New service
+        </button>
+      </div>
+    </div>
+
+    <div class="alert-banner">
+      <svg class="alert-banner__icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><path d="M8 4v5M8 11v.5"/></svg>
+      <div class="alert-banner__text">
+        <strong>Validation rule:</strong>
+        SUM(step weights) phải = 10000 bps (100%) cho mỗi service. SUM(role splits) phải = 10000 bps cho mỗi step. App-level enforcement · per Doc 15 BR-MA-001/002/003.
+      </div>
+    </div>
+
+    <div class="templates-layout">
+
+      <!-- Left: Service list -->
+      <div class="svc-list">
+        <div class="svc-list__header">
+          <h3>Services · 10</h3>
+          <button class="btn btn--sm btn--ghost">+</button>
+        </div>
+        <div class="svc-item svc-item--active">
+          <span class="svc-item__code">svc_ac_repair</span>
+          <span class="svc-item__name">Sửa máy lạnh</span>
+          <span class="svc-item__meta">4 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_ac_install</span>
+          <span class="svc-item__name">Lắp đặt máy lạnh</span>
+          <span class="svc-item__meta">5 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_ac_periodic_clean</span>
+          <span class="svc-item__name">Vệ sinh máy lạnh định kỳ</span>
+          <span class="svc-item__meta">3 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_camera_install</span>
+          <span class="svc-item__name">Lắp đặt camera an ninh</span>
+          <span class="svc-item__meta">4 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_washer_repair</span>
+          <span class="svc-item__name">Sửa máy giặt</span>
+          <span class="svc-item__meta">3 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_fridge_repair</span>
+          <span class="svc-item__name">Sửa tủ lạnh</span>
+          <span class="svc-item__meta">3 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_water_heater_install</span>
+          <span class="svc-item__name">Lắp máy nước nóng</span>
+          <span class="svc-item__meta">4 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_plumbing_general</span>
+          <span class="svc-item__name">Sửa ống nước tổng quát</span>
+          <span class="svc-item__meta">3 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_electric_general</span>
+          <span class="svc-item__name">Sửa điện tổng quát</span>
+          <span class="svc-item__meta">3 steps · validated ✓</span>
+        </div>
+        <div class="svc-item">
+          <span class="svc-item__code">svc_house_cleaning_deep</span>
+          <span class="svc-item__name">Vệ sinh nhà tổng quát</span>
+          <span class="svc-item__meta">4 steps · draft ⚠</span>
+        </div>
+      </div>
+
+      <!-- Right: Service detail editor -->
+      <div class="svc-detail">
+        <div class="svc-detail__header">
+          <div>
+            <div class="svc-detail__title">Sửa máy lạnh</div>
+            <div class="svc-detail__sub">svc_ac_repair · category=ac · base_price 350,000 ₫ · 4 steps</div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn--sm btn--ghost">Duplicate</button>
+            <button class="btn btn--sm btn--ghost">History</button>
+          </div>
+        </div>
+
+        <!-- Weight visualization -->
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Step weight distribution</div>
+        <div class="weight-bar">
+          <div class="weight-segment" style="background: var(--c-cyan); flex: 1500;">15%</div>
+          <div class="weight-segment" style="background: var(--c-violet); flex: 2000;">20%</div>
+          <div class="weight-segment" style="background: var(--c-green); flex: 4000;">40%</div>
+          <div class="weight-segment" style="background: var(--c-amber); flex: 2500;">25%</div>
+        </div>
+        <div class="weight-sum-info">
+          <span>4 steps · 1500 + 2000 + 4000 + 2500 bps</span>
+          <span class="sum-ok">✓ Σ = 10000 bps (100%)</span>
+        </div>
+
+        <!-- Step cards -->
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-card__num">01</span>
+              <span class="step-card__name">Khảo sát &amp; chẩn đoán</span>
+            </div>
+            <div class="step-card__weight">
+              Weight (bps): <input type="number" value="1500" min="0" max="10000" step="100"> <span>= 15%</span>
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width: 130px;">Role</th>
+                <th style="width: 180px;">Specialty</th>
+                <th style="width: 120px;">Split (bps)</th>
+                <th style="width: 60px;">%</th>
+                <th style="width: 80px;">Min</th>
+                <th style="width: 80px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-pill role-pill--lead">⭐ Lead</span></td>
+                <td><em style="color: var(--text-mute);">— (generic)</em></td>
+                <td><input type="number" value="10000"></td>
+                <td><span style="font-family: var(--font-mono); color: var(--c-cyan);">100%</span></td>
+                <td><input type="number" value="1" disabled></td>
+                <td><input type="number" value="1" disabled></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-card__num">02</span>
+              <span class="step-card__name">Tháo dỡ máy</span>
+            </div>
+            <div class="step-card__weight">
+              Weight (bps): <input type="number" value="2000" min="0" max="10000" step="100"> <span>= 20%</span>
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width: 130px;">Role</th>
+                <th style="width: 180px;">Specialty</th>
+                <th style="width: 120px;">Split (bps)</th>
+                <th style="width: 60px;">%</th>
+                <th style="width: 80px;">Min</th>
+                <th style="width: 80px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-pill role-pill--lead">⭐ Lead</span></td>
+                <td><em style="color: var(--text-mute);">—</em></td>
+                <td><input type="number" value="6000"></td>
+                <td><span style="font-family: var(--font-mono); color: var(--c-cyan);">60%</span></td>
+                <td><input type="number" value="1" disabled></td>
+                <td><input type="number" value="1" disabled></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><span class="role-pill role-pill--helper">👤 Helper</span></td>
+                <td>
+                  <select><option>— (generic)</option><option>cleaner</option></select>
+                </td>
+                <td><input type="number" value="4000"></td>
+                <td><span style="font-family: var(--font-mono);">40%</span></td>
+                <td><input type="number" value="1"></td>
+                <td><input type="number" value="2"></td>
+                <td><button class="btn btn--sm btn--ghost" title="Remove">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn--sm btn--ghost" style="margin-top: 8px;">+ Add role</button>
+        </div>
+
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-card__num">03</span>
+              <span class="step-card__name">Sửa chữa &amp; thay linh kiện</span>
+            </div>
+            <div class="step-card__weight">
+              Weight (bps): <input type="number" value="4000" min="0" max="10000" step="100"> <span>= 40%</span>
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width: 130px;">Role</th>
+                <th style="width: 180px;">Specialty</th>
+                <th style="width: 120px;">Split (bps)</th>
+                <th style="width: 60px;">%</th>
+                <th style="width: 80px;">Min</th>
+                <th style="width: 80px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-pill role-pill--lead">⭐ Lead</span></td>
+                <td><em style="color: var(--text-mute);">—</em></td>
+                <td><input type="number" value="10000"></td>
+                <td><span style="font-family: var(--font-mono); color: var(--c-cyan);">100%</span></td>
+                <td><input type="number" value="1" disabled></td>
+                <td><input type="number" value="1" disabled></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-card__num">04</span>
+              <span class="step-card__name">Lắp lại &amp; test</span>
+            </div>
+            <div class="step-card__weight">
+              Weight (bps): <input type="number" value="2500" min="0" max="10000" step="100"> <span>= 25%</span>
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width: 130px;">Role</th>
+                <th style="width: 180px;">Specialty</th>
+                <th style="width: 120px;">Split (bps)</th>
+                <th style="width: 60px;">%</th>
+                <th style="width: 80px;">Min</th>
+                <th style="width: 80px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-pill role-pill--lead">⭐ Lead</span></td>
+                <td><em style="color: var(--text-mute);">—</em></td>
+                <td><input type="number" value="7000"></td>
+                <td><span style="font-family: var(--font-mono); color: var(--c-cyan);">70%</span></td>
+                <td><input type="number" value="1" disabled></td>
+                <td><input type="number" value="1" disabled></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><span class="role-pill role-pill--helper">👤 Helper</span></td>
+                <td><em style="color: var(--text-mute);">—</em></td>
+                <td><input type="number" value="3000"></td>
+                <td><span style="font-family: var(--font-mono);">30%</span></td>
+                <td><input type="number" value="0"></td>
+                <td><input type="number" value="1"></td>
+                <td><button class="btn btn--sm btn--ghost">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="save-bar">
+          <div class="save-bar__hint">⌘S to save · Last edited 2 hours ago by Lê Hùng</div>
+          <div class="save-bar__actions">
+            <button class="btn btn--ghost">Discard</button>
+            <button class="btn btn--primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+</body>
+</html>
