@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Provinces & Areas</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Provinces &amp; Areas</h1>
+        <div class="page-sub">Quản lý cấp tỉnh / quận / phường · 12 tỉnh active · 63 quận · 247 phường</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-upload"></i> Import CSV</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Thêm khu vực</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Tỉnh thành<span class="tab__count">12</span></div>
+      <div class="tab">Quận huyện<span class="tab__count">63</span></div>
+      <div class="tab">Phường xã<span class="tab__count">247</span></div>
+      <div class="tab">Planned<span class="tab__count">3</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">12 tỉnh thành active</div>
+          <div class="panel__sub">Click vào tỉnh để xem các quận con</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn--sm">Sort: Demand ▾</button>
+          <button class="btn btn--sm">Filter</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Tỉnh / Thành</th>
+              <th>Code</th>
+              <th>Region</th>
+              <th class="num">Quận</th>
+              <th class="num">Phường</th>
+              <th class="num">Agents</th>
+              <th class="num">Demand/ngày</th>
+              <th class="num">Revenue/th</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--primary-bg);cursor:pointer;">
+              <td><strong>TP. Hồ Chí Minh</strong></td>
+              <td><span class="mono">79</span></td>
+              <td>Miền Nam</td>
+              <td class="num mono">22</td>
+              <td class="num mono">312</td>
+              <td class="num mono">1,847</td>
+              <td class="num mono">847</td>
+              <td class="num mono">18.4B</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Hà Nội</strong></td>
+              <td><span class="mono">01</span></td>
+              <td>Miền Bắc</td>
+              <td class="num mono">12</td>
+              <td class="num mono">142</td>
+              <td class="num mono">1,218</td>
+              <td class="num mono">621</td>
+              <td class="num mono">12.1B</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Đà Nẵng</strong></td>
+              <td><span class="mono">48</span></td>
+              <td>Miền Trung</td>
+              <td class="num mono">6</td>
+              <td class="num mono">42</td>
+              <td class="num mono">287</td>
+              <td class="num mono">142</td>
+              <td class="num mono">2.4B</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Biên Hoà (Đồng Nai)</strong></td>
+              <td><span class="mono">75</span></td>
+              <td>Miền Nam</td>
+              <td class="num mono">4</td>
+              <td class="num mono">28</td>
+              <td class="num mono">142</td>
+              <td class="num mono">68</td>
+              <td class="num mono">821M</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Cần Thơ</strong></td>
+              <td><span class="mono">92</span></td>
+              <td>Miền Nam</td>
+              <td class="num mono">5</td>
+              <td class="num mono">21</td>
+              <td class="num mono">87</td>
+              <td class="num mono">42</td>
+              <td class="num mono">684M</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Hải Phòng</strong></td>
+              <td><span class="mono">31</span></td>
+              <td>Miền Bắc</td>
+              <td class="num mono">4</td>
+              <td class="num mono">18</td>
+              <td class="num mono">68</td>
+              <td class="num mono">31</td>
+              <td class="num mono">487M</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Vũng Tàu</strong></td>
+              <td><span class="mono">77</span></td>
+              <td>Miền Nam</td>
+              <td class="num mono">3</td>
+              <td class="num mono">14</td>
+              <td class="num mono text-red">45</td>
+              <td class="num mono">87</td>
+              <td class="num mono">312M</td>
+              <td><span class="pill pill--amber">Underserve</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Nha Trang (Khánh Hoà)</strong></td>
+              <td><span class="mono">56</span></td>
+              <td>Miền Trung</td>
+              <td class="num mono">2</td>
+              <td class="num mono">12</td>
+              <td class="num mono text-red">36</td>
+              <td class="num mono">64</td>
+              <td class="num mono">218M</td>
+              <td><span class="pill pill--amber">Underserve</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Huế (TT Huế)</strong></td>
+              <td><span class="mono">46</span></td>
+              <td>Miền Trung</td>
+              <td class="num mono">2</td>
+              <td class="num mono">8</td>
+              <td class="num mono text-amber">23</td>
+              <td class="num mono">41</td>
+              <td class="num mono">128M</td>
+              <td><span class="pill pill--amber">Underserve</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Vinh (Nghệ An)</strong></td>
+              <td><span class="mono">40</span></td>
+              <td>Miền Trung</td>
+              <td class="num mono">1</td>
+              <td class="num mono">6</td>
+              <td class="num mono text-amber">20</td>
+              <td class="num mono">32</td>
+              <td class="num mono">94M</td>
+              <td><span class="pill pill--amber">Underserve</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Long Xuyên (An Giang)</strong></td>
+              <td><span class="mono">89</span></td>
+              <td>Miền Nam</td>
+              <td class="num mono">1</td>
+              <td class="num mono">4</td>
+              <td class="num mono">12</td>
+              <td class="num mono">18</td>
+              <td class="num mono">52M</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr>
+              <td><strong>Mỹ Tho (Tiền Giang)</strong></td>
+              <td><span class="mono">82</span></td>
+              <td>Miền Nam</td>
+              <td class="num mono">1</td>
+              <td class="num mono">2</td>
+              <td class="num mono">8</td>
+              <td class="num mono">14</td>
+              <td class="num mono">38M</td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Drilldown · TP. Hồ Chí Minh · 22 quận</div>
+          <div class="panel__sub">Phân bố thợ và đơn theo quận</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Quận</th><th>Code</th><th class="num">Phường</th><th class="num">Agents</th><th class="num">Đơn/ngày</th><th class="num">Avg ETA</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Q.1</td><td><span class="mono">760</span></td><td class="num mono">10</td><td class="num mono">287</td><td class="num mono">112</td><td class="num mono">14p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td>Q.3</td><td><span class="mono">770</span></td><td class="num mono">14</td><td class="num mono">218</td><td class="num mono">94</td><td class="num mono">16p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td>Q.10</td><td><span class="mono">771</span></td><td class="num mono">14</td><td class="num mono">187</td><td class="num mono">82</td><td class="num mono">18p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td>Bình Thạnh</td><td><span class="mono">765</span></td><td class="num mono">20</td><td class="num mono">218</td><td class="num mono">98</td><td class="num mono">17p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td>Tân Bình</td><td><span class="mono">766</span></td><td class="num mono">15</td><td class="num mono">156</td><td class="num mono">87</td><td class="num mono">20p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td>Thủ Đức</td><td><span class="mono">768</span></td><td class="num mono">34</td><td class="num mono">187</td><td class="num mono">142</td><td class="num mono">24p</td><td><span class="pill pill--amber">Slow</span></td></tr>
+            <tr><td>Q.7</td><td><span class="mono">778</span></td><td class="num mono">10</td><td class="num mono">142</td><td class="num mono">78</td><td class="num mono">19p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td>Phú Nhuận</td><td><span class="mono">763</span></td><td class="num mono">13</td><td class="num mono">98</td><td class="num mono">52</td><td class="num mono">15p</td><td><span class="pill pill--green">Healthy</span></td></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--text-mute);font-size:11.5px;padding:14px;">+ 14 quận khác...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'areas', crumbs: ['SMP', 'Geography', 'Provinces & Areas'], search: 'Tìm tỉnh / quận...' });
+</script>
+</body>
+</html>

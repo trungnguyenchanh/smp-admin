@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Material Types</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Material types</h1>
+        <div class="page-sub">20 loại vật tư cha · mỗi type có nhiều variant (SKU) trong wms · catalog SMP-managed</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Tạo type mới</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Mô hình 2 tầng:</strong> <em>Material Type</em> (cha, vd "Tụ điện 35μF") định nghĩa loại vật tư. <em>Material Variant</em> (con, vd "Sanyo CBB60-35") là SKU cụ thể, mỗi variant link với 1 SKU trong wms và có giá bán riêng. Step BOM tham chiếu Type, khi báo giá thợ chọn Variant cụ thể.
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total types</div>
+        <div class="kpi__value">20</div>
+        <div class="kpi__meta">19 active · 1 deprecated</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Total variants</div>
+        <div class="kpi__value">21</div>
+        <div class="kpi__meta">avg 1.1 variant / type</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Used in BOM</div>
+        <div class="kpi__value">15<span class="kpi__unit"> / 20</span></div>
+        <div class="kpi__meta">75% types đã được gắn vào step</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">No variants</div>
+        <div class="kpi__value">3</div>
+        <div class="kpi__meta">type chưa có SKU cụ thể</div>
+      </div>
+    </div>
+
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip active">Tất cả · 20</button>
+      <button class="chip">Gas · 3</button>
+      <button class="chip">Electrical · 5</button>
+      <button class="chip">Compressor · 2</button>
+      <button class="chip">Pump · 1</button>
+      <button class="chip">Chemical · 3</button>
+      <button class="chip">Plumbing · 1</button>
+      <button class="chip">Pipe · 2</button>
+      <button class="chip" style="margin-left:auto;"><i class="ti ti-filter" style="font-size:13px;"></i> Filters</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Material types catalog</div>
+          <div class="panel__sub">Click type để xem variants và step BOMs đang dùng</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Type ID</th>
+              <th>Tên</th>
+              <th>Category</th>
+              <th>Unit</th>
+              <th class="num">Variants</th>
+              <th class="num">Used in Steps</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--primary-bg);"><td><span class="id">mtyp_capacitor_35uf</span></td><td><strong>Tụ điện 35μF</strong><br><small class="text-mute">Tụ khởi động cho block AC trung bình</small></td><td><span class="pill pill--gray no-dot">electrical</span></td><td>cái</td><td class="num mono">3</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_capacitor_25uf</span></td><td>Tụ điện 25μF</td><td><span class="pill pill--gray no-dot">electrical</span></td><td>cái</td><td class="num mono">0</td><td class="num mono">0</td><td><span class="pill pill--amber">No variant</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_capacitor_45uf</span></td><td>Tụ điện 45μF</td><td><span class="pill pill--gray no-dot">electrical</span></td><td>cái</td><td class="num mono">2</td><td class="num mono">0</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_gas_r32</span></td><td>Gas R32</td><td><span class="pill pill--gray no-dot">gas</span></td><td>kg</td><td class="num mono">2</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_gas_r410a</span></td><td>Gas R410A</td><td><span class="pill pill--gray no-dot">gas</span></td><td>kg</td><td class="num mono">1</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_gas_r600a</span></td><td>Gas R600a</td><td><span class="pill pill--gray no-dot">gas</span></td><td>kg</td><td class="num mono">1</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_block_ac_1hp</span></td><td>Block AC 1HP</td><td><span class="pill pill--gray no-dot">compressor</span></td><td>cái</td><td class="num mono">1</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_block_ac_1.5hp</span></td><td>Block AC 1.5HP</td><td><span class="pill pill--gray no-dot">compressor</span></td><td>cái</td><td class="num mono">1</td><td class="num mono">0</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_pump_washer</span></td><td>Bơm xả máy giặt</td><td><span class="pill pill--gray no-dot">pump</span></td><td>cái</td><td class="num mono">2</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_heater_element_2500w</span></td><td>Điện trở bình nóng 2500W</td><td><span class="pill pill--gray no-dot">heating</span></td><td>cái</td><td class="num mono">2</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_outlet_3pin</span></td><td>Ổ cắm điện 3 chân</td><td><span class="pill pill--gray no-dot">electrical</span></td><td>cái</td><td class="num mono">2</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_faucet_standard</span></td><td>Vòi nước tiêu chuẩn</td><td><span class="pill pill--gray no-dot">plumbing</span></td><td>cái</td><td class="num mono">2</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_solution_ac_clean</span></td><td>Dung dịch tẩy dàn lạnh</td><td><span class="pill pill--gray no-dot">chemical</span></td><td>lit</td><td class="num mono">1</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_solution_disinfect</span></td><td>Dung dịch khử khuẩn</td><td><span class="pill pill--gray no-dot">chemical</span></td><td>lit</td><td class="num mono">1</td><td class="num mono">1</td><td><span class="pill pill--green">Active</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><span class="id">mtyp_copper_pipe</span></td><td>Ống đồng φ6.35mm</td><td><span class="pill pill--gray no-dot">pipe</span></td><td>m</td><td class="num mono">0</td><td class="num mono">1</td><td><span class="pill pill--amber">No variant</span></td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td colspan="8" style="text-align:center;color:var(--text-mute);font-size:11.5px;padding:14px;">+ 5 type khác (wire, breaker, insulation, tablet_washer, remote)...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Chi tiết · <span class="mono">mtyp_capacitor_35uf</span></div>
+          <div class="panel__sub">3 variants · 1 step dùng · click variant để xem giá / stock</div>
+        </div>
+        <a class="panel__action" href="material-variants.html">Quản lý variants →</a>
+      </div>
+      <div style="padding:14px 18px;">
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;font-size:12.5px;line-height:1.7;">
+          <div class="text-mute">Tên hiển thị</div>
+          <div><strong>Tụ điện 35μF</strong></div>
+          <div class="text-mute">Mô tả</div>
+          <div>Tụ khởi động cho block điều hoà công suất trung bình (1HP, 1.5HP)</div>
+          <div class="text-mute">Category</div>
+          <div><span class="pill pill--gray no-dot">electrical</span></div>
+          <div class="text-mute">Đơn vị</div>
+          <div>cái</div>
+          <div class="text-mute">Dùng trong Step</div>
+          <div><a href="steps.html" class="text-primary"><span class="mono">ac-replace-capacitor</span></a> · default qty 1</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="font-size:12px;color:var(--text-mute);margin-bottom:10px;font-weight:600;letter-spacing:0.5px;">VARIANTS (3)</div>
+
+        <div class="variant-card">
+          <div>
+            <div class="variant-card__name">Sanyo CBB60-35</div>
+            <div class="variant-card__brand">Sanyo · CBB60-35</div>
+            <div class="variant-card__meta">
+              <span class="mono">SKU-CAP-SAN-35</span>
+              <span>BH 6 tháng</span>
+              <span>Voltage 450V</span>
+            </div>
+          </div>
+          <div class="variant-card__price">80,000 đ<small>cost 50k · margin 60%</small></div>
+        </div>
+
+        <div class="variant-card">
+          <div>
+            <div class="variant-card__name">Panasonic AT-35F</div>
+            <div class="variant-card__brand">Panasonic · AT-35F</div>
+            <div class="variant-card__meta">
+              <span class="mono">SKU-CAP-PAN-35</span>
+              <span>BH 12 tháng</span>
+              <span>Voltage 450V · ±5%</span>
+            </div>
+          </div>
+          <div class="variant-card__price">95,000 đ<small>cost 62k · margin 53%</small></div>
+        </div>
+
+        <div class="variant-card">
+          <div>
+            <div class="variant-card__name">TQ no-brand GEN-35</div>
+            <div class="variant-card__brand">TQ no-brand · GEN-35</div>
+            <div class="variant-card__meta">
+              <span class="mono">SKU-CAP-GEN-35</span>
+              <span>BH 3 tháng</span>
+            </div>
+          </div>
+          <div class="variant-card__price">45,000 đ<small>cost 22k · margin 105%</small></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'material-types', crumbs: ['SMP', 'Catalog v3', 'Material types'], search: 'Tìm type...' });
+</script>
+</body>
+</html>

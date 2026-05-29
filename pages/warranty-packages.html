@@ -2,391 +2,361 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMP Admin — Warranty Packages</title>
 <link rel="stylesheet" href="../assets/style.css">
 <style>
+  .wpkg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .wpkg {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px;
+    position: relative;
+    transition: border-color 100ms, box-shadow 100ms;
+  }
+  .wpkg:hover {
+    border-color: var(--primary-border);
+    box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+  }
+  .wpkg__ribbon {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .wpkg__ribbon--best { background: var(--green-bg); color: var(--green-text); }
+  .wpkg__ribbon--premium { background: var(--violet-bg); color: var(--violet-text); }
+  .wpkg__icon { font-size: 36px; margin-bottom: 10px; }
+  .wpkg__code {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.3px;
+    margin-bottom: 2px;
+  }
+  .wpkg__name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .wpkg__sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-mute);
+    margin-bottom: 14px;
+  }
+  .wpkg__price {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .wpkg__per {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-mute);
+    margin-bottom: 14px;
+  }
+  .wpkg__quotas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .quota {
+    background: var(--bg-elev);
+    border-radius: var(--r-sm);
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .quota__label {
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .quota__val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .wpkg__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .meta-chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--text-mute);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .wpkg__actions {
+    display: flex;
+    gap: 6px;
+  }
+  .wpkg__actions .btn { flex: 1; }
 
-  .wpkg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .wpkg-card { background: var(--bg-panel); border: 1px solid var(--line); padding: 18px; transition: border-color 0.15s; position: relative; }
-  .wpkg-card:hover { border-color: var(--c-cyan-dim); }
-  .wpkg-card__head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-  .wpkg-card__icon { font-size: 32px; }
-  .wpkg-card__tag { font-family: var(--font-mono); font-size: 9px; padding: 3px 8px; border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-  .wpkg-card__tag--best { background: var(--c-green-dim); color: var(--c-green); }
-  .wpkg-card__tag--premium { background: var(--c-violet-dim); color: var(--c-violet); }
-  .wpkg-card__code { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); letter-spacing: 0.5px; margin-bottom: 4px; }
-  .wpkg-card__name { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-  .wpkg-card__sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
-  .wpkg-card__price { font-family: var(--font-mono); font-size: 22px; color: var(--c-cyan); font-weight: 500; margin-bottom: 4px; }
-  .wpkg-card__per { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); margin-bottom: 14px; }
-  .wpkg-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-  .wpkg-stat { background: var(--bg-base); border: 1px solid var(--line); padding: 8px 10px; text-align: center; }
-  .wpkg-stat__label { font-family: var(--font-mono); font-size: 9px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .wpkg-stat__val { font-family: var(--font-mono); font-size: 14px; color: var(--text); }
-  .wpkg-card__actions { display: flex; gap: 6px; }
-  .wpkg-card__actions .btn { flex: 1; }
-  
-  .wpkg-meta-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
-  .wpkg-meta-chip { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); background: var(--bg-base); border: 1px solid var(--line); padding: 3px 7px; border-radius: var(--radius-sm); }
-  
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
-
+  .wpkg-add {
+    border-style: dashed;
+    border-color: var(--text-soft);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    cursor: pointer;
+    color: var(--text-mute);
+  }
+  .wpkg-add:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
 </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- ===== SIDEBAR ===== -->
-  <aside class="sidebar">
-    <div class="sidebar__brand">
-      <div class="sidebar__brand-mark">SMP</div>
-      <div class="sidebar__brand-text">
-        <div class="sidebar__brand-name">Admin</div>
-        <div class="sidebar__brand-tag">v1.5.0 · v3.5+</div>
-      </div>
-    </div>
-    <nav class="sidebar__nav">
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="dashboard.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg>
-          <span>Dashboard</span>
-        </a>
-        <a class="nav-item" href="dispatch-monitor.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg>
-          <span>Dispatch Monitor</span>
-          <span class="nav-item__badge">LIVE</span>
-        </a>
-        <a class="nav-item" href="orders.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg>
-          <span>Orders</span>
-          <span class="nav-item__badge">847</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="agents.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg>
-          <span>Agents &amp; KYC</span>
-          <span class="nav-item__badge nav-item__badge--alert">12</span>
-        </a>
-        <a class="nav-item" href="finance.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg>
-          <span>Finance</span>
-        </a>
-        <a class="nav-item" href="partners.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg>
-          <span>Partners</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item " href="service-templates.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
-          <span>Service Templates</span>
-          <span class="nav-item__badge">v3.5</span>
-        </a>
-        <a class="nav-item nav-item--active" href="warranty-packages.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
-          <span>Warranty Packages</span>
-        </a>
-        <a class="nav-item " href="warranty-claims.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
-          <span>Claim Queue</span>
-          <span class="nav-item__badge nav-item__badge--alert">5</span>
-        </a>
-        <a class="nav-item " href="warranty-revenue.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
-          <span>Warranty Revenue</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Reports</span></div>
-        <a class="nav-item" href="reports.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
-          <span>Reports</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item" href="system-health.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg>
-          <span>System Health</span>
-        </a>
-        <a class="nav-item" href="logs.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg>
-          <span>Logs</span>
-        </a>
-        <a class="nav-item" href="audit.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg>
-          <span>Audit Trail</span>
-        </a>
-        <a class="nav-item" href="settings.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg>
-          <span>Settings</span>
-        </a>
-      </div>
-    </nav>
-    <div class="sidebar__user">
-      <div class="sidebar__user-avatar">LH</div>
-      <div class="sidebar__user-info">
-        <div class="sidebar__user-name">Lê Hùng</div>
-        <div class="sidebar__user-role">Ops Manager</div>
-      </div>
-      <button class="icon-btn" title="Logout">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H3v12h3M10 5l3 3-3 3M13 8H6"/></svg>
-      </button>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <div class="topbar__breadcrumb">
-      <span>SMP Admin</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span>v3.5+</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span class="topbar__breadcrumb-current">Warranty Packages</span>
-    </div>
-    <div class="topbar__search">
-      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
-      <input type="text" placeholder="Search packages...">
-      <kbd class="topbar__search-kbd">⌘K</kbd>
-    </div>
-    <div class="topbar__actions">
-      <span class="topbar__env">PROD · VN</span>
-    </div>
-  </header>
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
 
   <main class="main">
-
     <div class="page-header">
-      <div class="page-header__left">
-        <h1>Warranty <em>packages</em></h1>
-        <div class="page-header__sub">Catalog gói thuê bao bảo trì · 5 packages active · maintenance subscription</div>
+      <div>
+        <h1 class="page-title">Warranty packages</h1>
+        <div class="page-sub">Catalog gói thuê bao bảo trì · 5 packages active · maintenance subscription model</div>
       </div>
-      <div class="page-header__right">
-        <button class="btn btn--ghost">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l3-3v2h7v2H5v2z"/></svg>
-          Export catalog
-        </button>
-        <button class="btn btn--primary">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M2 8h12"/></svg>
-          New package
-        </button>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-file-export"></i> Export catalog</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Package mới</button>
       </div>
     </div>
 
-    <div class="alert-banner">
-      <svg class="alert-banner__icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><path d="M8 4v5M8 11v.5"/></svg>
-      <div class="alert-banner__text">
+    <div class="alert alert--info" style="background:var(--amber-bg);border-color:#fcd34d;color:var(--amber-text);">
+      <i class="ti ti-alert-circle" style="color:var(--amber-text);"></i>
+      <div>
         <strong>Pricing pending Finance review:</strong>
         Cost analysis (Doc 25) shows margin risk khi KH dùng 100% quota. Pilot 100 customers in Sprint 4 · re-evaluate post-pilot data.
-        <a href="#">View cost analysis →</a>
+        <a href="#" style="color:inherit;text-decoration:underline;">View cost analysis →</a>
       </div>
     </div>
 
-    <!-- Stats row -->
-    <div class="stats-row">
+    <!-- Stats KPIs -->
+    <div class="kpi-grid">
       <div class="kpi">
         <div class="kpi__label">Active packages</div>
         <div class="kpi__value">5<span class="kpi__unit">SKUs</span></div>
-        <div class="kpi__meta"><span class="kpi__caption">Across 4 device categories</span></div>
+        <div class="kpi__meta">4 device categories</div>
       </div>
       <div class="kpi kpi--green">
         <div class="kpi__label">Active subscriptions</div>
         <div class="kpi__value">87<span class="kpi__unit">/ 100 pilot</span></div>
-        <div class="kpi__meta"><span class="kpi__delta kpi__delta--up">▲ 12 today</span></div>
+        <div class="kpi__meta">▲ 12 today</div>
       </div>
       <div class="kpi kpi--amber">
         <div class="kpi__label">Deferred revenue</div>
         <div class="kpi__value">96.4<span class="kpi__unit">M VND</span></div>
-        <div class="kpi__meta"><span class="kpi__caption">recognized 11.2M MTD</span></div>
+        <div class="kpi__meta">recognized 11.2M MTD</div>
       </div>
       <div class="kpi kpi--violet">
         <div class="kpi__label">Claim utilization</div>
         <div class="kpi__value">34<span class="kpi__unit">%</span></div>
-        <div class="kpi__meta"><span class="kpi__caption">avg across packages</span></div>
+        <div class="kpi__meta">avg across packages</div>
       </div>
     </div>
 
     <!-- Filter -->
-    <div class="filter-bar" style="display: flex; gap: 8px; padding: 10px 14px; background: var(--bg-panel); border: 1px solid var(--line); margin-bottom: 12px; flex-wrap: wrap;">
-      <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; align-self: center;">Filter:</span>
-      <span class="wpkg-meta-chip" style="background: var(--c-cyan-dim); color: var(--c-cyan); border-color: var(--c-cyan);">All (5)</span>
-      <span class="wpkg-meta-chip">AC (2)</span>
-      <span class="wpkg-meta-chip">Washer (1)</span>
-      <span class="wpkg-meta-chip">Fridge (1)</span>
-      <span class="wpkg-meta-chip">Water Heater (1)</span>
-      <span class="wpkg-meta-chip">Draft (0)</span>
+    <div style="display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:11px;color:var(--text-mute);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Filter:</span>
+      <button class="chip active">All (5)</button>
+      <button class="chip">AC (2)</button>
+      <button class="chip">Washer (1)</button>
+      <button class="chip">Fridge (1)</button>
+      <button class="chip">Water Heater (1)</button>
+      <button class="chip">Draft (0)</button>
     </div>
 
-    <!-- Packages grid -->
+    <!-- Package cards -->
     <div class="wpkg-grid">
 
-      <div class="wpkg-card">
-        <div class="wpkg-card__head">
-          <div class="wpkg-card__icon">❄️</div>
-          <span class="wpkg-card__tag wpkg-card__tag--best">Best seller</span>
-        </div>
-        <div class="wpkg-card__code">wpkg_ac_basic_1y</div>
-        <div class="wpkg-card__name">AC Basic 1 năm</div>
-        <div class="wpkg-card__sub">device_category=ac · duration=12mo</div>
-        <div class="wpkg-card__price">1.200.000 ₫</div>
-        <div class="wpkg-card__per">≈ 100k / tháng · VAT 8% incl.</div>
-        <div class="wpkg-stats">
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🧹 Vệ sinh</div>
-            <div class="wpkg-stat__val">4 / năm</div>
+      <!-- AC Basic - best seller -->
+      <div class="wpkg">
+        <span class="wpkg__ribbon wpkg__ribbon--best">Best seller</span>
+        <div class="wpkg__icon">❄️</div>
+        <div class="wpkg__code">wpkg_ac_basic_1y</div>
+        <div class="wpkg__name">AC Basic 1 năm</div>
+        <div class="wpkg__sub">category=ac · duration=12mo</div>
+        <div class="wpkg__price">1.200.000 ₫</div>
+        <div class="wpkg__per">≈ 100k / tháng · VAT 8% incl.</div>
+        <div class="wpkg__quotas">
+          <div class="quota">
+            <div class="quota__label">🧹 Vệ sinh</div>
+            <div class="quota__val">4 / năm</div>
           </div>
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🔧 Sửa</div>
-            <div class="wpkg-stat__val">4 / năm</div>
+          <div class="quota">
+            <div class="quota__label">🔧 Sửa</div>
+            <div class="quota__val">4 / năm</div>
           </div>
         </div>
-        <div class="wpkg-meta-row">
-          <span class="wpkg-meta-chip">6 issues covered</span>
-          <span class="wpkg-meta-chip">42 active subs</span>
-          <span class="wpkg-meta-chip">auto-suggest ✓</span>
+        <div class="wpkg__chips">
+          <span class="meta-chip">6 issues covered</span>
+          <span class="meta-chip">42 active subs</span>
+          <span class="meta-chip">auto-suggest ✓</span>
         </div>
-        <div class="wpkg-card__actions">
-          <button class="btn btn--ghost btn--sm">Edit</button>
-          <button class="btn btn--ghost btn--sm">Subscriptions</button>
+        <div class="wpkg__actions">
+          <button class="btn btn--sm"><i class="ti ti-edit"></i> Edit</button>
+          <button class="btn btn--sm"><i class="ti ti-users"></i> Subs</button>
         </div>
       </div>
 
-      <div class="wpkg-card">
-        <div class="wpkg-card__head">
-          <div class="wpkg-card__icon">❄️</div>
-          <span class="wpkg-card__tag wpkg-card__tag--premium">Premium</span>
-        </div>
-        <div class="wpkg-card__code">wpkg_ac_premium_1y</div>
-        <div class="wpkg-card__name">AC Premium 1 năm</div>
-        <div class="wpkg-card__sub">device_category=ac · duration=12mo</div>
-        <div class="wpkg-card__price">1.800.000 ₫</div>
-        <div class="wpkg-card__per">≈ 150k / tháng · VAT 8% incl.</div>
-        <div class="wpkg-stats">
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🧹 Vệ sinh</div>
-            <div class="wpkg-stat__val">4 / năm</div>
+      <!-- AC Premium -->
+      <div class="wpkg">
+        <span class="wpkg__ribbon wpkg__ribbon--premium">Premium</span>
+        <div class="wpkg__icon">❄️</div>
+        <div class="wpkg__code">wpkg_ac_premium_1y</div>
+        <div class="wpkg__name">AC Premium 1 năm</div>
+        <div class="wpkg__sub">category=ac · duration=12mo</div>
+        <div class="wpkg__price">1.800.000 ₫</div>
+        <div class="wpkg__per">≈ 150k / tháng · VAT 8% incl.</div>
+        <div class="wpkg__quotas">
+          <div class="quota">
+            <div class="quota__label">🧹 Vệ sinh</div>
+            <div class="quota__val">4 / năm</div>
           </div>
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🔧 Sửa</div>
-            <div class="wpkg-stat__val">8 / năm</div>
+          <div class="quota">
+            <div class="quota__label">🔧 Sửa</div>
+            <div class="quota__val">8 / năm</div>
           </div>
         </div>
-        <div class="wpkg-meta-row">
-          <span class="wpkg-meta-chip">9 issues covered</span>
-          <span class="wpkg-meta-chip">15 active subs</span>
-          <span class="wpkg-meta-chip">24/7 support</span>
+        <div class="wpkg__chips">
+          <span class="meta-chip">9 issues covered</span>
+          <span class="meta-chip">15 active subs</span>
+          <span class="meta-chip">24/7 support</span>
         </div>
-        <div class="wpkg-card__actions">
-          <button class="btn btn--ghost btn--sm">Edit</button>
-          <button class="btn btn--ghost btn--sm">Subscriptions</button>
+        <div class="wpkg__actions">
+          <button class="btn btn--sm"><i class="ti ti-edit"></i> Edit</button>
+          <button class="btn btn--sm"><i class="ti ti-users"></i> Subs</button>
         </div>
       </div>
 
-      <div class="wpkg-card">
-        <div class="wpkg-card__head">
-          <div class="wpkg-card__icon">🧺</div>
-          <span></span>
-        </div>
-        <div class="wpkg-card__code">wpkg_washer_basic_1y</div>
-        <div class="wpkg-card__name">Washer Basic 1 năm</div>
-        <div class="wpkg-card__sub">device_category=washer · duration=12mo</div>
-        <div class="wpkg-card__price">800.000 ₫</div>
-        <div class="wpkg-card__per">≈ 67k / tháng · VAT 8% incl.</div>
-        <div class="wpkg-stats">
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🧹 Vệ sinh</div>
-            <div class="wpkg-stat__val">2 / năm</div>
+      <!-- Washer Basic -->
+      <div class="wpkg">
+        <div class="wpkg__icon">🧺</div>
+        <div class="wpkg__code">wpkg_washer_basic_1y</div>
+        <div class="wpkg__name">Washer Basic 1 năm</div>
+        <div class="wpkg__sub">category=washer · duration=12mo</div>
+        <div class="wpkg__price">800.000 ₫</div>
+        <div class="wpkg__per">≈ 67k / tháng · VAT 8% incl.</div>
+        <div class="wpkg__quotas">
+          <div class="quota">
+            <div class="quota__label">🧹 Vệ sinh</div>
+            <div class="quota__val">2 / năm</div>
           </div>
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🔧 Sửa</div>
-            <div class="wpkg-stat__val">3 / năm</div>
+          <div class="quota">
+            <div class="quota__label">🔧 Sửa</div>
+            <div class="quota__val">3 / năm</div>
           </div>
         </div>
-        <div class="wpkg-meta-row">
-          <span class="wpkg-meta-chip">5 issues covered</span>
-          <span class="wpkg-meta-chip">14 active subs</span>
+        <div class="wpkg__chips">
+          <span class="meta-chip">5 issues covered</span>
+          <span class="meta-chip">14 active subs</span>
         </div>
-        <div class="wpkg-card__actions">
-          <button class="btn btn--ghost btn--sm">Edit</button>
-          <button class="btn btn--ghost btn--sm">Subscriptions</button>
+        <div class="wpkg__actions">
+          <button class="btn btn--sm"><i class="ti ti-edit"></i> Edit</button>
+          <button class="btn btn--sm"><i class="ti ti-users"></i> Subs</button>
         </div>
       </div>
 
-      <div class="wpkg-card">
-        <div class="wpkg-card__head">
-          <div class="wpkg-card__icon">🧊</div>
-          <span></span>
-        </div>
-        <div class="wpkg-card__code">wpkg_fridge_basic_1y</div>
-        <div class="wpkg-card__name">Fridge Basic 1 năm</div>
-        <div class="wpkg-card__sub">device_category=fridge · duration=12mo</div>
-        <div class="wpkg-card__price">900.000 ₫</div>
-        <div class="wpkg-card__per">≈ 75k / tháng · VAT 8% incl.</div>
-        <div class="wpkg-stats">
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🧹 Inspection</div>
-            <div class="wpkg-stat__val">1 / năm</div>
+      <!-- Fridge Basic -->
+      <div class="wpkg">
+        <div class="wpkg__icon">🧊</div>
+        <div class="wpkg__code">wpkg_fridge_basic_1y</div>
+        <div class="wpkg__name">Fridge Basic 1 năm</div>
+        <div class="wpkg__sub">category=fridge · duration=12mo</div>
+        <div class="wpkg__price">900.000 ₫</div>
+        <div class="wpkg__per">≈ 75k / tháng · VAT 8% incl.</div>
+        <div class="wpkg__quotas">
+          <div class="quota">
+            <div class="quota__label">🧹 Inspection</div>
+            <div class="quota__val">1 / năm</div>
           </div>
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🔧 Sửa</div>
-            <div class="wpkg-stat__val">4 / năm</div>
+          <div class="quota">
+            <div class="quota__label">🔧 Sửa</div>
+            <div class="quota__val">4 / năm</div>
           </div>
         </div>
-        <div class="wpkg-meta-row">
-          <span class="wpkg-meta-chip">6 issues covered</span>
-          <span class="wpkg-meta-chip">9 active subs</span>
+        <div class="wpkg__chips">
+          <span class="meta-chip">6 issues covered</span>
+          <span class="meta-chip">9 active subs</span>
         </div>
-        <div class="wpkg-card__actions">
-          <button class="btn btn--ghost btn--sm">Edit</button>
-          <button class="btn btn--ghost btn--sm">Subscriptions</button>
+        <div class="wpkg__actions">
+          <button class="btn btn--sm"><i class="ti ti-edit"></i> Edit</button>
+          <button class="btn btn--sm"><i class="ti ti-users"></i> Subs</button>
         </div>
       </div>
 
-      <div class="wpkg-card">
-        <div class="wpkg-card__head">
-          <div class="wpkg-card__icon">🚿</div>
-          <span></span>
-        </div>
-        <div class="wpkg-card__code">wpkg_water_heater_basic_1y</div>
-        <div class="wpkg-card__name">Water Heater Basic 1 năm</div>
-        <div class="wpkg-card__sub">device_category=water_heater · duration=12mo</div>
-        <div class="wpkg-card__price">700.000 ₫</div>
-        <div class="wpkg-card__per">≈ 58k / tháng · VAT 8% incl.</div>
-        <div class="wpkg-stats">
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🧹 Súc rửa</div>
-            <div class="wpkg-stat__val">1 / năm</div>
+      <!-- Water Heater -->
+      <div class="wpkg">
+        <div class="wpkg__icon">🚿</div>
+        <div class="wpkg__code">wpkg_water_heater_basic_1y</div>
+        <div class="wpkg__name">Water Heater 1 năm</div>
+        <div class="wpkg__sub">category=water_heater · duration=12mo</div>
+        <div class="wpkg__price">700.000 ₫</div>
+        <div class="wpkg__per">≈ 58k / tháng · VAT 8% incl.</div>
+        <div class="wpkg__quotas">
+          <div class="quota">
+            <div class="quota__label">🧹 Súc rửa</div>
+            <div class="quota__val">1 / năm</div>
           </div>
-          <div class="wpkg-stat">
-            <div class="wpkg-stat__label">🔧 Sửa</div>
-            <div class="wpkg-stat__val">3 / năm</div>
+          <div class="quota">
+            <div class="quota__label">🔧 Sửa</div>
+            <div class="quota__val">3 / năm</div>
           </div>
         </div>
-        <div class="wpkg-meta-row">
-          <span class="wpkg-meta-chip">4 issues covered</span>
-          <span class="wpkg-meta-chip">7 active subs</span>
+        <div class="wpkg__chips">
+          <span class="meta-chip">4 issues covered</span>
+          <span class="meta-chip">7 active subs</span>
         </div>
-        <div class="wpkg-card__actions">
-          <button class="btn btn--ghost btn--sm">Edit</button>
-          <button class="btn btn--ghost btn--sm">Subscriptions</button>
+        <div class="wpkg__actions">
+          <button class="btn btn--sm"><i class="ti ti-edit"></i> Edit</button>
+          <button class="btn btn--sm"><i class="ti ti-users"></i> Subs</button>
         </div>
       </div>
 
-      <!-- Add new card -->
-      <div class="wpkg-card" style="border-style: dashed; display: flex; align-items: center; justify-content: center; min-height: 280px; cursor: pointer; color: var(--text-mute);">
-        <div style="text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 8px;">+</div>
-          <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Add package</div>
+      <!-- Add new -->
+      <div class="wpkg wpkg-add">
+        <div style="text-align:center;">
+          <div style="font-size:32px;margin-bottom:8px;"><i class="ti ti-plus"></i></div>
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Add package</div>
         </div>
       </div>
 
     </div>
 
+    <div id="statusbar-mount"></div>
   </main>
-
 </div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'warranty-packages', crumbs: ['SMP', 'v3.5+', 'Warranty packages'], search: 'Tìm package...' });
+</script>
 </body>
 </html>

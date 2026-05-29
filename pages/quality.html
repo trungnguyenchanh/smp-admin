@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Quality & Disputes</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Quality &amp; disputes</h1>
+        <div class="page-sub">Photo proof · post-service survey · dispute resolution</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export báo cáo</button>
+        <button class="btn btn--primary"><i class="ti ti-shield-check"></i> SLA report</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Proof compliance</div>
+        <div class="kpi__value">98.4<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">đơn có đủ ảnh trước/sau · target 99%</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Survey "OK"</div>
+        <div class="kpi__value">94.2<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">5.8% phản hồi có vấn đề</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Disputes open</div>
+        <div class="kpi__value">12</div>
+        <div class="kpi__meta">avg time-to-resolve 28p</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg rating tuần</div>
+        <div class="kpi__value">4.87<span class="kpi__unit">★</span></div>
+        <div class="kpi__meta">▲ 0.04 so tuần trước</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Post-service surveys · hôm nay</div>
+            <div class="panel__sub">Câu hỏi "Máy có hoạt động đúng không?"</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div class="survey-result survey-result--ok">
+            <div>
+              <div class="survey-result__q">ord_01HX7K1F · Vệ sinh điều hoà · 47p ago</div>
+              <div class="survey-result__a">✓ Có, máy chạy ổn</div>
+            </div>
+            <span class="pill pill--green">5★</span>
+          </div>
+          <div class="survey-result survey-result--ok">
+            <div>
+              <div class="survey-result__q">ord_01HX7JZP · Sửa máy giặt · 1h ago</div>
+              <div class="survey-result__a">✓ Có, đã hết lỗi</div>
+            </div>
+            <span class="pill pill--green">5★</span>
+          </div>
+          <div class="survey-result survey-result--issue">
+            <div>
+              <div class="survey-result__q">ord_01HX7JQ2 · Sửa điều hoà · 2h ago</div>
+              <div class="survey-result__a">✗ Không, vẫn còn xì gas</div>
+            </div>
+            <span class="pill pill--red">Dispute</span>
+          </div>
+          <div class="survey-result survey-result--ok">
+            <div>
+              <div class="survey-result__q">ord_01HX7JN0 · Vệ sinh nhà · 2h ago</div>
+              <div class="survey-result__a">✓ Hài lòng</div>
+            </div>
+            <span class="pill pill--green">4★</span>
+          </div>
+          <div class="survey-result survey-result--issue">
+            <div>
+              <div class="survey-result__q">ord_01HX7JK1 · Sửa máy giặt · 3h ago</div>
+              <div class="survey-result__a">✗ Vẫn không xả nước được</div>
+            </div>
+            <span class="pill pill--amber">Reviewing</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Photo proof · audit recent</div>
+            <div class="panel__sub">Mỗi step có ≥1 ảnh during + ≥2 ảnh after</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span class="mono" style="font-size:11.5px;font-weight:600;">ord_01HX7K1F · step ac-clean-indoor</span>
+              <span class="pill pill--green no-dot">VERIFIED</span>
+            </div>
+            <div class="photo-grid">
+              <div class="photo-tile"><div class="photo-tile__bg"></div><div class="photo-tile__tag">BEFORE</div><i class="ti ti-camera photo-tile__icon"></i></div>
+              <div class="photo-tile"><div class="photo-tile__bg photo-tile__bg--video"></div><div class="photo-tile__tag">PROCESS</div><i class="ti ti-video photo-tile__icon"></i></div>
+              <div class="photo-tile"><div class="photo-tile__bg photo-tile__bg--after"></div><div class="photo-tile__tag">AFTER</div><i class="ti ti-camera photo-tile__icon"></i></div>
+              <div class="photo-tile"><div class="photo-tile__bg photo-tile__bg--after"></div><div class="photo-tile__tag">AFTER</div><i class="ti ti-camera photo-tile__icon"></i></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span class="mono" style="font-size:11.5px;font-weight:600;">ord_01HX7JZP · step washer-replace-pump</span>
+              <span class="pill pill--amber no-dot">REVIEW</span>
+            </div>
+            <div class="photo-grid">
+              <div class="photo-tile"><div class="photo-tile__bg"></div><div class="photo-tile__tag">BEFORE</div><i class="ti ti-camera photo-tile__icon"></i></div>
+              <div class="photo-tile"><div class="photo-tile__bg photo-tile__bg--after"></div><div class="photo-tile__tag">AFTER</div><i class="ti ti-camera photo-tile__icon"></i></div>
+              <div class="photo-tile" style="border:1px dashed var(--red);"><i class="ti ti-camera-off photo-tile__icon" style="color:var(--red);position:relative;"></i><div class="photo-tile__meta" style="background:var(--red-bg);color:var(--red-text);">Thiếu 1 ảnh after</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Active disputes · 12</div>
+          <div class="panel__sub">Click vào đơn để xem chi tiết + media</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="chip active">All · 12</button>
+          <button class="chip">P1 critical · 2</button>
+          <button class="chip">P2 · 5</button>
+          <button class="chip">P3 · 5</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Đơn</th>
+              <th>Issue</th>
+              <th>Mở</th>
+              <th>Step lỗi</th>
+              <th>Giá tranh chấp</th>
+              <th>Khách</th>
+              <th>Thợ</th>
+              <th>Owner</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--red-bg);">
+              <td><span class="id">ord_01HX7JQ2</span></td>
+              <td>Vẫn còn xì gas sau khi sửa</td>
+              <td>2h ago<br><small class="text-red">P1</small></td>
+              <td><span class="mono">ac-leak-fix-pipe</span></td>
+              <td class="num mono">−420k</td>
+              <td>Đinh Khải H.</td>
+              <td>Mai Tuấn K.</td>
+              <td>@duy.nguyen</td>
+              <td><button class="btn btn--sm btn--primary">Resolve →</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX7JK1</span></td>
+              <td>Máy giặt vẫn không xả nước</td>
+              <td>3h ago<br><small class="text-amber">P2</small></td>
+              <td><span class="mono">washer-replace-pump</span></td>
+              <td class="num mono">−350k</td>
+              <td>Lê Văn N.</td>
+              <td>Đoàn Hữu R.</td>
+              <td>—</td>
+              <td><button class="btn btn--sm">Assign</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX7JG8</span></td>
+              <td>Bơm thay không đúng model</td>
+              <td>5h ago<br><small class="text-amber">P2</small></td>
+              <td><span class="mono">washer-replace-pump</span></td>
+              <td class="num mono">−350k</td>
+              <td>Phạm Tú V.</td>
+              <td>Nguyễn Thành W.</td>
+              <td>@minh.tran</td>
+              <td><button class="btn btn--sm">Resolve</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX7FT2</span></td>
+              <td>Chưa làm step ac-final-test</td>
+              <td>8h ago<br><small class="text-amber">P2</small></td>
+              <td><span class="mono">ac-final-test</span></td>
+              <td class="num mono">−30k</td>
+              <td>Hoàng B.</td>
+              <td>Phạm Q.M.</td>
+              <td>@duy.nguyen</td>
+              <td><button class="btn btn--sm">Resolve</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX6QR5</span></td>
+              <td>Vật tư khác báo giá</td>
+              <td>1d ago<br><small class="text-amber">P3</small></td>
+              <td><span class="mono">ac-replace-capacitor</span></td>
+              <td class="num mono">−80k</td>
+              <td>Trương Lan X.</td>
+              <td>Trương Minh K.</td>
+              <td>@minh.tran</td>
+              <td><button class="btn btn--sm">Resolve</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'quality', crumbs: ['SMP', 'Operations', 'Quality & disputes'], search: 'Tìm dispute...' });
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Maintenance Packages</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Maintenance packages</h1>
+        <div class="page-sub">Catalog gói bảo trì định kỳ · 6 packages · bán prepaid theo năm</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Tạo package mới</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Maintenance packages</strong> là các gói bảo trì định kỳ N lần/năm. Khách mua trả 1 lần, hệ thống tự lên lịch các visit. Mỗi visit chạy 1 service template (vd vệ sinh điều hoà). Giá đã giảm so với đặt lẻ để incentive khách mua dài hạn.
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Vệ sinh điều hoà · Gói Vàng</div>
+            <div class="panel__sub mono">pkg_ac_clean_quarterly</div>
+          </div>
+          <span class="pill pill--green">Active</span>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+            <div class="text-mute">Category</div><div><span class="pill pill--gray no-dot">ac</span></div>
+            <div class="text-mute">Tần suất</div><div><strong>4 lần / năm</strong> · mỗi 3 tháng</div>
+            <div class="text-mute">Service</div><div class="mono">ac-cleaning-full · 5 step</div>
+            <div class="text-mute">Giá/năm</div><div><strong class="mono">1,200,000 đ</strong></div>
+            <div class="text-mute">Vs lẻ</div><div class="text-green"><strong>−25%</strong> (lẻ 1.6M)</div>
+            <div class="text-mute">Auto-schedule</div><div>✓ Tự đặt 7 ngày trước</div>
+            <div class="text-mute">Reminder</div><div>7d / 1d trước visit</div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+            <span>1,847 khách đang dùng</span>
+            <span>Renewal rate 64%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Vệ sinh điều hoà · Gói Bạc</div>
+            <div class="panel__sub mono">pkg_ac_clean_biannual</div>
+          </div>
+          <span class="pill pill--green">Active</span>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+            <div class="text-mute">Category</div><div><span class="pill pill--gray no-dot">ac</span></div>
+            <div class="text-mute">Tần suất</div><div><strong>2 lần / năm</strong> · mỗi 6 tháng</div>
+            <div class="text-mute">Service</div><div class="mono">ac-cleaning-full</div>
+            <div class="text-mute">Giá/năm</div><div><strong class="mono">600,000 đ</strong></div>
+            <div class="text-mute">Vs lẻ</div><div class="text-green"><strong>−20%</strong></div>
+            <div class="text-mute">Auto-schedule</div><div>✓</div>
+            <div class="text-mute">Reminder</div><div>7d / 1d trước</div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+            <span>1,287 khách đang dùng</span>
+            <span>Renewal rate 58%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Vệ sinh máy giặt · Lite</div>
+            <div class="panel__sub mono">pkg_washer_clean_annual</div>
+          </div>
+          <span class="pill pill--green">Active</span>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+            <div class="text-mute">Category</div><div><span class="pill pill--gray no-dot">washing</span></div>
+            <div class="text-mute">Tần suất</div><div><strong>1 lần / năm</strong></div>
+            <div class="text-mute">Service</div><div class="mono">washer-clean</div>
+            <div class="text-mute">Giá/năm</div><div><strong class="mono">280,000 đ</strong></div>
+            <div class="text-mute">Vs lẻ</div><div class="text-green"><strong>−12%</strong></div>
+            <div class="text-mute">Auto-schedule</div><div>✓</div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+            <span>421 khách</span>
+            <span>Renewal rate 71%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Combo nhà 3 thiết bị</div>
+            <div class="panel__sub mono">pkg_home_combo_3</div>
+          </div>
+          <span class="pill pill--green">Active</span>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+            <div class="text-mute">Bao gồm</div><div>2 điều hoà + 1 máy giặt</div>
+            <div class="text-mute">Tần suất</div><div><strong>AC 4 lần · MG 1 lần</strong></div>
+            <div class="text-mute">Giá/năm</div><div><strong class="mono">2,100,000 đ</strong></div>
+            <div class="text-mute">Vs mua riêng</div><div class="text-green"><strong>−30%</strong> (riêng 3M)</div>
+            <div class="text-mute">Customizable</div><div>Khách thay AC/MG riêng cho gói</div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+            <span>521 khách đang dùng</span>
+            <span>Renewal rate 78%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Premium · Toàn nhà</div>
+            <div class="panel__sub mono">pkg_premium_house</div>
+          </div>
+          <span class="pill pill--violet">Premium</span>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+            <div class="text-mute">Bao gồm</div><div>≤5 thiết bị (AC, MG, tủ lạnh, bình nóng, lò)</div>
+            <div class="text-mute">Visits/năm</div><div><strong>12 visits</strong> linh hoạt</div>
+            <div class="text-mute">Giá/năm</div><div><strong class="mono">3,840,000 đ</strong></div>
+            <div class="text-mute">Vs lẻ</div><div class="text-green"><strong>−35%</strong></div>
+            <div class="text-mute">SLA</div><div>Khách báo lỗi → thợ đến trong 2h</div>
+            <div class="text-mute">Bonus</div><div>Giảm 20% mọi đơn ngoài contract</div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+            <span>287 khách</span>
+            <span>Renewal rate 91%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="border-style:dashed;">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Vệ sinh tủ lạnh · Lite</div>
+            <div class="panel__sub mono">pkg_fridge_clean_annual</div>
+          </div>
+          <span class="pill pill--amber">Draft</span>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+            <div class="text-mute">Category</div><div><span class="pill pill--gray no-dot">fridge</span></div>
+            <div class="text-mute">Tần suất</div><div>1 lần / năm</div>
+            <div class="text-mute">Giá dự kiến</div><div><strong class="mono">220,000 đ</strong></div>
+            <div class="text-mute">Vs lẻ</div><div class="text-green">−15%</div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:11.5px;color:var(--amber-text);background:var(--amber-bg);padding:8px 12px;border-radius:6px;">
+            Đang chờ approval từ ops manager · sẽ launch sau khi xác nhận pricing
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'packages', crumbs: ['SMP', 'Catalog v3', 'Maintenance packages'], search: 'Tìm package...' });
+</script>
+</body>
+</html>

@@ -2,297 +2,257 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMP Admin — Warranty Revenue</title>
 <link rel="stylesheet" href="../assets/style.css">
 <style>
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
 
-  .revenue-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 16px; }
-  
-  .panel { background: var(--bg-panel); border: 1px solid var(--line); padding: 18px; }
-  .panel__header { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
-  .panel__title { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-  .panel__caption { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); }
-  
-  .big-stat { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-  .big-stat__value { font-family: var(--font-mono); font-size: 32px; color: var(--text); font-weight: 500; }
-  .big-stat__unit { font-family: var(--font-mono); font-size: 14px; color: var(--text-dim); }
-  .big-stat__caption { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); margin-bottom: 16px; }
-  
-  .breakdown-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .breakdown-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid var(--line); letter-spacing: 0.5px; font-weight: 500; }
-  .breakdown-table td { padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-family: var(--font-mono); font-size: 12px; }
-  .breakdown-table tr:last-child td { border-bottom: none; }
-  .breakdown-table td.right { text-align: right; }
-  .breakdown-table .pkg-name { color: var(--text); font-family: var(--font-sans); }
-  
-  /* Bar chart */
-  .bar-chart { height: 180px; padding: 16px 0; }
-  .bar-chart__bars { display: flex; gap: 12px; align-items: flex-end; height: 140px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-  .bar-segment { background: var(--c-cyan); }
-  .bar-segment--recognized { background: var(--c-green); }
-  .bar-segment--deferred { background: var(--c-amber); }
-  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 8px; }
-  .bar-chart__legend { display: flex; gap: 16px; margin-top: 16px; font-family: var(--font-mono); font-size: 11px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
-  .legend-dot { width: 10px; height: 10px; }
-  
-  /* Journal entries */
-  .journal-table { width: 100%; border-collapse: collapse; font-size: 11px; font-family: var(--font-mono); }
-  .journal-table th { text-align: left; padding: 8px; background: var(--bg-base); color: var(--text-mute); text-transform: uppercase; font-size: 10px; font-weight: 500; border-bottom: 1px solid var(--line); }
-  .journal-table td { padding: 8px; border-bottom: 1px solid var(--line-soft); }
-  .journal-table .credit { color: var(--c-green); text-align: right; }
-  .journal-table .debit { color: var(--c-amber); text-align: right; }
-  .journal-table .account { color: var(--c-cyan); }
-  
-  .reconcile-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
-  .reconcile-row:last-child { border-bottom: none; padding-top: 12px; margin-top: 4px; border-top: 1px solid var(--line); font-weight: 500; }
-  .reconcile-row__label { color: var(--text-dim); }
-  .reconcile-row__val { font-family: var(--font-mono); color: var(--text); }
-  .reconcile-row__val--match { color: var(--c-green); }
+  /* Stacked bar chart */
+  .chart-wrap { padding: 16px 8px 4px; }
+  .bars {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    height: 180px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: var(--r-sm) var(--r-sm) 0 0; }
+  .bar-seg--recognized { background: var(--green); }
+  .bar-seg--deferred { background: var(--amber); }
+  .bar-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-mute);
+    margin-top: 8px;
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-mute);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
 
+  /* Reconciliation */
+  .rec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 13px;
+  }
+  .rec-row:last-child { border-bottom: none; }
+  .rec-row:nth-last-child(1) {
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 2px solid var(--border);
+    border-bottom: none;
+    font-weight: 600;
+  }
+  .rec-row__k { color: var(--text-mute); }
+  .rec-row__v {
+    font-family: var(--font-mono);
+  }
+  .rec-row__v--ok {
+    color: var(--green-text);
+    font-weight: 600;
+  }
+
+  /* Breakdown table */
+  .btable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .btable th {
+    text-align: left;
+    padding: 10px 12px 8px;
+    background: var(--bg-elev);
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-size: 10px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  .btable th.right { text-align: right; }
+  .btable td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .btable td.right { text-align: right; font-family: var(--font-mono); }
+  .btable tr:last-child td { font-weight: 600; background: var(--bg-elev); }
+
+  /* Journal */
+  .jtable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-family: var(--font-mono);
+  }
+  .jtable th {
+    text-align: left;
+    padding: 8px 10px;
+    background: var(--bg-elev);
+    color: var(--text-mute);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .jtable th.right { text-align: right; }
+  .jtable td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .jtable td.right { text-align: right; }
+  .jtable .debit { color: var(--amber-text); }
+  .jtable .credit { color: var(--green-text); }
+  .jtable .account { color: var(--primary); }
+  .jtable tr.divider td { border-top: 2px solid var(--border); padding-top: 12px; }
 </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- ===== SIDEBAR ===== -->
-  <aside class="sidebar">
-    <div class="sidebar__brand">
-      <div class="sidebar__brand-mark">SMP</div>
-      <div class="sidebar__brand-text">
-        <div class="sidebar__brand-name">Admin</div>
-        <div class="sidebar__brand-tag">v1.5.0 · v3.5+</div>
-      </div>
-    </div>
-    <nav class="sidebar__nav">
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="dashboard.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg>
-          <span>Dashboard</span>
-        </a>
-        <a class="nav-item" href="dispatch-monitor.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg>
-          <span>Dispatch Monitor</span>
-          <span class="nav-item__badge">LIVE</span>
-        </a>
-        <a class="nav-item" href="orders.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg>
-          <span>Orders</span>
-          <span class="nav-item__badge">847</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="agents.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg>
-          <span>Agents &amp; KYC</span>
-          <span class="nav-item__badge nav-item__badge--alert">12</span>
-        </a>
-        <a class="nav-item" href="finance.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg>
-          <span>Finance</span>
-        </a>
-        <a class="nav-item" href="partners.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg>
-          <span>Partners</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item " href="service-templates.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
-          <span>Service Templates</span>
-          <span class="nav-item__badge">v3.5</span>
-        </a>
-        <a class="nav-item " href="warranty-packages.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
-          <span>Warranty Packages</span>
-        </a>
-        <a class="nav-item " href="warranty-claims.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
-          <span>Claim Queue</span>
-          <span class="nav-item__badge nav-item__badge--alert">5</span>
-        </a>
-        <a class="nav-item nav-item--active" href="warranty-revenue.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
-          <span>Warranty Revenue</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Reports</span></div>
-        <a class="nav-item" href="reports.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
-          <span>Reports</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item" href="system-health.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg>
-          <span>System Health</span>
-        </a>
-        <a class="nav-item" href="logs.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg>
-          <span>Logs</span>
-        </a>
-        <a class="nav-item" href="audit.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg>
-          <span>Audit Trail</span>
-        </a>
-        <a class="nav-item" href="settings.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg>
-          <span>Settings</span>
-        </a>
-      </div>
-    </nav>
-    <div class="sidebar__user">
-      <div class="sidebar__user-avatar">LH</div>
-      <div class="sidebar__user-info">
-        <div class="sidebar__user-name">Lê Hùng</div>
-        <div class="sidebar__user-role">Ops Manager</div>
-      </div>
-      <button class="icon-btn" title="Logout">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H3v12h3M10 5l3 3-3 3M13 8H6"/></svg>
-      </button>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <div class="topbar__breadcrumb">
-      <span>SMP Admin</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span>v3.5+</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span class="topbar__breadcrumb-current">Warranty Revenue</span>
-    </div>
-    <div class="topbar__search">
-      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
-      <input type="text" placeholder="Search by warranty ID...">
-      <kbd class="topbar__search-kbd">⌘K</kbd>
-    </div>
-    <div class="topbar__actions">
-      <span class="topbar__env">PROD · VN</span>
-    </div>
-  </header>
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
 
   <main class="main">
-
     <div class="page-header">
-      <div class="page-header__left">
-        <h1>Deferred revenue <em>dashboard</em></h1>
-        <div class="page-header__sub">VAS 14 compliant · Monthly recognition cron · Last sync: 4 min ago</div>
+      <div>
+        <h1 class="page-title">Deferred revenue dashboard</h1>
+        <div class="page-sub">VAS 14 compliant · Monthly recognition cron · Last sync 4 min ago</div>
       </div>
-      <div class="page-header__right">
-        <button class="btn btn--ghost">Export Excel</button>
-        <button class="btn btn--ghost">Period: Jun 2026</button>
-        <button class="btn btn--primary">Run recognition now</button>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-file-export"></i> Export Excel</button>
+        <button class="btn"><i class="ti ti-calendar"></i> Period: Jun 2026</button>
+        <button class="btn btn--primary"><i class="ti ti-player-play"></i> Run recognition now</button>
       </div>
     </div>
 
-    <!-- Top KPI row -->
-    <div class="stats-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;">
+    <!-- KPI row -->
+    <div class="kpi-grid">
       <div class="kpi">
         <div class="kpi__label">Deferred (outstanding)</div>
         <div class="kpi__value">96.4<span class="kpi__unit">M VND</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__caption">across 87 active warranties</span>
-        </div>
+        <div class="kpi__meta">across 87 active warranties</div>
       </div>
       <div class="kpi kpi--green">
         <div class="kpi__label">Recognized MTD</div>
         <div class="kpi__value">11.2<span class="kpi__unit">M VND</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__delta kpi__delta--up">▲ June recognition</span>
-        </div>
+        <div class="kpi__meta">▲ June recognition</div>
       </div>
       <div class="kpi kpi--amber">
         <div class="kpi__label">Warranty service cost</div>
         <div class="kpi__value">3.8<span class="kpi__unit">M VND</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__caption">MTD · 34% utilization</span>
-        </div>
+        <div class="kpi__meta">MTD · 34% utilization</div>
       </div>
       <div class="kpi kpi--violet">
         <div class="kpi__label">Gross margin</div>
         <div class="kpi__value">66<span class="kpi__unit">%</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__delta kpi__delta--up">target ≥ 65%</span>
-        </div>
+        <div class="kpi__meta">target ≥ 65%</div>
       </div>
     </div>
 
-    <!-- Main grid: 2/3 chart + 1/3 reconcile -->
-    <div class="revenue-grid">
+    <div style="height:18px;"></div>
 
-      <!-- Left: Recognition timeline chart -->
+    <div class="grid-2">
+
+      <!-- LEFT: Chart -->
       <div class="panel">
-        <div class="panel__header">
-          <span class="panel__title">Revenue recognition · 12-month projection</span>
-          <span class="panel__caption">Monthly · stacked bar</span>
-        </div>
-        <div class="bar-chart">
-          <div class="bar-chart__bars">
-            <div class="bar-col"><div class="bar-segment bar-segment--recognized" style="height: 22px;"></div><div class="bar-label">Jun</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--recognized" style="height: 28px;"></div><div class="bar-label">Jul</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--recognized" style="height: 34px;"></div><div class="bar-label">Aug</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 38px;"></div><div class="bar-label">Sep</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 40px;"></div><div class="bar-label">Oct</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 42px;"></div><div class="bar-label">Nov</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 42px;"></div><div class="bar-label">Dec</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 38px;"></div><div class="bar-label">Jan</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 32px;"></div><div class="bar-label">Feb</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 26px;"></div><div class="bar-label">Mar</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 18px;"></div><div class="bar-label">Apr</div></div>
-            <div class="bar-col"><div class="bar-segment bar-segment--deferred" style="height: 12px;"></div><div class="bar-label">May</div></div>
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Revenue recognition · 12-month projection</div>
+            <div class="panel__sub">Monthly · recognized + deferred</div>
           </div>
-          <div class="bar-chart__legend">
-            <span class="legend-item"><span class="legend-dot" style="background: var(--c-green);"></span>Recognized (past · 22.8M)</span>
-            <span class="legend-item"><span class="legend-dot" style="background: var(--c-amber);"></span>Deferred → recognize (future · 96.4M)</span>
+        </div>
+        <div class="chart-wrap">
+          <div class="bars">
+            <div class="bar-col"><div class="bar-seg bar-seg--recognized" style="height:25px;"></div><div class="bar-label">Jun</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--recognized" style="height:32px;"></div><div class="bar-label">Jul</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--recognized" style="height:38px;"></div><div class="bar-label">Aug</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:44px;"></div><div class="bar-label">Sep</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:46px;"></div><div class="bar-label">Oct</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:48px;"></div><div class="bar-label">Nov</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:48px;"></div><div class="bar-label">Dec</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:44px;"></div><div class="bar-label">Jan</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:36px;"></div><div class="bar-label">Feb</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:30px;"></div><div class="bar-label">Mar</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:21px;"></div><div class="bar-label">Apr</div></div>
+            <div class="bar-col"><div class="bar-seg bar-seg--deferred" style="height:13px;"></div><div class="bar-label">May</div></div>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot" style="background:var(--green);"></span>Recognized (past · 22.8M ₫)</span>
+            <span class="legend-item"><span class="legend-dot" style="background:var(--amber);"></span>Deferred → recognize (future · 96.4M ₫)</span>
           </div>
         </div>
       </div>
 
-      <!-- Right: Reconciliation -->
+      <!-- RIGHT: Reconciliation -->
       <div class="panel">
-        <div class="panel__header">
-          <span class="panel__title">Reconciliation</span>
-          <span class="panel__caption" style="color: var(--c-green);">✓ Balanced</span>
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Reconciliation</div>
+            <div class="panel__sub">VAS 14 audit · daily cron check</div>
+          </div>
+          <span class="pill pill--green">✓ Balanced</span>
         </div>
-        <div class="reconcile-row">
-          <span class="reconcile-row__label">Total price_paid (all warranties)</span>
-          <span class="reconcile-row__val">119.2M ₫</span>
+        <div class="rec-row">
+          <span class="rec-row__k">Total price_paid (all)</span>
+          <span class="rec-row__v">119.2M ₫</span>
         </div>
-        <div class="reconcile-row">
-          <span class="reconcile-row__label">Total recognized to date</span>
-          <span class="reconcile-row__val">22.8M ₫</span>
+        <div class="rec-row">
+          <span class="rec-row__k">Total recognized to date</span>
+          <span class="rec-row__v">22.8M ₫</span>
         </div>
-        <div class="reconcile-row">
-          <span class="reconcile-row__label">Should remain deferred</span>
-          <span class="reconcile-row__val">96.4M ₫</span>
+        <div class="rec-row">
+          <span class="rec-row__k">Should remain deferred</span>
+          <span class="rec-row__v">96.4M ₫</span>
         </div>
-        <div class="reconcile-row">
-          <span class="reconcile-row__label">Actual deferred_revenue</span>
-          <span class="reconcile-row__val">96.4M ₫</span>
+        <div class="rec-row">
+          <span class="rec-row__k">Actual deferred_revenue</span>
+          <span class="rec-row__v">96.4M ₫</span>
         </div>
-        <div class="reconcile-row">
-          <span class="reconcile-row__label">Drift</span>
-          <span class="reconcile-row__val reconcile-row__val--match">0 ₫ ✓</span>
+        <div class="rec-row">
+          <span class="rec-row__k">Drift</span>
+          <span class="rec-row__v rec-row__v--ok">0 ₫ ✓</span>
         </div>
-        <div style="margin-top: 12px; padding: 10px; background: var(--bg-base); border: 1px solid var(--line); font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); line-height: 1.5;">
-          Daily cron checks: SUM(customer_warranties.price_paid - total_amount_recognized) == SUM(deferred_revenue) per subledger. Threshold alert: drift &gt; 100k VND.
+        <div style="margin-top:12px;padding:10px;background:var(--bg-elev);border-radius:var(--r-sm);font-size:11px;color:var(--text-mute);line-height:1.5;">
+          ℹ Daily cron: SUM(customer_warranties.price_paid - total_amount_recognized) == SUM(deferred_revenue) per subledger. Alert threshold: drift &gt; 100k VND.
         </div>
       </div>
     </div>
 
     <!-- Per-package breakdown -->
-    <div class="panel" style="margin-bottom: 16px;">
-      <div class="panel__header">
-        <span class="panel__title">Revenue breakdown · per package</span>
-        <span class="panel__caption">June 2026 MTD</span>
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Revenue breakdown · per package</div>
+          <div class="panel__sub">June 2026 MTD</div>
+        </div>
       </div>
-      <table class="breakdown-table">
+      <table class="btable">
         <thead>
           <tr>
             <th>Package</th>
@@ -306,78 +266,81 @@
         </thead>
         <tbody>
           <tr>
-            <td class="pkg-name">❄️ AC Basic 1y</td>
+            <td>❄️ AC Basic 1y</td>
             <td class="right">42</td>
             <td class="right">46.7M ₫</td>
-            <td class="right" style="color: var(--c-green);">5.2M ₫</td>
-            <td class="right" style="color: var(--c-amber);">1.9M ₫</td>
-            <td class="right" style="color: var(--c-green);">63%</td>
+            <td class="right" style="color:var(--green-text);">5.2M ₫</td>
+            <td class="right" style="color:var(--amber-text);">1.9M ₫</td>
+            <td class="right" style="color:var(--green-text);">63%</td>
             <td class="right">38%</td>
           </tr>
           <tr>
-            <td class="pkg-name">❄️ AC Premium 1y</td>
+            <td>❄️ AC Premium 1y</td>
             <td class="right">15</td>
             <td class="right">25.1M ₫</td>
-            <td class="right" style="color: var(--c-green);">2.8M ₫</td>
-            <td class="right" style="color: var(--c-amber);">1.1M ₫</td>
-            <td class="right" style="color: var(--c-green);">61%</td>
+            <td class="right" style="color:var(--green-text);">2.8M ₫</td>
+            <td class="right" style="color:var(--amber-text);">1.1M ₫</td>
+            <td class="right" style="color:var(--green-text);">61%</td>
             <td class="right">42%</td>
           </tr>
           <tr>
-            <td class="pkg-name">🧺 Washer Basic 1y</td>
+            <td>🧺 Washer Basic 1y</td>
             <td class="right">14</td>
             <td class="right">10.4M ₫</td>
-            <td class="right" style="color: var(--c-green);">1.2M ₫</td>
-            <td class="right" style="color: var(--c-amber);">0.4M ₫</td>
-            <td class="right" style="color: var(--c-green);">67%</td>
+            <td class="right" style="color:var(--green-text);">1.2M ₫</td>
+            <td class="right" style="color:var(--amber-text);">0.4M ₫</td>
+            <td class="right" style="color:var(--green-text);">67%</td>
             <td class="right">28%</td>
           </tr>
           <tr>
-            <td class="pkg-name">🧊 Fridge Basic 1y</td>
+            <td>🧊 Fridge Basic 1y</td>
             <td class="right">9</td>
             <td class="right">7.5M ₫</td>
-            <td class="right" style="color: var(--c-green);">0.8M ₫</td>
-            <td class="right" style="color: var(--c-amber);">0.2M ₫</td>
-            <td class="right" style="color: var(--c-green);">75%</td>
+            <td class="right" style="color:var(--green-text);">0.8M ₫</td>
+            <td class="right" style="color:var(--amber-text);">0.2M ₫</td>
+            <td class="right" style="color:var(--green-text);">75%</td>
             <td class="right">22%</td>
           </tr>
           <tr>
-            <td class="pkg-name">🚿 Water Heater 1y</td>
+            <td>🚿 Water Heater 1y</td>
             <td class="right">7</td>
             <td class="right">4.5M ₫</td>
-            <td class="right" style="color: var(--c-green);">0.5M ₫</td>
-            <td class="right" style="color: var(--c-amber);">0.2M ₫</td>
-            <td class="right" style="color: var(--c-green);">60%</td>
+            <td class="right" style="color:var(--green-text);">0.5M ₫</td>
+            <td class="right" style="color:var(--amber-text);">0.2M ₫</td>
+            <td class="right" style="color:var(--green-text);">60%</td>
             <td class="right">31%</td>
           </tr>
-          <tr style="font-weight: 500; background: var(--bg-base);">
-            <td class="pkg-name"><strong>Total · 5 packages</strong></td>
+          <tr>
+            <td><strong>Total · 5 packages</strong></td>
             <td class="right"><strong>87</strong></td>
             <td class="right"><strong>96.4M ₫</strong></td>
-            <td class="right" style="color: var(--c-green);"><strong>11.2M ₫</strong></td>
-            <td class="right" style="color: var(--c-amber);"><strong>3.8M ₫</strong></td>
-            <td class="right" style="color: var(--c-green);"><strong>66%</strong></td>
+            <td class="right" style="color:var(--green-text);"><strong>11.2M ₫</strong></td>
+            <td class="right" style="color:var(--amber-text);"><strong>3.8M ₫</strong></td>
+            <td class="right" style="color:var(--green-text);"><strong>66%</strong></td>
             <td class="right"><strong>34%</strong></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Recent journal entries -->
+    <!-- Journal entries -->
     <div class="panel">
-      <div class="panel__header">
-        <span class="panel__title">Recent journal entries · last 24h</span>
-        <span class="panel__caption">12 entries · hash chain verified ✓</span>
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Recent journal entries · last 24h</div>
+          <div class="panel__sub">12 entries · hash chain verified ✓</div>
+        </div>
+        <a class="panel__action" href="finance.html">Full ledger →</a>
       </div>
-      <table class="journal-table">
+      <table class="jtable">
         <thead>
           <tr>
             <th>Time UTC</th>
             <th>Entry type</th>
             <th>Reference</th>
             <th>Account</th>
-            <th style="text-align: right;">Debit</th>
-            <th style="text-align: right;">Credit</th>
+            <th class="right">Debit</th>
+            <th class="right">Credit</th>
             <th>Owner</th>
           </tr>
         </thead>
@@ -387,8 +350,8 @@
             <td>warranty_revenue_recognition</td>
             <td>wrr_456</td>
             <td class="account">deferred_revenue</td>
-            <td class="debit">92,592</td>
-            <td></td>
+            <td class="right debit">92,592</td>
+            <td class="right"></td>
             <td>cw_123</td>
           </tr>
           <tr>
@@ -396,17 +359,17 @@
             <td>warranty_revenue_recognition</td>
             <td>wrr_456</td>
             <td class="account">revenue_warranty_subscription</td>
-            <td></td>
-            <td class="credit">92,592</td>
+            <td class="right"></td>
+            <td class="right credit">92,592</td>
             <td>—</td>
           </tr>
-          <tr style="border-top: 1px solid var(--line);">
+          <tr class="divider">
             <td>14:31:22</td>
             <td>warranty_claim_settled</td>
             <td>wc_789</td>
             <td class="account">warranty_service_cost</td>
-            <td class="debit">200,000</td>
-            <td></td>
+            <td class="right debit">200,000</td>
+            <td class="right"></td>
             <td>—</td>
           </tr>
           <tr>
@@ -414,17 +377,17 @@
             <td>warranty_claim_settled</td>
             <td>wc_789</td>
             <td class="account">agent_payable</td>
-            <td></td>
-            <td class="credit">200,000</td>
+            <td class="right"></td>
+            <td class="right credit">200,000</td>
             <td>agent_A</td>
           </tr>
-          <tr style="border-top: 1px solid var(--line);">
+          <tr class="divider">
             <td>15:42:08</td>
             <td>warranty_purchase</td>
             <td>cw_888</td>
             <td class="account">cash_gateway</td>
-            <td class="debit">1,200,000</td>
-            <td></td>
+            <td class="right debit">1,200,000</td>
+            <td class="right"></td>
             <td>—</td>
           </tr>
           <tr>
@@ -432,8 +395,8 @@
             <td>warranty_purchase</td>
             <td>cw_888</td>
             <td class="account">deferred_revenue</td>
-            <td></td>
-            <td class="credit">1,111,111</td>
+            <td class="right"></td>
+            <td class="right credit">1,111,111</td>
             <td>cw_888</td>
           </tr>
           <tr>
@@ -441,16 +404,21 @@
             <td>warranty_purchase</td>
             <td>cw_888</td>
             <td class="account">vat_payable</td>
-            <td></td>
-            <td class="credit">88,889</td>
+            <td class="right"></td>
+            <td class="right credit">88,889</td>
             <td>—</td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <div id="statusbar-mount"></div>
   </main>
-
 </div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'warranty-revenue', crumbs: ['SMP', 'v3.5+', 'Warranty revenue'], search: 'Search warranty ID...' });
+</script>
 </body>
 </html>

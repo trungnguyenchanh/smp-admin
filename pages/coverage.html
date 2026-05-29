@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Coverage Map</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Coverage map</h1>
+        <div class="page-sub">12 tỉnh thành active · 63 quận/huyện · 3,891 thợ phủ sóng</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-layers"></i> Layers</button>
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Mở rộng khu vực</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Tỉnh thành active</div>
+        <div class="kpi__value">12<span class="kpi__unit"> / 63</span></div>
+        <div class="kpi__meta">19% phủ sóng · target 30 cuối 2026</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Best province</div>
+        <div class="kpi__value">HCMC</div>
+        <div class="kpi__meta">1,847 thợ · 32k đơn/tháng</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Demand &gt; Supply</div>
+        <div class="kpi__value">4</div>
+        <div class="kpi__meta">tỉnh thiếu thợ · ưu tiên recruit</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg ETA</div>
+        <div class="kpi__value">18<span class="kpi__unit">phút</span></div>
+        <div class="kpi__meta">từ accept đến khi thợ đến</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Coverage heatmap</div>
+            <div class="panel__sub">Demand/supply ratio theo tỉnh · click pin để xem chi tiết</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="chip active">Demand</button>
+            <button class="chip">Supply</button>
+            <button class="chip">Ratio</button>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div class="coverage-map">
+            <div class="coverage-pin coverage-pin--high" style="left:48%;top:78%;">
+              <span class="coverage-pin__dot"></span>HCMC · 32k đơn
+            </div>
+            <div class="coverage-pin coverage-pin--high" style="left:42%;top:18%;">
+              <span class="coverage-pin__dot"></span>Hà Nội · 21k
+            </div>
+            <div class="coverage-pin coverage-pin--med" style="left:55%;top:52%;">
+              <span class="coverage-pin__dot"></span>Đà Nẵng · 4.2k
+            </div>
+            <div class="coverage-pin coverage-pin--med" style="left:32%;top:74%;">
+              <span class="coverage-pin__dot"></span>Cần Thơ · 1.8k
+            </div>
+            <div class="coverage-pin coverage-pin--low" style="left:58%;top:82%;">
+              <span class="coverage-pin__dot"></span>Vũng Tàu · 870
+            </div>
+            <div class="coverage-pin coverage-pin--med" style="left:38%;top:32%;">
+              <span class="coverage-pin__dot"></span>Hải Phòng · 1.4k
+            </div>
+            <div class="coverage-pin coverage-pin--low" style="left:36%;top:48%;">
+              <span class="coverage-pin__dot"></span>Vinh · 412
+            </div>
+            <div class="coverage-pin coverage-pin--low" style="left:62%;top:32%;">
+              <span class="coverage-pin__dot"></span>Huế · 287
+            </div>
+            <div class="coverage-pin coverage-pin--low" style="left:52%;top:62%;">
+              <span class="coverage-pin__dot"></span>Nha Trang · 521
+            </div>
+            <div class="coverage-pin coverage-pin--med" style="left:46%;top:68%;">
+              <span class="coverage-pin__dot"></span>Biên Hoà · 1.2k
+            </div>
+            <div class="coverage-pin coverage-pin--low" style="left:44%;top:86%;">
+              <span class="coverage-pin__dot"></span>Long Xuyên · 187
+            </div>
+            <div class="coverage-pin coverage-pin--low" style="left:38%;top:84%;">
+              <span class="coverage-pin__dot"></span>Mỹ Tho · 142
+            </div>
+          </div>
+
+          <div style="display:flex;gap:14px;margin-top:14px;font-size:11.5px;color:var(--text-mute);justify-content:center;">
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--green);"></span>Supply đủ (≥1k đơn/th)</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--amber);"></span>Trung bình</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--red);"></span>Cần recruit thợ</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Top tỉnh thành</div>
+              <div class="panel__sub">Theo doanh thu tháng</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>1. HCMC</span><span class="mono">18.4B</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">1,847 thợ · 22 quận · ▲ 12%</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>2. Hà Nội</span><span class="mono">12.1B</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">1,218 thợ · 12 quận · ▲ 18%</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>3. Đà Nẵng</span><span class="mono">2.4B</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">287 thợ · 6 quận · ▲ 24%</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>4. Biên Hoà</span><span class="mono">821M</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">142 thợ</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>5. Cần Thơ</span><span class="mono">684M</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">87 thợ</div>
+            </div>
+            <div style="padding:11px 16px;">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>6. Hải Phòng</span><span class="mono">487M</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">68 thợ</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Cần recruit thợ</div>
+              <div class="panel__sub">Tỉnh có demand &gt; supply</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span class="text-red">Vũng Tàu</span><span class="pill pill--red">−42</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">demand 87/ngày · supply 45</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span class="text-red">Nha Trang</span><span class="pill pill--red">−28</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">demand 64 · supply 36</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span class="text-amber">Huế</span><span class="pill pill--amber">−18</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">demand 41 · supply 23</div>
+            </div>
+            <div style="padding:11px 16px;">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span class="text-amber">Vinh</span><span class="pill pill--amber">−12</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">demand 32 · supply 20</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Khu vực planned</div>
+              <div class="panel__sub">Sẽ mở Q3 2026</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);font-size:12px;">
+              <div style="font-weight:600;">Hạ Long</div>
+              <div style="color:var(--text-mute);font-size:10.5px;">Q3 2026 · target 50 thợ</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);font-size:12px;">
+              <div style="font-weight:600;">Quy Nhơn</div>
+              <div style="color:var(--text-mute);font-size:10.5px;">Q3 2026 · target 30 thợ</div>
+            </div>
+            <div style="padding:11px 16px;font-size:12px;">
+              <div style="font-weight:600;">Đà Lạt</div>
+              <div style="color:var(--text-mute);font-size:10.5px;">Q4 2026 · target 25 thợ</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'coverage', crumbs: ['SMP', 'Geography', 'Coverage map'], search: 'Tìm tỉnh/quận...' });
+</script>
+</body>
+</html>

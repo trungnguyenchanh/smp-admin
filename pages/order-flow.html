@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Order Flow</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .flow-stages-2agent {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .flow-stage-mini {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 10px;
+    position: relative;
+  }
+  .flow-stage-mini--done { background: var(--green-bg); border-color: #86efac; color: var(--green-text); }
+  .flow-stage-mini--active { background: var(--primary-bg); border-color: var(--primary); color: var(--primary-text); font-weight: 600; box-shadow: 0 2px 6px rgba(79,70,229,0.15); }
+  .flow-stage-mini__icon { font-size: 14px; display: block; margin-bottom: 1px; }
+  .flow-stage-mini__num { font-size: 9px; font-weight: 600; opacity: 0.6; }
+  .flow-stage-mini__name { font-size: 10px; line-height: 1.2; margin-top: 1px; }
+  .flow-stage-mini__agent {
+    position: absolute;
+    top: -7px;
+    right: -3px;
+    font-size: 8px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .flow-stage-mini__agent--s { background: #ddd6fe; color: #5b21b6; }
+  .flow-stage-mini__agent--e { background: var(--tech-bg); color: var(--tech-text); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Order flow · ord_01HX7K2M</h1>
+        <div class="page-sub">Quy trình 10 bước · 2-agent (Survey + Execution) · v3.1 standard</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-message-circle"></i> Liên hệ khách</button>
+        <button class="btn"><i class="ti ti-message-circle-2"></i> Liên hệ thợ</button>
+        <button class="btn btn--primary"><i class="ti ti-eye"></i> Xem chi tiết đơn</button>
+      </div>
+    </div>
+
+    <div class="flow-stages-2agent">
+      <div class="flow-stage-mini flow-stage-mini--done"><i class="ti ti-edit flow-stage-mini__icon"></i><div class="flow-stage-mini__num">01</div><div class="flow-stage-mini__name">Đặt đơn</div></div>
+      <div class="flow-stage-mini flow-stage-mini--done"><span class="flow-stage-mini__agent flow-stage-mini__agent--s">SUR</span><i class="ti ti-radar flow-stage-mini__icon"></i><div class="flow-stage-mini__num">02</div><div class="flow-stage-mini__name">Dispatch khảo sát</div></div>
+      <div class="flow-stage-mini flow-stage-mini--done"><span class="flow-stage-mini__agent flow-stage-mini__agent--s">SUR</span><i class="ti ti-route flow-stage-mini__icon"></i><div class="flow-stage-mini__num">03</div><div class="flow-stage-mini__name">Đến nơi</div></div>
+      <div class="flow-stage-mini flow-stage-mini--done"><span class="flow-stage-mini__agent flow-stage-mini__agent--s">SUR</span><i class="ti ti-camera flow-stage-mini__icon"></i><div class="flow-stage-mini__num">04</div><div class="flow-stage-mini__name">Khảo sát</div></div>
+      <div class="flow-stage-mini flow-stage-mini--done"><span class="flow-stage-mini__agent flow-stage-mini__agent--s">SUR</span><i class="ti ti-file-text flow-stage-mini__icon"></i><div class="flow-stage-mini__num">05</div><div class="flow-stage-mini__name">Báo giá</div></div>
+      <div class="flow-stage-mini flow-stage-mini--active"><i class="ti ti-clipboard-check flow-stage-mini__icon"></i><div class="flow-stage-mini__num">06</div><div class="flow-stage-mini__name">Khách duyệt</div></div>
+      <div class="flow-stage-mini"><span class="flow-stage-mini__agent flow-stage-mini__agent--e">EXC</span><i class="ti ti-radar flow-stage-mini__icon"></i><div class="flow-stage-mini__num">07</div><div class="flow-stage-mini__name">Dispatch sửa</div></div>
+      <div class="flow-stage-mini"><span class="flow-stage-mini__agent flow-stage-mini__agent--e">EXC</span><i class="ti ti-tool flow-stage-mini__icon"></i><div class="flow-stage-mini__num">08</div><div class="flow-stage-mini__name">Sửa + ảnh</div></div>
+      <div class="flow-stage-mini"><i class="ti ti-message-2 flow-stage-mini__icon"></i><div class="flow-stage-mini__num">09</div><div class="flow-stage-mini__name">Survey KQ</div></div>
+      <div class="flow-stage-mini"><i class="ti ti-star flow-stage-mini__icon"></i><div class="flow-stage-mini__num">10</div><div class="flow-stage-mini__name">Đánh giá</div></div>
+    </div>
+
+    <div style="display:flex;gap:14px;font-size:11.5px;color:var(--text-mute);margin-bottom:14px;">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="background:#ddd6fe;color:#5b21b6;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;">SUR</span> Survey Agent (khảo sát + báo giá)</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="background:var(--tech-bg);color:var(--tech-text);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;">EXC</span> Execution Agent (sửa)</span>
+      <span style="margin-left:auto;">Có thể cùng 1 thợ làm cả 2 vai trò</span>
+    </div>
+
+    <div class="alert alert--info">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Đang ở Bước 6 (Khách duyệt báo giá)</strong> · Survey Agent agt_T4K9 đã gửi quote 750k, đang chờ khách approve. Sau khi duyệt, sẽ hỏi Survey Agent có làm tiếp Execution không. Nếu không → dispatch lần 2.
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+
+      <div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Timeline · 10 bước</div>
+              <div class="panel__sub">2-agent role · click để xem audit log</div>
+            </div>
+          </div>
+          <div style="padding:16px;">
+            <div style="display:grid;grid-template-columns:120px 24px 1fr;gap:12px;">
+              <div class="mono" style="font-size:11px;color:var(--text-mute);text-align:right;line-height:24px;">09:38:14</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;font-size:11px;"><i class="ti ti-check"></i></div><div style="width:1.5px;flex:1;background:var(--green);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;">
+                <div style="font-size:13px;font-weight:600;">Đặt đơn thành công</div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">Khách Nguyễn Văn A · service ac-repair-standard · trả phí khảo sát 80k · 15 Lê Lợi Q.1</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-mute);text-align:right;line-height:24px;">09:38:42</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;font-size:11px;"><i class="ti ti-check"></i></div><div style="width:1.5px;flex:1;background:var(--green);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;">
+                <div style="font-size:13px;font-weight:600;">Dispatch Survey Agent · Round 1 (auto)</div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">Gửi offer cho 5 thợ AC L3+ gần nhất · 4 từ chối · <strong>agt_T4K9 (Survey Agent)</strong> nhận sau 22s</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-mute);text-align:right;line-height:24px;">09:54:31</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;font-size:11px;"><i class="ti ti-check"></i></div><div style="width:1.5px;flex:1;background:var(--green);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;">
+                <div style="font-size:13px;font-weight:600;">Survey Agent đến nơi</div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">agt_T4K9 (Trương Minh K.) đến địa chỉ · GPS verified · 16 phút di chuyển</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-mute);text-align:right;line-height:24px;">09:54:52</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;font-size:11px;"><i class="ti ti-check"></i></div><div style="width:1.5px;flex:1;background:var(--green);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;">
+                <div style="font-size:13px;font-weight:600;">Khảo sát thiết bị</div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">Scan QR <span class="mono">ast_01HX5T</span> (LG Inverter 1HP · mua 03/2024) · chụp 3 ảnh BEFORE · phát hiện tụ điện hỏng + thiếu gas R32</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-mute);text-align:right;line-height:24px;">10:01:22</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;font-size:11px;"><i class="ti ti-check"></i></div><div style="width:1.5px;flex:1;background:var(--green);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;">
+                <div style="font-size:13px;font-weight:600;">Survey Agent submit báo giá</div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">Quote 750k (5 step) gồm vật tư 400k · gửi push cho khách · TTL 30 phút</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--primary);text-align:right;line-height:24px;font-weight:600;">10:01:54</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--primary);color:white;display:grid;place-items:center;font-size:11px;"><i class="ti ti-loader"></i></div><div style="width:1.5px;flex:1;background:var(--border);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;">
+                <div style="font-size:13px;font-weight:600;color:var(--primary);">Đang chờ khách duyệt báo giá</div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">Khách mở app lúc 10:02:18 · còn 26 phút · Survey Agent đang chờ tại nhà khách</div>
+                <div style="display:flex;gap:6px;margin-top:8px;">
+                  <button class="btn btn--sm">Xem báo giá</button>
+                  <button class="btn btn--sm btn--primary">Gửi nhắc khách</button>
+                </div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-faint);text-align:right;line-height:24px;">—</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--bg-elev);color:var(--text-faint);display:grid;place-items:center;font-size:11px;font-weight:600;">7</div><div style="width:1.5px;flex:1;background:var(--border);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;color:var(--text-faint);">
+                <div style="font-size:13px;">Dispatch Execution Agent (lần 2)</div>
+                <div style="font-size:11.5px;margin-top:2px;">Chỉ trigger nếu Survey Agent không nhận tiếp · cùng thuật toán hybrid · priority cao hơn đơn mới</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-faint);text-align:right;line-height:24px;">—</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--bg-elev);color:var(--text-faint);display:grid;place-items:center;font-size:11px;font-weight:600;">8</div><div style="width:1.5px;flex:1;background:var(--border);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;color:var(--text-faint);">
+                <div style="font-size:13px;">Sửa + ảnh proof</div>
+                <div style="font-size:11.5px;margin-top:2px;">Execution Agent xem ảnh BEFORE từ khảo sát · tick từng step · chụp PROCESS + AFTER</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-faint);text-align:right;line-height:24px;">—</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--bg-elev);color:var(--text-faint);display:grid;place-items:center;font-size:11px;font-weight:600;">9</div><div style="width:1.5px;flex:1;background:var(--border);min-height:18px;"></div></div>
+              <div style="padding-bottom:14px;color:var(--text-faint);">
+                <div style="font-size:13px;">Khảo sát kết quả</div>
+                <div style="font-size:11.5px;margin-top:2px;">Khách trả lời yes/no "Máy chạy ổn không?" · nếu No → mở dispute</div>
+              </div>
+
+              <div class="mono" style="font-size:11px;color:var(--text-faint);text-align:right;line-height:24px;">—</div>
+              <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:24px;height:24px;border-radius:50%;background:var(--bg-elev);color:var(--text-faint);display:grid;place-items:center;font-size:11px;font-weight:600;">10</div></div>
+              <div style="color:var(--text-faint);">
+                <div style="font-size:13px;">Đánh giá Survey + Execution</div>
+                <div style="font-size:11.5px;margin-top:2px;">Khách rate 5★ cả 2 thợ (nếu khác nhau) · tag + comment per-step</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Bằng chứng "trước khi làm" · 3 ảnh từ Survey</div>
+              <div class="panel__sub">Chụp 10:00:14 · sẽ chuyển giao cho Execution Agent</div>
+            </div>
+            <a class="panel__action" href="#">Xem full →</a>
+          </div>
+          <div style="padding:14px 16px;">
+            <div class="photo-grid">
+              <div class="photo-tile">
+                <div class="photo-tile__bg"></div>
+                <div class="photo-tile__tag">BEFORE</div>
+                <i class="ti ti-camera photo-tile__icon"></i>
+                <div class="photo-tile__meta">Tổng quan máy</div>
+              </div>
+              <div class="photo-tile">
+                <div class="photo-tile__bg"></div>
+                <div class="photo-tile__tag">BEFORE</div>
+                <i class="ti ti-camera photo-tile__icon"></i>
+                <div class="photo-tile__meta">Dàn lạnh chảy nước</div>
+              </div>
+              <div class="photo-tile">
+                <div class="photo-tile__bg"></div>
+                <div class="photo-tile__tag">BEFORE</div>
+                <i class="ti ti-camera photo-tile__icon"></i>
+                <div class="photo-tile__meta">Tụ điện hỏng đo OL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Khách hàng</div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;">
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--primary-bg);color:var(--primary-text);display:grid;place-items:center;font-weight:600;">NA</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;">Nguyễn Văn A</div>
+                <div style="font-size:11.5px;color:var(--text-mute);">14 đơn · 4.8★ KH rating · Silver</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--text-mute);">15 Lê Lợi, P. Bến Nghé, Q.1, HCMC</div>
+            <div style="font-size:11px;color:var(--text-faint);font-family:var(--font-mono);margin-top:2px;">+84 90 ••• 7842</div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Survey Agent</div>
+              <div class="panel__sub" style="color:#5b21b6;">SUR · khảo sát + báo giá</div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;">
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#ddd6fe;color:#5b21b6;display:grid;place-items:center;font-weight:600;">TK</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;">Trương Minh K.</div>
+                <div style="font-size:11px;color:var(--text-mute);">Gold · 4.94★ · L4 ac-mechanic</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-mute);margin-bottom:6px;">Đã nhận: phí khảo sát <strong class="mono">+80k</strong> (sau commission)</div>
+            <div style="background:var(--bg-elev);padding:8px 10px;border-radius:6px;font-size:11px;">
+              <div style="display:flex;justify-content:space-between;color:var(--text-mute);margin-bottom:3px;">
+                <span>Có tiếp tục làm Execution?</span>
+                <span class="text-amber">Đang chờ</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-faint);">Sau khi khách duyệt quote, app sẽ hỏi.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;border-style:dashed;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Execution Agent</div>
+              <div class="panel__sub" style="color:var(--tech-text);">EXC · sửa thực tế</div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;text-align:center;color:var(--text-mute);font-size:12.5px;">
+            <i class="ti ti-user-question" style="font-size:32px;color:var(--text-faint);"></i>
+            <div style="margin-top:8px;">Chưa xác định</div>
+            <div style="font-size:11px;margin-top:2px;">Chờ Survey Agent quyết định hoặc dispatch mới</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Asset của khách</div>
+            </div>
+            <a class="panel__action" href="assets.html">Chi tiết →</a>
+          </div>
+          <div style="padding:14px 16px;">
+            <div class="asset-card" style="padding:0;border:none;">
+              <div class="asset-card__icon">
+                <i class="ti ti-air-conditioning"></i>
+              </div>
+              <div class="asset-card__body">
+                <div class="asset-card__name">Điều hoà phòng ngủ</div>
+                <div class="asset-card__meta">LG Inverter V10API 1HP · mua 03/2024</div>
+                <div class="asset-card__serial">SN: 401KP••••8421</div>
+              </div>
+              <div class="asset-card__warranty asset-card__warranty--ok">BH 9th</div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:11.5px;color:var(--text-mute);">
+              Lần sửa gần nhất: <strong>22/04/2026</strong> bởi Đoàn Hữu R. (vệ sinh + gas)
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'order-flow', crumbs: ['SMP', 'Operations', 'Order flow', 'ord_01HX7K2M'], search: 'Tìm order...' });
+</script>
+</body>
+</html>

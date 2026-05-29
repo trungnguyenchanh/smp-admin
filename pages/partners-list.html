@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Partners List</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">All partners</h1>
+        <div class="page-sub">8 partners · 7 active · 1 pending KYC · click row để xem chi tiết</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export CSV</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Onboard partner</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Tất cả<span class="tab__count">8</span></div>
+      <div class="tab">Customer-side<span class="tab__count">4</span></div>
+      <div class="tab">Supplier-side<span class="tab__count">2</span></div>
+      <div class="tab">Cả hai (AB)<span class="tab__count">2</span></div>
+      <div class="tab">Pending KYC<span class="tab__count">1</span></div>
+    </div>
+
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip active">B2B doanh nghiệp · 6</button>
+      <button class="chip">Cá nhân lớn · 2</button>
+      <button class="chip">Invoice mode · 4</button>
+      <button class="chip">Prepaid wallet · 2</button>
+      <button class="chip">SaaS only · 1</button>
+      <button class="chip">Hybrid · 2</button>
+      <button class="chip" style="margin-left:auto;"><i class="ti ti-filter" style="font-size:13px;"></i> More filters</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">8 partners</div>
+          <div class="panel__sub">Sort: GMV 30d ↓</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Partner</th>
+              <th>Type</th>
+              <th>Role</th>
+              <th>Payment / Model</th>
+              <th class="num">Orders 30d</th>
+              <th class="num">Agents</th>
+              <th class="num">GMV / Payout</th>
+              <th>KYC</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="cursor:pointer;background:var(--primary-bg);">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:white;color:#1d4ed8;display:grid;place-items:center;font-weight:700;">V</div>
+                  <div>
+                    <div class="fw-bold">Vinhomes Property Mgmt</div>
+                    <div class="fs-11 text-mute">CTCP Vinhomes · TC 0102345678</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Business</span></td>
+              <td><span class="partner-role-badge partner-type-A">A · Customer</span></td>
+              <td>Invoice NET 30<br><small class="text-mute">credit 200M</small></td>
+              <td class="num mono">412</td>
+              <td class="num text-mute">—</td>
+              <td class="num mono text-green fw-med">184.7M</td>
+              <td><span class="pill pill--green no-dot">FULL</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#fef3c7;color:#92400e;display:grid;place-items:center;font-weight:700;">SV</div>
+                  <div>
+                    <div class="fw-bold">Savills Property Mgmt</div>
+                    <div class="fs-11 text-mute">Savills Vietnam Co. · TC 0301456789</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Business</span></td>
+              <td><span class="partner-role-badge partner-type-A">A · Customer</span></td>
+              <td>Invoice NET 30<br><small class="text-mute">credit 80M</small></td>
+              <td class="num mono">87</td>
+              <td class="num text-mute">—</td>
+              <td class="num mono text-green fw-med">42.1M</td>
+              <td><span class="pill pill--green no-dot">FULL</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-weight:700;">DA</div>
+                  <div>
+                    <div class="fw-bold">Điện Lạnh ABC</div>
+                    <div class="fs-11 text-mute">CTCP DV Điện Lạnh ABC · TC 0312456789</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Business</span></td>
+              <td><span class="partner-role-badge partner-type-B">B · Supplier</span></td>
+              <td>Hybrid · 200k SaaS<br><small class="text-mute">+ 4% commission</small></td>
+              <td class="num mono">287</td>
+              <td class="num mono text-violet">28 (14 online)</td>
+              <td class="num mono text-violet fw-med">+38.4M payout</td>
+              <td><span class="pill pill--green no-dot">FULL</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#ede9fe;color:#7c3aed;display:grid;place-items:center;font-weight:700;">DMX</div>
+                  <div>
+                    <div class="fw-bold">Điện Máy Xanh (Pilot Q.7)</div>
+                    <div class="fs-11 text-mute">CTCP TGDD · TC 0306734621</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Business</span></td>
+              <td><span class="partner-role-badge partner-type-A">A · Customer</span></td>
+              <td>Invoice NET 30<br><small class="text-mute">credit 50M</small></td>
+              <td class="num mono">142</td>
+              <td class="num text-mute">—</td>
+              <td class="num mono text-green fw-med">38.4M</td>
+              <td><span class="pill pill--amber no-dot">BASIC</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#dcfce7);color:#1e40af;display:grid;place-items:center;font-weight:700;">HAS</div>
+                  <div>
+                    <div class="fw-bold">Hùng AC Service</div>
+                    <div class="fs-11 text-mute">Hộ KD Nguyễn Hùng · TC 8901234567</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Business</span></td>
+              <td><span class="partner-role-badge partner-type-AB">AB · Cả hai</span></td>
+              <td>Prepaid 8.5M<br><small class="text-mute">commission 6%</small></td>
+              <td class="num mono">87</td>
+              <td class="num mono text-violet">8 (4 online)</td>
+              <td class="num mono text-green fw-med">12.8M + 6.2M payout</td>
+              <td><span class="pill pill--amber no-dot">BASIC</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-weight:700;">KA</div>
+                  <div>
+                    <div class="fw-bold">Kim Air</div>
+                    <div class="fs-11 text-mute">Trần Văn Kim · Cá nhân</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Individual</span></td>
+              <td><span class="partner-role-badge partner-type-B">B · Supplier</span></td>
+              <td>SaaS only 500k/th<br><small class="text-mute">commission 0%</small></td>
+              <td class="num mono">64</td>
+              <td class="num mono text-violet">5 (2 online)</td>
+              <td class="num mono text-violet fw-med">1.5M SaaS đã thu</td>
+              <td><span class="pill pill--amber no-dot">BASIC</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#dbeafe;color:#1d4ed8;display:grid;place-items:center;font-weight:700;">AD</div>
+                  <div>
+                    <div class="fw-bold">Anh Duyên Homes</div>
+                    <div class="fs-11 text-mute">Trần Thị Anh Duyên · 12 căn cho thuê</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Individual</span></td>
+              <td><span class="partner-role-badge partner-type-A">A · Customer</span></td>
+              <td>Prepaid 4.2M<br><small class="text-amber">low balance</small></td>
+              <td class="num mono">18</td>
+              <td class="num text-mute">—</td>
+              <td class="num mono text-green fw-med">4.8M</td>
+              <td><span class="pill pill--amber no-dot">BASIC</span></td>
+              <td><span class="pill pill--green">Active</span></td>
+              <td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td>
+            </tr>
+            <tr style="cursor:pointer;background:var(--amber-bg);">
+              <td>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#fef3c7;color:#92400e;display:grid;place-items:center;font-weight:700;">FA</div>
+                  <div>
+                    <div class="fw-bold">FreshAir Group</div>
+                    <div class="fs-11 text-mute">CTCP FreshAir Vietnam · TC 0314567890</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill pill--gray no-dot">Business</span></td>
+              <td><span class="partner-role-badge partner-type-AB">AB · Cả hai</span></td>
+              <td>Invoice + Hybrid<br><small class="text-mute">setup chưa xong</small></td>
+              <td class="num mono text-mute">0</td>
+              <td class="num mono text-mute">12 (pending)</td>
+              <td class="num text-mute">—</td>
+              <td><span class="pill pill--amber no-dot">REVIEWING</span></td>
+              <td><span class="pill pill--amber">Pending KYC</span></td>
+              <td><button class="btn btn--sm btn--primary">Review</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'partners-list', crumbs: ['SMP', 'Partners v3.3', 'All partners'], search: 'Tìm partner...' });
+</script>
+</body>
+</html>

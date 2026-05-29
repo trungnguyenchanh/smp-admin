@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Material Variants</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Material variants</h1>
+        <div class="page-sub">21 SKU cụ thể · giá bán SMP-managed · stock từ wms · margin auto-calculated</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-refresh"></i> Sync wms stock</button>
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Tạo variant mới</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Giá bán SMP-controlled:</strong> Admin set giá bán cho khách. Thợ không sửa được. wms cung cấp giá nhập (cost) → SMP tính margin tự động. Stock real-time từ wms qua API.
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total variants</div>
+        <div class="kpi__value">21</div>
+        <div class="kpi__meta">21 active · 0 discontinued</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Avg margin</div>
+        <div class="kpi__value">52<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">healthy · target ≥ 40%</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">In stock (wms)</div>
+        <div class="kpi__value">18<span class="kpi__unit"> / 21</span></div>
+        <div class="kpi__meta">3 hết hàng · cần restock</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Most sold (30d)</div>
+        <div class="kpi__value">Sanyo</div>
+        <div class="kpi__meta">CBB60-35 · 487 đơn</div>
+      </div>
+    </div>
+
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip active">Tất cả · 21</button>
+      <button class="chip">Gas · 4</button>
+      <button class="chip">Capacitor · 5</button>
+      <button class="chip">Compressor · 2</button>
+      <button class="chip">Heater · 2</button>
+      <button class="chip">Hết hàng · 3</button>
+      <button class="chip" style="margin-left:auto;"><i class="ti ti-filter" style="font-size:13px;"></i> Filters</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Variants · 21 SKUs</div>
+          <div class="panel__sub">Stock cập nhật từ wms 30 giây trước · click để sửa giá bán</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn--sm">Sort: Sales ▾</button>
+          <button class="btn btn--sm">Columns ▾</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Variant</th>
+              <th>Type</th>
+              <th>wms SKU</th>
+              <th class="num">Sell (SMP)</th>
+              <th class="num">Cost (wms)</th>
+              <th class="num">Margin</th>
+              <th class="num">Stock</th>
+              <th>BH</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Sanyo CBB60-35</strong><br><small class="text-mute">Tụ điện 35μF</small></td><td><span class="pill pill--gray no-dot">capacitor_35uf</span></td><td><span class="mono fs-11">SKU-CAP-SAN-35</span></td><td class="num mono fw-med">80,000</td><td class="num mono text-mute">50,000</td><td class="num text-green fw-med">+60%</td><td class="num mono text-green">487</td><td>6th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Panasonic AT-35F</strong><br><small class="text-mute">Tụ điện 35μF</small></td><td><span class="pill pill--gray no-dot">capacitor_35uf</span></td><td><span class="mono fs-11">SKU-CAP-PAN-35</span></td><td class="num mono fw-med">95,000</td><td class="num mono text-mute">62,000</td><td class="num text-green fw-med">+53%</td><td class="num mono text-green">218</td><td>12th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>TQ no-brand GEN-35</strong><br><small class="text-mute">Tụ điện 35μF</small></td><td><span class="pill pill--gray no-dot">capacitor_35uf</span></td><td><span class="mono fs-11">SKU-CAP-GEN-35</span></td><td class="num mono fw-med">45,000</td><td class="num mono text-mute">22,000</td><td class="num text-green fw-med">+105%</td><td class="num mono text-amber">42</td><td>3th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Sanyo CBB60-45</strong><br><small class="text-mute">Tụ điện 45μF</small></td><td><span class="pill pill--gray no-dot">capacitor_45uf</span></td><td><span class="mono fs-11">SKU-CAP-SAN-45</span></td><td class="num mono fw-med">95,000</td><td class="num mono text-mute">58,000</td><td class="num text-green fw-med">+64%</td><td class="num mono text-green">128</td><td>6th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Panasonic AT-45F</strong><br><small class="text-mute">Tụ điện 45μF</small></td><td><span class="pill pill--gray no-dot">capacitor_45uf</span></td><td><span class="mono fs-11">SKU-CAP-PAN-45</span></td><td class="num mono fw-med">110,000</td><td class="num mono text-mute">72,000</td><td class="num text-green fw-med">+53%</td><td class="num mono text-green">84</td><td>12th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>SubZero R32-800</strong><br><small class="text-mute">Gas R32</small></td><td><span class="pill pill--gray no-dot">gas_r32</span></td><td><span class="mono fs-11">SKU-GAS-SBZ-R32-08</span></td><td class="num mono fw-med">400,000</td><td class="num mono text-mute">280,000</td><td class="num text-green fw-med">+43%</td><td class="num mono text-green">241</td><td>—</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>KlimaCool R32-Pro-800</strong><br><small class="text-mute">Gas R32</small></td><td><span class="pill pill--gray no-dot">gas_r32</span></td><td><span class="mono fs-11">SKU-GAS-KMC-R32-08</span></td><td class="num mono fw-med">450,000</td><td class="num mono text-mute">310,000</td><td class="num text-green fw-med">+45%</td><td class="num mono text-green">87</td><td>—</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>SubZero R410A-800</strong><br><small class="text-mute">Gas R410A</small></td><td><span class="pill pill--gray no-dot">gas_r410a</span></td><td><span class="mono fs-11">SKU-GAS-SBZ-R410-08</span></td><td class="num mono fw-med">480,000</td><td class="num mono text-mute">340,000</td><td class="num text-green fw-med">+41%</td><td class="num mono text-green">142</td><td>—</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>SubZero R600a-150</strong><br><small class="text-mute">Gas R600a</small></td><td><span class="pill pill--gray no-dot">gas_r600a</span></td><td><span class="mono fs-11">SKU-GAS-SBZ-R600-150</span></td><td class="num mono fw-med">350,000</td><td class="num mono text-mute">240,000</td><td class="num text-green fw-med">+46%</td><td class="num mono text-green">68</td><td>—</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>LG OEM BL-1HP-LG</strong><br><small class="text-mute">Block AC 1HP</small></td><td><span class="pill pill--gray no-dot">block_ac_1hp</span></td><td><span class="mono fs-11">SKU-BLK-LG-1</span></td><td class="num mono fw-med">2,500,000</td><td class="num mono text-mute">1,800,000</td><td class="num text-green fw-med">+39%</td><td class="num mono text-amber">12</td><td>12th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Daikin OEM BL-1.5HP</strong><br><small class="text-mute">Block AC 1.5HP</small></td><td><span class="pill pill--gray no-dot">block_ac_1.5hp</span></td><td><span class="mono fs-11">SKU-BLK-DKN-15</span></td><td class="num mono fw-med">3,200,000</td><td class="num mono text-mute">2,400,000</td><td class="num text-green fw-med">+33%</td><td class="num mono text-amber">8</td><td>18th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr style="background:var(--red-bg);"><td><strong>LG OEM PMP-LG-A</strong><br><small class="text-mute">Bơm xả máy giặt</small></td><td><span class="pill pill--gray no-dot">pump_washer</span></td><td><span class="mono fs-11">SKU-PMP-LG</span></td><td class="num mono fw-med">350,000</td><td class="num mono text-mute">220,000</td><td class="num text-green fw-med">+59%</td><td class="num mono text-red">0</td><td>6th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Samsung OEM PMP-SAM-B</strong><br><small class="text-mute">Bơm xả máy giặt</small></td><td><span class="pill pill--gray no-dot">pump_washer</span></td><td><span class="mono fs-11">SKU-PMP-SAM</span></td><td class="num mono fw-med">380,000</td><td class="num mono text-mute">240,000</td><td class="num text-green fw-med">+58%</td><td class="num mono text-green">36</td><td>6th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Generic HTR-2500</strong><br><small class="text-mute">Điện trở 2500W</small></td><td><span class="pill pill--gray no-dot">heater_2500w</span></td><td><span class="mono fs-11">SKU-HTR-GEN-2500</span></td><td class="num mono fw-med">280,000</td><td class="num mono text-mute">180,000</td><td class="num text-green fw-med">+56%</td><td class="num mono text-green">94</td><td>6th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td><strong>Ariston OEM ARI-2500-HE</strong><br><small class="text-mute">Điện trở 2500W</small></td><td><span class="pill pill--gray no-dot">heater_2500w</span></td><td><span class="mono fs-11">SKU-HTR-ARI-2500</span></td><td class="num mono fw-med">380,000</td><td class="num mono text-mute">260,000</td><td class="num text-green fw-med">+46%</td><td class="num mono text-green">52</td><td>12th</td><td><button class="btn btn--sm btn--ghost"><i class="ti ti-dots"></i></button></td></tr>
+            <tr><td colspan="9" style="text-align:center;color:var(--text-mute);font-size:11.5px;padding:14px;">+ 6 variants khác (outlets, faucets, solutions)...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'material-variants', crumbs: ['SMP', 'Catalog v3', 'Material variants'], search: 'Tìm brand, model, SKU...' });
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Material Verification</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Material verification</h1>
+        <div class="page-sub">Ops review vật tư thợ nhập · so sánh với BOM expected · approve hoặc reject</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-shield-check"></i> Bulk approve · 12</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Workflow:</strong> Thợ tự gõ vật tư đã dùng khi finish step. Nếu vật tư khớp BOM + reservation từ wms → auto-verified. Nếu thợ free-form (vd dùng vật tư riêng, hoặc gõ tên không khớp catalog) → vào queue này. Ops verify trong 24h.
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Pending verify</div>
+        <div class="kpi__value">23</div>
+        <div class="kpi__meta">avg age 4.2h</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Auto-verified (24h)</div>
+        <div class="kpi__value">1,247</div>
+        <div class="kpi__meta">98% đơn match reservation</div>
+      </div>
+      <div class="kpi kpi--red">
+        <div class="kpi__label">Rejected (7d)</div>
+        <div class="kpi__value">12</div>
+        <div class="kpi__meta">8 vật tư sai · 4 quantity bất thường</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">BOM variance rate</div>
+        <div class="kpi__value">2.1<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">step có vật tư khác BOM expected</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Pending<span class="tab__count">23</span></div>
+      <div class="tab">Free-form<span class="tab__count">8</span></div>
+      <div class="tab">BOM variance<span class="tab__count">15</span></div>
+      <div class="tab">Verified · 7d<span class="tab__count">1,247</span></div>
+      <div class="tab">Rejected · 7d<span class="tab__count">12</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Cần verify · 23 đơn</div>
+          <div class="panel__sub">Click row để xem detail và compare với BOM</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn--sm">Sort: Age ▾</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Step</th>
+              <th>Type</th>
+              <th>Material thợ nhập</th>
+              <th class="num">Qty</th>
+              <th>BOM expected</th>
+              <th>Thợ</th>
+              <th>Age</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--red-bg);">
+              <td><span class="id">ord_01HX7K1A</span></td>
+              <td><span class="mono">washer-replace-pump</span></td>
+              <td><span class="pill pill--red no-dot">FREE-FORM</span></td>
+              <td><strong>Bơm xả "Daikin TQ"</strong><br><small class="text-mute">Không có trong catalog</small></td>
+              <td class="num mono">1</td>
+              <td><span class="mono">mtyp_pump_washer</span></td>
+              <td>Lê Văn L.</td>
+              <td><span class="text-red">8.4h</span></td>
+              <td><button class="btn btn--sm">Review</button></td>
+            </tr>
+            <tr style="background:var(--amber-bg);">
+              <td><span class="id">ord_01HX7K0V</span></td>
+              <td><span class="mono">ac-replace-capacitor</span></td>
+              <td><span class="pill pill--amber no-dot">QTY VARIANCE</span></td>
+              <td>Sanyo CBB60-35</td>
+              <td class="num mono text-red">2</td>
+              <td><span class="mono">qty 1 expected</span></td>
+              <td>Trương Minh K.</td>
+              <td>6.2h</td>
+              <td><button class="btn btn--sm">Review</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX7JZP</span></td>
+              <td><span class="mono">ac-leak-fix-pipe</span></td>
+              <td><span class="pill pill--violet no-dot">EXTRA ITEM</span></td>
+              <td>Insulation foam (extra)</td>
+              <td class="num mono">1</td>
+              <td><span class="mono">không trong BOM</span></td>
+              <td>Đoàn Hữu R.</td>
+              <td>4.8h</td>
+              <td><button class="btn btn--sm">Review</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX7JX1</span></td>
+              <td><span class="mono">ac-recharge-r32</span></td>
+              <td><span class="pill pill--violet no-dot">EXTRA ITEM</span></td>
+              <td>Dầu lạnh POE 100ml</td>
+              <td class="num mono">0.1</td>
+              <td><span class="mono">không trong BOM</span></td>
+              <td>Phạm Quốc M.</td>
+              <td>3.1h</td>
+              <td><button class="btn btn--sm">Review</button></td>
+            </tr>
+            <tr>
+              <td><span class="id">ord_01HX7JV8</span></td>
+              <td><span class="mono">fridge-recharge-gas</span></td>
+              <td><span class="pill pill--red no-dot">FREE-FORM</span></td>
+              <td><strong>"Gas chuyên tủ"</strong><br><small class="text-mute">Tên không rõ</small></td>
+              <td class="num mono">0.15</td>
+              <td><span class="mono">mtyp_gas_r600a</span></td>
+              <td>Nguyễn V.T.</td>
+              <td>2.4h</td>
+              <td><button class="btn btn--sm">Review</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Review · <span class="mono">ord_01HX7K1A</span> · step washer-replace-pump</div>
+          <div class="panel__sub">Free-form material · thợ Lê Văn L. · 8.4h ago</div>
+        </div>
+      </div>
+      <div style="padding:18px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="font-size:11px;color:var(--text-mute);font-weight:600;letter-spacing:0.5px;margin-bottom:8px;">EXPECTED (BOM)</div>
+            <div style="background:var(--bg-elev);border-radius:8px;padding:12px;">
+              <div style="font-size:13px;font-weight:600;">Bơm xả máy giặt</div>
+              <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;font-family:var(--font-mono);">mtyp_pump_washer · qty 1</div>
+              <div class="divider"></div>
+              <div style="font-size:11px;color:var(--text-mute);margin-bottom:6px;">Variants có sẵn:</div>
+              <div style="font-size:12px;line-height:1.7;">
+                • <strong>LG OEM PMP-LG-A</strong> · 350k · BH 6th<br>
+                • <strong>Samsung OEM PMP-SAM-B</strong> · 380k · BH 6th
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:11px;color:var(--red-text);font-weight:600;letter-spacing:0.5px;margin-bottom:8px;">ACTUAL (THỢ NHẬP)</div>
+            <div style="background:var(--red-bg);border-radius:8px;padding:12px;border:1px solid #f87171;">
+              <div style="font-size:13px;font-weight:600;">Bơm xả "Daikin TQ"</div>
+              <div style="font-size:11.5px;color:var(--red-text);margin-top:2px;">qty 1 · không có trong catalog SMP</div>
+              <div class="divider"></div>
+              <div style="font-size:11.5px;color:var(--text-mute);margin-bottom:6px;">Thợ ghi chú:</div>
+              <div style="font-size:12px;line-height:1.5;background:white;padding:8px;border-radius:6px;">"Khách yêu cầu dùng bơm hàng TQ giá rẻ hơn, mình mua ngoài chợ Nhật Tảo 180k, bán khách 280k."</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">
+          <button class="btn">Yêu cầu thợ làm rõ</button>
+          <button class="btn btn--danger"><i class="ti ti-x"></i> Reject + Refund khách</button>
+          <button class="btn btn--primary"><i class="ti ti-check"></i> Approve · ghi nhận off-catalog</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'material-verify', crumbs: ['SMP', 'Integration', 'Material verification'], search: 'Tìm đơn / thợ...' });
+</script>
+</body>
+</html>

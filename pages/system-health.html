@@ -2,669 +2,71 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>SMP Admin — System Health</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — System health</title>
 <link rel="stylesheet" href="../assets/style.css">
-<style>
-  .service-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-  .svc {
-    background: var(--bg-panel);
-    border: 1px solid var(--line);
-    padding: 12px 14px;
-    position: relative;
-    overflow: hidden;
-  }
-  .svc::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-  }
-  .svc--up::before  { background: var(--c-green); }
-  .svc--deg::before { background: var(--c-amber); }
-  .svc--down::before{ background: var(--c-red); }
-  .svc__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .svc__name {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text);
-    font-weight: 500;
-  }
-  .svc__tier {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--text-mute);
-    letter-spacing: 1px;
-    padding: 1px 5px;
-    background: var(--bg-base);
-  }
-  .svc__metrics {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-  }
-  .svc__metric label {
-    color: var(--text-mute);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 9px;
-  }
-  .svc__metric value {
-    color: var(--text);
-    font-weight: 500;
-    display: block;
-  }
-  .svc__spark {
-    margin-top: 8px;
-    height: 24px;
-  }
-  .slo-gauge {
-    width: 100%;
-    aspect-ratio: 1;
-    max-width: 140px;
-    margin: 0 auto;
-    position: relative;
-  }
-  .slo-gauge__val {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: var(--font-mono);
-  }
-  .slo-gauge__num {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .slo-gauge__label {
-    font-size: 9px;
-    color: var(--text-mute);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-  .timeline {
-    position: relative;
-    padding-left: 24px;
-  }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 8px;
-    bottom: 0;
-    width: 1px;
-    background: var(--line);
-  }
-  .timeline-item { position: relative; padding: 8px 0; }
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -22px;
-    top: 12px;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--bg-base);
-    border: 2px solid var(--text-faint);
-  }
-  .timeline-item--red::before    { border-color: var(--c-red); background: rgba(255,82,82,0.2); }
-  .timeline-item--amber::before  { border-color: var(--c-amber); background: rgba(244,183,64,0.2); }
-  .timeline-item--green::before  { border-color: var(--c-green); background: rgba(92,217,160,0.2); }
-  .timeline-item__ts {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-mute);
-    letter-spacing: 1px;
-  }
-  .timeline-item__title {
-    font-size: 12px;
-    color: var(--text);
-    margin-top: 2px;
-  }
-</style>
 </head>
 <body>
 <div class="app">
-
-  <aside class="sidebar">
-    <div class="sidebar__brand">
-      <div class="sidebar__brand-mark">SMP</div>
-      <div class="sidebar__brand-text">
-        <div class="sidebar__brand-name">Admin</div>
-        <div class="sidebar__brand-tag">v1.4.2 · production</div>
-      </div>
-    </div>
-    <nav class="sidebar__nav">
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
-        <a class="nav-item" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
-        <a class="nav-item" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
-        <a class="nav-item" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
-        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item" href="service-templates.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
-          <span>Service Templates</span>
-          <span class="nav-item__badge">v3.5</span>
-        </a>
-        <a class="nav-item" href="warranty-packages.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
-          <span>Warranty Packages</span>
-        </a>
-        <a class="nav-item" href="warranty-claims.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
-          <span>Claim Queue</span>
-          <span class="nav-item__badge nav-item__badge--alert">5</span>
-        </a>
-        <a class="nav-item" href="warranty-revenue.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
-          <span>Warranty Revenue</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Reports</span></div>
-        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item nav-item--active" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
-        <a class="nav-item" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
-        <a class="nav-item" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
-        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
-      </div>
-    </nav>
-    <div class="sidebar__user">
-      <div class="sidebar__user-avatar">LH</div>
-      <div class="sidebar__user-info">
-        <div class="sidebar__user-name">Lê Hùng</div>
-        <div class="sidebar__user-role">Ops Manager</div>
-      </div>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <div class="topbar__breadcrumb">
-      <span>SMP</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span>System</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span class="topbar__breadcrumb-current">System Health</span>
-    </div>
-    <div class="topbar__search">
-      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
-      <input placeholder="search service, alert, incident…">
-      <kbd class="topbar__search-kbd">⌘K</kbd>
-    </div>
-    <div class="topbar__actions">
-      <span class="topbar__env">PROD · VN</span>
-      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
-    </div>
-  </header>
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
 
   <main class="main">
     <div class="page-header">
-      <div class="page-header__left">
-        <h1>System <em>health</em></h1>
-        <div class="page-header__sub">13 services · 3 regions · 1 active P2 incident · burn rate 6.2x</div>
+      <div>
+        <h1 class="page-title">System health</h1>
+        <div class="page-sub">Microservices status · SLOs · infrastructure</div>
       </div>
-      <div class="page-header__right">
-        <button class="btn btn--ghost">Grafana ↗</button>
-        <button class="btn btn--ghost">Runbooks</button>
-        <button class="btn btn--primary">+ Incident</button>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Add new</button>
       </div>
     </div>
 
-    <!-- KPIs -->
     <div class="kpi-grid">
-      <div class="kpi kpi--green">
-        <div class="kpi__label">Overall uptime</div>
-        <div class="kpi__value">99.94<span class="kpi__unit">%</span></div>
-        <div class="kpi__meta"><span class="kpi__caption">target ≥ 99.9% · 30d</span></div>
-      </div>
-      <div class="kpi">
-        <div class="kpi__label">API p95</div>
-        <div class="kpi__value">287<span class="kpi__unit">ms</span></div>
-        <div class="kpi__meta"><span class="kpi__delta kpi__delta--up">▲ 12ms</span><span class="kpi__caption">target &lt;300ms</span></div>
-      </div>
-      <div class="kpi kpi--amber">
-        <div class="kpi__label">Error budget burn</div>
-        <div class="kpi__value">6.2<span class="kpi__unit">x</span></div>
-        <div class="kpi__meta"><span class="kpi__caption">last 6h · dispatch-svc</span></div>
-      </div>
-      <div class="kpi kpi--red">
-        <div class="kpi__label">Open incidents</div>
-        <div class="kpi__value">3</div>
-        <div class="kpi__meta"><span class="kpi__caption">1 P2 · 2 P3</span></div>
-      </div>
-    </div>
-
-    <!-- Service status grid -->
-    <div style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="panel__title"><span class="panel__title-num">01</span>Microservices · 13 services</div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn--sm">Grid</button>
-          <button class="btn btn--sm btn--ghost">List</button>
-          <button class="btn btn--sm btn--ghost">Topology</button>
-        </div>
-      </div>
-      <div class="service-grid">
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">api-gateway</span><span class="svc__tier">T0</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>847</value></div>
-            <div class="svc__metric"><label>P95</label><value>89ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.02%</value></div>
-            <div class="svc__metric"><label>POD</label><value>12/12</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,16 10,14 20,18 30,12 40,15 50,10 60,13 70,11 80,14 90,9 100,12"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">auth-service</span><span class="svc__tier">T0</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>312</value></div>
-            <div class="svc__metric"><label>P95</label><value>42ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.01%</value></div>
-            <div class="svc__metric"><label>POD</label><value>6/6</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,14 10,16 20,12 30,14 40,11 50,13 60,10 70,12 80,11 90,13 100,10"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">order-service</span><span class="svc__tier">T0</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>284</value></div>
-            <div class="svc__metric"><label>P95</label><value>142ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.04%</value></div>
-            <div class="svc__metric"><label>POD</label><value>8/8</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,15 10,13 20,16 30,11 40,14 50,12 60,15 70,11 80,13 90,10 100,12"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--deg">
-          <div class="svc__head"><span class="svc__name">dispatch-service</span><span class="svc__tier">T0</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>87</value></div>
-            <div class="svc__metric"><label>P95</label><value class="text-amber">2.1s</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-amber">0.34%</value></div>
-            <div class="svc__metric"><label>POD</label><value>4/6</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-amber)" stroke-width="1.5" points="0,18 10,14 20,12 30,8 40,11 50,6 60,9 70,4 80,7 90,5 100,3"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">payment-service</span><span class="svc__tier">T0</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>72</value></div>
-            <div class="svc__metric"><label>P95</label><value>412ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.08%</value></div>
-            <div class="svc__metric"><label>POD</label><value>4/4</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,13 10,15 20,11 30,14 40,12 50,15 60,11 70,13 80,12 90,14 100,11"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">wallet-service</span><span class="svc__tier">T1</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>156</value></div>
-            <div class="svc__metric"><label>P95</label><value>87ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.01%</value></div>
-            <div class="svc__metric"><label>POD</label><value>4/4</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,14 10,13 20,15 30,12 40,14 50,11 60,13 70,10 80,12 90,11 100,9"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">agent-service</span><span class="svc__tier">T1</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>421</value></div>
-            <div class="svc__metric"><label>P95</label><value>54ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.02%</value></div>
-            <div class="svc__metric"><label>POD</label><value>6/6</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,12 10,14 20,11 30,13 40,10 50,12 60,9 70,11 80,8 90,10 100,9"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--deg">
-          <div class="svc__head"><span class="svc__name">notification-svc</span><span class="svc__tier">T1</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>1.2k</value></div>
-            <div class="svc__metric"><label>P95</label><value class="text-amber">4.2s</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-amber">0.18%</value></div>
-            <div class="svc__metric"><label>LAG</label><value class="text-amber">2,847</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-amber)" stroke-width="1.5" points="0,12 10,10 20,8 30,11 40,7 50,9 60,5 70,8 80,6 90,4 100,7"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">inspection-svc</span><span class="svc__tier">T1</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>34</value></div>
-            <div class="svc__metric"><label>P95</label><value>187ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.04%</value></div>
-            <div class="svc__metric"><label>POD</label><value>2/2</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,14 10,12 20,15 30,11 40,13 50,12 60,14 70,11 80,12 90,10 100,11"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">rating-service</span><span class="svc__tier">T2</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>18</value></div>
-            <div class="svc__metric"><label>P95</label><value>34ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0%</value></div>
-            <div class="svc__metric"><label>POD</label><value>2/2</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,15 10,14 20,15 30,13 40,14 50,13 60,14 70,12 80,13 90,12 100,11"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">inventory-svc</span><span class="svc__tier">T2</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>42</value></div>
-            <div class="svc__metric"><label>P95</label><value>67ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0.02%</value></div>
-            <div class="svc__metric"><label>POD</label><value>2/2</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,13 10,14 20,12 30,13 40,11 50,13 60,10 70,12 80,11 90,13 100,10"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--down">
-          <div class="svc__head"><span class="svc__name">webhook-svc</span><span class="svc__tier">T1</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>284</value></div>
-            <div class="svc__metric"><label>P95</label><value class="text-red">12s</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-red">12.4%</value></div>
-            <div class="svc__metric"><label>DLQ</label><value class="text-red">42</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-red)" stroke-width="1.5" points="0,16 10,14 20,12 30,15 40,8 50,4 60,2 70,3 80,2 90,4 100,3"/>
-          </svg>
-        </div>
-
-        <div class="svc svc--up">
-          <div class="svc__head"><span class="svc__name">analytics-svc</span><span class="svc__tier">T3</span></div>
-          <div class="svc__metrics">
-            <div class="svc__metric"><label>RPS</label><value>8</value></div>
-            <div class="svc__metric"><label>P95</label><value>892ms</value></div>
-            <div class="svc__metric"><label>ERR</label><value class="text-green">0%</value></div>
-            <div class="svc__metric"><label>POD</label><value>1/1</value></div>
-          </div>
-          <svg class="svc__spark" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline fill="none" stroke="var(--c-green)" stroke-width="1.5" points="0,15 10,14 20,15 30,14 40,15 50,14 60,15 70,14 80,15 90,14 100,15"/>
-          </svg>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- SLO gauges -->
-    <div class="grid-3" style="margin-bottom:12px;">
-
-      <div class="panel">
-        <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">02</span>SLO · Availability T0</div>
-        </div>
-        <div class="panel__body">
-          <div class="slo-gauge">
-            <svg viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="6"/>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--c-green)" stroke-width="6"
-                stroke-dasharray="263.9" stroke-dashoffset="2.4" transform="rotate(-90 50 50)" stroke-linecap="round"/>
-            </svg>
-            <div class="slo-gauge__val">
-              <div class="slo-gauge__num text-green">99.94%</div>
-              <div class="slo-gauge__label">UPTIME 30D</div>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;text-align:center;font-family:var(--font-mono);">
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">SLO</div>
-              <div style="font-size:13px;color:var(--text);margin-top:3px;">99.9%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">BUDGET</div>
-              <div style="font-size:13px;color:var(--c-green);margin-top:3px;">59%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">BURN</div>
-              <div style="font-size:13px;color:var(--c-green);margin-top:3px;">0.8x</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">03</span>SLO · Dispatch P95</div>
-        </div>
-        <div class="panel__body">
-          <div class="slo-gauge">
-            <svg viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="6"/>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--c-amber)" stroke-width="6"
-                stroke-dasharray="263.9" stroke-dashoffset="92" transform="rotate(-90 50 50)" stroke-linecap="round"/>
-            </svg>
-            <div class="slo-gauge__val">
-              <div class="slo-gauge__num text-amber">65%</div>
-              <div class="slo-gauge__label">SLO MET</div>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;text-align:center;font-family:var(--font-mono);">
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">TARGET</div>
-              <div style="font-size:13px;color:var(--text);margin-top:3px;">&lt;1.5s</div>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">BUDGET</div>
-              <div style="font-size:13px;color:var(--c-amber);margin-top:3px;">-24%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">BURN</div>
-              <div style="font-size:13px;color:var(--c-amber);margin-top:3px;">6.2x</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">04</span>SLO · Webhook delivery</div>
-        </div>
-        <div class="panel__body">
-          <div class="slo-gauge">
-            <svg viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="6"/>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--c-red)" stroke-width="6"
-                stroke-dasharray="263.9" stroke-dashoffset="55" transform="rotate(-90 50 50)" stroke-linecap="round"/>
-            </svg>
-            <div class="slo-gauge__val">
-              <div class="slo-gauge__num text-red">79%</div>
-              <div class="slo-gauge__label">SUCCESS RATE</div>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;text-align:center;font-family:var(--font-mono);">
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">TARGET</div>
-              <div style="font-size:13px;color:var(--text);margin-top:3px;">99%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">BUDGET</div>
-              <div style="font-size:13px;color:var(--c-red);margin-top:3px;">−180%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;color:var(--text-mute);text-transform:uppercase;letter-spacing:1px;">BURN</div>
-              <div style="font-size:13px;color:var(--c-red);margin-top:3px;">14.8x</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="kpi kpi--green"><div class="kpi__label">Services UP</div><div class="kpi__value">14<span class='kpi__unit'>/14</span></div><div class="kpi__meta">100% uptime 30d</div></div>
+<div class="kpi kpi--green"><div class="kpi__label">p99 latency</div><div class="kpi__value">184<span class='kpi__unit'>ms</span></div><div class="kpi__meta">target < 300ms</div></div>
+<div class="kpi kpi--green"><div class="kpi__label">Error rate 1h</div><div class="kpi__value">0.04<span class='kpi__unit'>%</span></div><div class="kpi__meta">target < 0.1%</div></div>
+<div class="kpi kpi--amber"><div class="kpi__label">Active alerts</div><div class="kpi__value">2</div><div class="kpi__meta">1 P3 · 1 P4</div></div>
 
     </div>
 
-    <!-- Infrastructure + Timeline -->
-    <div class="grid-2">
-
-      <div class="panel">
-        <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">05</span>Infrastructure</div>
-        </div>
-        <div class="panel__body panel__body--flush">
-          <div class="service-card">
-            <span class="service-card__status service-card__status--up"></span>
-            <div class="service-card__name">PostgreSQL · primary<small>ap-southeast-1a · db.r6g.4xl</small></div>
-            <div class="service-card__metric"><strong>32%</strong><span>CPU · 64GB</span></div>
-          </div>
-          <div class="service-card">
-            <span class="service-card__status service-card__status--up"></span>
-            <div class="service-card__name">PostgreSQL · replica<small>ap-southeast-1b · lag 4ms</small></div>
-            <div class="service-card__metric"><strong>18%</strong><span>CPU</span></div>
-          </div>
-          <div class="service-card">
-            <span class="service-card__status service-card__status--up"></span>
-            <div class="service-card__name">Redis cluster<small>3 shards · ap-southeast-1</small></div>
-            <div class="service-card__metric"><strong>847k</strong><span>ops/sec</span></div>
-          </div>
-          <div class="service-card">
-            <span class="service-card__status service-card__status--deg"></span>
-            <div class="service-card__name">Kafka · 3 brokers<small>topic lag detected</small></div>
-            <div class="service-card__metric"><strong class="text-amber">2,847</strong><span>msg lag</span></div>
-          </div>
-          <div class="service-card">
-            <span class="service-card__status service-card__status--up"></span>
-            <div class="service-card__name">S3 storage<small>1.84 TB · 99.999%</small></div>
-            <div class="service-card__metric"><strong>1.2k</strong><span>req/sec</span></div>
-          </div>
-          <div class="service-card">
-            <span class="service-card__status service-card__status--up"></span>
-            <div class="service-card__name">EKS cluster<small>42 nodes · auto-scale 25–60</small></div>
-            <div class="service-card__metric"><strong>68%</strong><span>util</span></div>
-          </div>
-          <div class="service-card">
-            <span class="service-card__status service-card__status--up"></span>
-            <div class="service-card__name">CloudFront CDN<small>edge cache hit 94%</small></div>
-            <div class="service-card__metric"><strong>2.4k</strong><span>req/sec</span></div>
-          </div>
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Microservices · 14 services</div>
+          <div class="panel__sub">Health check status cập nhật mỗi 30s</div>
         </div>
       </div>
-
-      <div class="panel">
-        <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">06</span>Incident Timeline · last 6h</div>
-          <button class="panel__action">FULL LOG →</button>
-        </div>
-        <div class="panel__body">
-          <div class="timeline">
-            <div class="timeline-item timeline-item--red">
-              <div class="timeline-item__ts">08:14 UTC+7 · 3 min ago</div>
-              <div class="timeline-item__title">
-                <strong>P2 · INC-2026-0517</strong> · Webhook delivery degraded <span class="pill pill--red">OPEN</span>
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:4px;">12.4% delivery failure on prt_shopee_svc, prt_tgdd · investigating downstream timeout</div>
-              </div>
-            </div>
-            <div class="timeline-item timeline-item--amber">
-              <div class="timeline-item__ts">07:32 UTC+7 · 45 min ago</div>
-              <div class="timeline-item__title">
-                <strong>P3 · INC-2026-0516</strong> · SLO burn dispatch-svc <span class="pill pill--amber">MITIGATING</span>
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:4px;">Burn rate 6.2x · 2 pods CrashLoopBackOff · scale-out triggered, awaiting recovery</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-item__ts">06:45 UTC+7</div>
-              <div class="timeline-item__title">
-                <strong>P4 · INC-2026-0515</strong> · Notification queue lag
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:4px;">Kafka topic lag 2.8k, consumer rebalancing in progress</div>
-              </div>
-            </div>
-            <div class="timeline-item timeline-item--green">
-              <div class="timeline-item__ts">06:00 UTC+7</div>
-              <div class="timeline-item__title">
-                <strong>Deploy</strong> · dispatch-service v1.4.2 → v1.4.3 <span class="pill pill--green">RESOLVED</span>
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:4px;">Canary 5% → 100% in 18 min, no SLO violation on canary</div>
-              </div>
-            </div>
-            <div class="timeline-item timeline-item--green">
-              <div class="timeline-item__ts">04:14 UTC+7</div>
-              <div class="timeline-item__title">
-                <strong>Resolved</strong> · INC-2026-0514 · Login service brief timeout
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:4px;">8 min total · Redis primary failover, auto recovery successful</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-item__ts">02:00 UTC+7</div>
-              <div class="timeline-item__title">
-                <strong>Scheduled</strong> · DB backup + nightly reconcile
-                <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:4px;">Completed in 14m · 47GB · variance 0.00 VND</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Service</th><th>Version</th><th>Replicas</th><th>p50</th><th>p99</th><th>Errors</th><th>Status</th></tr></thead>
+          <tbody><tr><td>catalog-svc <small class='text-mute'>· v2 NEW</small></td><td><span class='mono'>2.0.4</span></td><td><span class='mono'>3</span></td><td><span class='mono'>12ms</span></td><td><span class='mono'>87ms</span></td><td><span class='mono'>0.01%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>dispatch-svc</td><td><span class='mono'>2.1.7</span></td><td><span class='mono'>5</span></td><td><span class='mono'>28ms</span></td><td><span class='mono'>184ms</span></td><td><span class='mono'>0.04%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>pricing-svc <small class='text-mute'>· v2 NEW</small></td><td><span class='mono'>2.0.2</span></td><td><span class='mono'>3</span></td><td><span class='mono'>18ms</span></td><td><span class='mono'>112ms</span></td><td><span class='mono'>0.00%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>order-svc</td><td><span class='mono'>2.1.3</span></td><td><span class='mono'>5</span></td><td><span class='mono'>22ms</span></td><td><span class='mono'>147ms</span></td><td><span class='mono'>0.02%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>payment-svc</td><td><span class='mono'>1.8.4</span></td><td><span class='mono'>3</span></td><td><span class='mono'>41ms</span></td><td><span class='mono'>247ms</span></td><td><span class='mono'>0.03%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>notification-svc</td><td><span class='mono'>1.7.1</span></td><td><span class='mono'>2</span></td><td><span class='mono'>68ms</span></td><td><span class='mono'>421ms</span></td><td><span class='mono'>0.08%</span></td><td><span class='pill pill--amber'>Degraded</span></td></tr>
+<tr><td>webhook-svc</td><td><span class='mono'>1.4.8</span></td><td><span class='mono'>2</span></td><td><span class='mono'>34ms</span></td><td><span class='mono'>318ms</span></td><td><span class='mono'>0.12%</span></td><td><span class='pill pill--amber'>Degraded</span></td></tr>
+<tr><td>search-svc</td><td><span class='mono'>1.6.2</span></td><td><span class='mono'>3</span></td><td><span class='mono'>15ms</span></td><td><span class='mono'>94ms</span></td><td><span class='mono'>0.00%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>agent-svc</td><td><span class='mono'>2.0.9</span></td><td><span class='mono'>3</span></td><td><span class='mono'>19ms</span></td><td><span class='mono'>108ms</span></td><td><span class='mono'>0.01%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+<tr><td>auth-svc</td><td><span class='mono'>1.9.4</span></td><td><span class='mono'>3</span></td><td><span class='mono'>8ms</span></td><td><span class='mono'>52ms</span></td><td><span class='mono'>0.00%</span></td><td><span class='pill pill--green'>Healthy</span></td></tr>
+</tbody>
+        </table>
       </div>
-
     </div>
 
+    <div id="statusbar-mount"></div>
   </main>
-
-  <footer class="statusbar">
-    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--amber"></span>1 SVC DEGRADED · 1 DOWN</div>
-    <span class="statusbar__sep">|</span>
-    <div class="statusbar__item">UPTIME · 99.94%</div>
-    <span class="statusbar__sep">|</span>
-    <div class="statusbar__item">ALERTS · 5 ACTIVE</div>
-    <div class="statusbar__right">
-      <div class="statusbar__item">ON-CALL · @minh.tran</div>
-      <div class="statusbar__item">08:17:42 UTC+7</div>
-    </div>
-  </footer>
-
 </div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({
+  page: 'health',
+  crumbs: ["SMP", "System", "System health"],
+  search: 'Search...'
+});
+</script>
 </body>
 </html>

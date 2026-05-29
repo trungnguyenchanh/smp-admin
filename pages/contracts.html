@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Maintenance Contracts</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Maintenance contracts</h1>
+        <div class="page-sub">Hợp đồng bảo trì định kỳ · 4,128 active · gói cố định N lần/năm</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Tạo hợp đồng</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Active contracts</div>
+        <div class="kpi__value">4,128</div>
+        <div class="kpi__meta">▲ 287 trong tháng</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Revenue MTD</div>
+        <div class="kpi__value">1.84<span class="kpi__unit">B</span></div>
+        <div class="kpi__meta">prepaid · cao điểm Q2</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Visits tuần tới</div>
+        <div class="kpi__value">487</div>
+        <div class="kpi__meta">đã auto-schedule</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Sắp hết hạn</div>
+        <div class="kpi__value">142</div>
+        <div class="kpi__meta">trong 30 ngày · renewal target</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Tất cả<span class="tab__count">4,128</span></div>
+      <div class="tab">Đang chạy<span class="tab__count">3,847</span></div>
+      <div class="tab">Sắp hết hạn<span class="tab__count">142</span></div>
+      <div class="tab">Cần renew<span class="tab__count">96</span></div>
+      <div class="tab">Đã huỷ<span class="tab__count">43</span></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:start;">
+
+      <div>
+        <div style="display:grid;gap:12px;">
+          <div class="contract-card" style="border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-bg);">
+            <div class="contract-card__head">
+              <div>
+                <div class="contract-card__title">Vệ sinh điều hoà · Gói Vàng (4 lần/năm)</div>
+                <div class="contract-card__id">con_01HX7K · Nguyễn Văn A · gia hạn 04/2027</div>
+              </div>
+              <span class="pill pill--green">Active</span>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:12px;font-size:12px;">
+              <div><span class="text-mute">Asset</span> · <strong>1 điều hoà LG</strong></div>
+              <div><span class="text-mute">Giá</span> · <strong class="mono">1,200,000 đ</strong></div>
+              <div><span class="text-mute">Bắt đầu</span> · 04/2026</div>
+              <div><span class="text-mute">Tiết kiệm</span> · <strong class="text-green">−320k vs lẻ</strong></div>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:50%;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+              <span>Đã dùng 2 / 4 visits</span>
+              <span>Còn 8 tháng · visit kế tiếp 22/07/2026</span>
+            </div>
+            <div class="contract-visits">
+              <div class="contract-visit contract-visit--done">DONE<br>22/04</div>
+              <div class="contract-visit contract-visit--done">DONE<br>22/01</div>
+              <div class="contract-visit contract-visit--scheduled">SCHED<br>22/07</div>
+              <div class="contract-visit">PLAN<br>22/10</div>
+            </div>
+          </div>
+
+          <div class="contract-card">
+            <div class="contract-card__head">
+              <div>
+                <div class="contract-card__title">Vệ sinh điều hoà · Gói Bạc (2 lần/năm)</div>
+                <div class="contract-card__id">con_01HX52 · Trần Thị B · gia hạn 02/2027</div>
+              </div>
+              <span class="pill pill--green">Active</span>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:12px;font-size:12px;">
+              <div><span class="text-mute">Asset</span> · <strong>2 điều hoà Daikin</strong></div>
+              <div><span class="text-mute">Giá</span> · <strong class="mono">980,000 đ</strong></div>
+              <div><span class="text-mute">Bắt đầu</span> · 02/2026</div>
+              <div><span class="text-mute">Tiết kiệm</span> · <strong class="text-green">−220k vs lẻ</strong></div>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:50%;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+              <span>Đã dùng 1 / 2 visits</span>
+              <span>Còn 8 tháng · visit kế tiếp 02/08/2026</span>
+            </div>
+            <div class="contract-visits">
+              <div class="contract-visit contract-visit--done">DONE<br>02/02</div>
+              <div class="contract-visit contract-visit--scheduled">SCHED<br>02/08</div>
+            </div>
+          </div>
+
+          <div class="contract-card" style="border-color:#FAC775;">
+            <div class="contract-card__head">
+              <div>
+                <div class="contract-card__title">Bảo trì toàn nhà · Gói Premium</div>
+                <div class="contract-card__id">con_01HX38 · Phạm Quang C · gia hạn 07/2026 <span class="pill pill--amber" style="margin-left:6px;">SẮP HẾT</span></div>
+              </div>
+              <span class="pill pill--amber">Renewal</span>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:12px;font-size:12px;">
+              <div><span class="text-mute">Assets</span> · <strong>5 thiết bị (AC, MG, tủ lạnh)</strong></div>
+              <div><span class="text-mute">Giá</span> · <strong class="mono">3,840,000 đ</strong></div>
+              <div><span class="text-mute">Visits</span> · 12 / năm</div>
+              <div><span class="text-mute">Tiết kiệm</span> · <strong class="text-green">−1.2M vs lẻ</strong></div>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:92%;background:linear-gradient(90deg,var(--amber),var(--red));"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+              <span class="text-amber">11 / 12 visits done · sắp hết hạn</span>
+              <span class="text-mute">Renewal 07/07/2026</span>
+            </div>
+            <div style="margin-top:8px;">
+              <button class="btn btn--sm btn--primary"><i class="ti ti-refresh"></i> Gửi renewal offer</button>
+              <button class="btn btn--sm"><i class="ti ti-mail"></i> Email khách</button>
+            </div>
+          </div>
+
+          <div class="contract-card">
+            <div class="contract-card__head">
+              <div>
+                <div class="contract-card__title">Vệ sinh máy giặt · Gói Lite (1 lần/năm)</div>
+                <div class="contract-card__id">con_01HX21 · Lê Hoàng D · gia hạn 11/2026</div>
+              </div>
+              <span class="pill pill--green">Active</span>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:12px;font-size:12px;">
+              <div><span class="text-mute">Asset</span> · <strong>1 máy giặt LG</strong></div>
+              <div><span class="text-mute">Giá</span> · <strong class="mono">280,000 đ</strong></div>
+              <div><span class="text-mute">Bắt đầu</span> · 11/2025</div>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:100%;background:var(--green);"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-mute);">
+              <span class="text-green">1 / 1 visits done</span>
+              <span>Còn 5 tháng tới renewal</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;text-align:center;">
+          <button class="btn">Tải thêm 24 hợp đồng</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Visits tuần này</div>
+              <div class="panel__sub">487 visits auto-scheduled</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>Thứ 2 26/05</span><span class="mono">87 visits</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:1px;">71 confirmed · 16 chờ</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);background:var(--primary-bg);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--primary-text);">
+                <span>Thứ 3 27/05</span><span class="mono">94 visits</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--primary-text);margin-top:1px;">Hôm nay · 41 done · 53 còn lại</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>Thứ 4 28/05</span><span class="mono">78</span>
+              </div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>Thứ 5 29/05</span><span class="mono">81</span>
+              </div>
+            </div>
+            <div style="padding:11px 16px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>Thứ 6 30/05</span><span class="mono">92</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Renewal funnel</div>
+              <div class="panel__sub">Theo dõi khách sắp hết hạn</div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+              <span>Sắp hết (≤30 ngày)</span><strong>142</strong>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:100%;background:var(--amber);"></div></div>
+
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin:14px 0 6px;">
+              <span>Đã gửi offer</span><strong>89</strong>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:63%;background:var(--primary);"></div></div>
+
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin:14px 0 6px;">
+              <span>Đã renew</span><strong class="text-green">52</strong>
+            </div>
+            <div class="contract-progress"><div class="contract-progress__bar" style="width:37%;background:var(--green);"></div></div>
+            <div style="font-size:11px;color:var(--text-mute);margin-top:6px;text-align:right;">Renewal rate · 58% (target 65%)</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Top packages bán chạy</div>
+            </div>
+            <a class="panel__action" href="packages.html">Quản lý →</a>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>AC · Vàng (4 lần)</span><span class="mono">1,847</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">1.2M · −25% vs lẻ</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>AC · Bạc (2 lần)</span><span class="mono">1,287</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">600k · −20% vs lẻ</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>Combo nhà (3 thiết bị)</span><span class="mono">521</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">2.1M · −30% vs lẻ</div>
+            </div>
+            <div style="padding:11px 16px;">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;">
+                <span>Premium (toàn nhà)</span><span class="mono">287</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);">3.8M · −35% vs lẻ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'contracts', crumbs: ['SMP', 'Customer', 'Maintenance contracts'], search: 'Tìm hợp đồng...' });
+</script>
+</body>
+</html>

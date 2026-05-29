@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Integration Health</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Integration health</h1>
+        <div class="page-sub">Status inside + wms + event bus · realtime · API calls + webhook + topic consumers</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-refresh"></i> Refresh</button>
+        <button class="btn"><i class="ti ti-bug"></i> Replay failed events</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
+
+      <div class="integration-card">
+        <div class="integration-card__status-bar integration-card__status-bar--ok"></div>
+        <div class="integration-card__head">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div class="integration-card__icon" style="background:#dbeafe;color:#1d4ed8;">
+              <i class="ti ti-building-bank"></i>
+            </div>
+            <div>
+              <div class="integration-card__title">inside</div>
+              <div class="integration-card__url">inside.local/api/v1</div>
+            </div>
+          </div>
+          <span class="pill pill--green">Healthy</span>
+        </div>
+        <div class="integration-metric"><span class="text-mute">p99 latency</span><span class="integration-metric__value">142ms</span></div>
+        <div class="integration-metric"><span class="text-mute">API calls 1h</span><span class="integration-metric__value">12,847</span></div>
+        <div class="integration-metric"><span class="text-mute">Error rate</span><span class="integration-metric__value text-green">0.02%</span></div>
+        <div class="integration-metric"><span class="text-mute">Webhooks received 1h</span><span class="integration-metric__value">487</span></div>
+        <div class="integration-metric"><span class="text-mute">Failed webhook retries</span><span class="integration-metric__value text-amber">3</span></div>
+      </div>
+
+      <div class="integration-card">
+        <div class="integration-card__status-bar integration-card__status-bar--ok"></div>
+        <div class="integration-card__head">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div class="integration-card__icon" style="background:#fef3c7;color:#92400e;">
+              <i class="ti ti-package"></i>
+            </div>
+            <div>
+              <div class="integration-card__title">wms</div>
+              <div class="integration-card__url">wms.local/api/v1</div>
+            </div>
+          </div>
+          <span class="pill pill--green">Healthy</span>
+        </div>
+        <div class="integration-metric"><span class="text-mute">p99 latency</span><span class="integration-metric__value">87ms</span></div>
+        <div class="integration-metric"><span class="text-mute">Stock checks 1h</span><span class="integration-metric__value">8,421</span></div>
+        <div class="integration-metric"><span class="text-mute">Reservations 1h</span><span class="integration-metric__value">241</span></div>
+        <div class="integration-metric"><span class="text-mute">Commits 1h</span><span class="integration-metric__value">218</span></div>
+        <div class="integration-metric"><span class="text-mute">Error rate</span><span class="integration-metric__value text-green">0.01%</span></div>
+      </div>
+
+      <div class="integration-card">
+        <div class="integration-card__status-bar integration-card__status-bar--degraded"></div>
+        <div class="integration-card__head">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div class="integration-card__icon" style="background:#fce7f3;color:#be185d;">
+              <i class="ti ti-message-2"></i>
+            </div>
+            <div>
+              <div class="integration-card__title">Event Bus</div>
+              <div class="integration-card__url">kafka.local:9092</div>
+            </div>
+          </div>
+          <span class="pill pill--amber">Degraded</span>
+        </div>
+        <div class="integration-metric"><span class="text-mute">Messages/sec</span><span class="integration-metric__value">142</span></div>
+        <div class="integration-metric"><span class="text-mute">Consumer lag</span><span class="integration-metric__value text-amber">3.2s</span></div>
+        <div class="integration-metric"><span class="text-mute">Topics subscribed</span><span class="integration-metric__value">8</span></div>
+        <div class="integration-metric"><span class="text-mute">Dead letter queue</span><span class="integration-metric__value text-red">12</span></div>
+        <div class="integration-metric"><span class="text-mute">Last consumed</span><span class="integration-metric__value">3s ago</span></div>
+      </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Event bus log · realtime</div>
+            <div class="panel__sub">Streaming events từ inside + wms · last 100</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="chip active">All</button>
+            <button class="chip">inside.*</button>
+            <button class="chip">wms.*</button>
+          </div>
+        </div>
+        <div style="padding:0;max-height:480px;overflow-y:auto;">
+          <div class="event-entry">
+            <span class="event-entry__time">08:17:42.821</span>
+            <span class="event-entry__topic">inside.payment.succeeded</span>
+            <span>Payment <span class="mono">pi_01HX7K3F</span> · order ord_01HX7K2M · 750k VND</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:17:38.402</span>
+            <span class="event-entry__topic">wms.stock.commit</span>
+            <span>Reservation rsv_01HX7K5B · Sanyo CBB60-35 ×1 · agt_T4K9</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:17:32.117</span>
+            <span class="event-entry__topic">inside.customer.updated</span>
+            <span>cus_01HX5K · changed: phone</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+          <div class="event-entry" style="background:var(--amber-bg);">
+            <span class="event-entry__time">08:17:28.954</span>
+            <span class="event-entry__topic">wms.stock.low</span>
+            <span>SKU-PMP-LG · warehouse wh_shared_hcmc · 2 cái còn</span>
+            <span class="pill pill--amber no-dot">ALERT</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:17:21.402</span>
+            <span class="event-entry__topic">inside.voucher.created</span>
+            <span>vou_q3promo · for tier=silver · 15% discount</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:17:15.118</span>
+            <span class="event-entry__topic">wms.reservation.expired</span>
+            <span>rsv_01HX6QR1 · TTL 24h · auto-released 3 items</span>
+            <span class="pill pill--gray no-dot">INFO</span>
+          </div>
+          <div class="event-entry" style="background:var(--red-bg);">
+            <span class="event-entry__time">08:16:42.118</span>
+            <span class="event-entry__topic">inside.customer.deleted</span>
+            <span>cus_old_4218 · DLQ · schema validation failed</span>
+            <span class="pill pill--red no-dot">DLQ</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:16:38.521</span>
+            <span class="event-entry__topic">inside.payment.refunded</span>
+            <span>Payment pi_01HX5K3A · refund 335k · order ord_01HX5K1F</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:16:34.211</span>
+            <span class="event-entry__topic">wms.stock.restocked</span>
+            <span>SKU-GAS-SBZ-R32-08 · +50 units · warehouse wh_shared_hcmc</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+          <div class="event-entry">
+            <span class="event-entry__time">08:16:21.842</span>
+            <span class="event-entry__topic">inside.customer.updated</span>
+            <span>cus_01HX4K · changed: address.default</span>
+            <span class="pill pill--green no-dot">ACK</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Dead Letter Queue</div>
+              <div class="panel__sub">12 events · cần intervention</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span class="mono">inside.customer.deleted</span>
+                <span class="pill pill--red" style="font-size:10px;">DLQ</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:2px;">Schema validation: missing field cus_id · 3 events</div>
+            </div>
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span class="mono">wms.stock.movement</span>
+                <span class="pill pill--red" style="font-size:10px;">DLQ</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:2px;">Unknown variant_id · 7 events</div>
+            </div>
+            <div style="padding:11px 14px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span class="mono">inside.payment.succeeded</span>
+                <span class="pill pill--red" style="font-size:10px;">DLQ</span>
+              </div>
+              <div style="font-size:10.5px;color:var(--text-mute);margin-top:2px;">SMP order not found · 2 events</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Recent API errors</div>
+              <div class="panel__sub">Last 1h · outgoing calls</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div style="font-size:11.5px;font-weight:600;">inside.getCustomer</div>
+              <div style="font-size:10.5px;color:var(--red);margin-top:2px;font-family:var(--font-mono);">503 · timeout 3000ms · 2 errors</div>
+            </div>
+            <div style="padding:11px 14px;">
+              <div style="font-size:11.5px;font-weight:600;">wms.reserve</div>
+              <div style="font-size:10.5px;color:var(--amber-text);margin-top:2px;font-family:var(--font-mono);">429 · rate limit · 1 error</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Endpoints config</div>
+            </div>
+            <a class="panel__action" href="settings.html">Edit →</a>
+          </div>
+          <div style="padding:12px 14px;font-size:11.5px;line-height:1.7;">
+            <div class="text-mute" style="font-weight:600;margin-bottom:4px;">inside</div>
+            <div class="mono" style="font-size:11px;">inside.local/api/v1</div>
+            <div class="text-mute" style="font-weight:600;margin-top:8px;margin-bottom:4px;">wms</div>
+            <div class="mono" style="font-size:11px;">wms.local/api/v1</div>
+            <div class="text-mute" style="font-weight:600;margin-top:8px;margin-bottom:4px;">Event bus</div>
+            <div class="mono" style="font-size:11px;">kafka.local:9092</div>
+            <div class="text-mute" style="font-weight:600;margin-top:8px;margin-bottom:4px;">Auth method</div>
+            <div class="mono" style="font-size:11px;">Bearer · rotated 30d</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'integration-health', crumbs: ['SMP', 'Integration', 'Health'], search: 'Tìm event / topic...' });
+</script>
+</body>
+</html>

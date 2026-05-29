@@ -2,376 +2,100 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMP Admin — Finance</title>
 <link rel="stylesheet" href="../assets/style.css">
-<style>
-  .ledger-row {
-    display: grid;
-    grid-template-columns: 80px 100px 1fr 1fr 110px 110px 90px;
-    gap: 12px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--line-soft);
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    align-items: center;
-  }
-  .ledger-row:hover { background: var(--bg-elev); }
-  .ledger-row--head {
-    font-size: 9px;
-    color: var(--text-mute);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    background: var(--bg-base);
-    border-bottom: 1px solid var(--line);
-  }
-  .ledger-row__amt-dr { color: var(--c-red); text-align: right; }
-  .ledger-row__amt-cr { color: var(--c-green); text-align: right; }
-  .ledger-row__bal { color: var(--text); text-align: right; font-weight: 500; }
-  .wallet-card {
-    background: var(--bg-panel);
-    border: 1px solid var(--line);
-    padding: 16px;
-    position: relative;
-  }
-  .wallet-card__label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-mute);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-  .wallet-card__value {
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 600;
-    margin-top: 6px;
-    color: var(--text);
-  }
-  .wallet-card__sub {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-mute);
-    margin-top: 4px;
-  }
-  .recon-status {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 18px;
-    background: rgba(92, 217, 160, 0.05);
-    border: 1px solid var(--c-green-dim);
-    margin-bottom: 12px;
-  }
-  .recon-status__icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(92, 217, 160, 0.15);
-    display: grid;
-    place-items: center;
-    color: var(--c-green);
-  }
-</style>
 </head>
 <body>
 <div class="app">
-
-  <aside class="sidebar">
-    <div class="sidebar__brand">
-      <div class="sidebar__brand-mark">SMP</div>
-      <div class="sidebar__brand-text">
-        <div class="sidebar__brand-name">Admin</div>
-        <div class="sidebar__brand-tag">v1.4.2 · production</div>
-      </div>
-    </div>
-    <nav class="sidebar__nav">
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Operations</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="dashboard.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="6" height="6"/><rect x="8.5" y="1.5" width="6" height="6"/><rect x="1.5" y="8.5" width="6" height="6"/><rect x="8.5" y="8.5" width="6" height="6"/></svg><span>Dashboard</span></a>
-        <a class="nav-item" href="dispatch-monitor.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3"/></svg><span>Dispatch Monitor</span><span class="nav-item__badge">LIVE</span></a>
-        <a class="nav-item" href="orders.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12"/><path d="M5 6h6M5 9h6M5 12h3"/></svg><span>Orders</span><span class="nav-item__badge">847</span></a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Modules</span><span class="nav-section__count">03</span></div>
-        <a class="nav-item" href="agents.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg><span>Agents &amp; KYC</span><span class="nav-item__badge nav-item__badge--alert">12</span></a>
-        <a class="nav-item nav-item--active" href="finance.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9"/><path d="M1.5 7h13M5 10h2"/></svg><span>Finance</span></a>
-        <a class="nav-item" href="partners.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 0 1 10 0M3 8h10M5 11l-2 2M11 11l2 2"/></svg><span>Partners</span></a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>v3.5 · NEW</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item" href="service-templates.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12v3H2z M2 8h12v3H2z M2 13h12"/></svg>
-          <span>Service Templates</span>
-          <span class="nav-item__badge">v3.5</span>
-        </a>
-        <a class="nav-item" href="warranty-packages.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3z M2 5l6 3 6-3M8 8v6"/></svg>
-          <span>Warranty Packages</span>
-        </a>
-        <a class="nav-item" href="warranty-claims.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
-          <span>Claim Queue</span>
-          <span class="nav-item__badge nav-item__badge--alert">5</span>
-        </a>
-        <a class="nav-item" href="warranty-revenue.html">
-          <svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg>
-          <span>Warranty Revenue</span>
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>Reports</span></div>
-        <a class="nav-item" href="reports.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13l4-6 3 3 5-7M2 13h12"/></svg><span>Reports</span></a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section__label"><span>System</span><span class="nav-section__count">04</span></div>
-        <a class="nav-item" href="system-health.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-5 4 10 2-5h3"/></svg><span>System Health</span></a>
-        <a class="nav-item" href="logs.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z M5 5h6M5 8h6M5 11h4"/></svg><span>Logs</span></a>
-        <a class="nav-item" href="audit.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z"/></svg><span>Audit Trail</span></a>
-        <a class="nav-item" href="settings.html"><svg class="nav-item__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3"/></svg><span>Settings</span></a>
-      </div>
-    </nav>
-    <div class="sidebar__user">
-      <div class="sidebar__user-avatar">LH</div>
-      <div class="sidebar__user-info">
-        <div class="sidebar__user-name">Lê Hùng</div>
-        <div class="sidebar__user-role">Ops Manager</div>
-      </div>
-    </div>
-  </aside>
-
-  <header class="topbar">
-    <div class="topbar__breadcrumb">
-      <span>SMP</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span>Modules</span>
-      <span class="topbar__breadcrumb-sep">/</span>
-      <span class="topbar__breadcrumb-current">Finance</span>
-    </div>
-    <div class="topbar__search">
-      <svg class="topbar__search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M14 14l-3-3"/></svg>
-      <input placeholder="search by txn_id, ord_id, account…">
-      <kbd class="topbar__search-kbd">⌘K</kbd>
-    </div>
-    <div class="topbar__actions">
-      <span class="topbar__env">PROD · VN</span>
-      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6a5 5 0 0 1 10 0v4l1 2H2l1-2z M6 14a2 2 0 0 0 4 0"/></svg><span class="icon-btn__dot"></span></button>
-    </div>
-  </header>
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
 
   <main class="main">
     <div class="page-header">
-      <div class="page-header__left">
-        <h1>Finance <em>&amp; wallet</em></h1>
-        <div class="page-header__sub">26 May 2026 · books closed up to 25 May · auto reconcile @ 02:00</div>
+      <div>
+        <h1 class="page-title">Finance</h1>
+        <div class="page-sub">Doanh thu, hoa hồng, payout · phân tách per-step kể từ v2</div>
       </div>
-      <div class="page-header__right">
-        <button class="btn btn--ghost">Trial balance</button>
-        <button class="btn btn--ghost">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M2 13h12"/></svg>
-          Export
-        </button>
-        <button class="btn btn--primary">+ Manual entry</button>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-calendar"></i> May 2026</button>
+        <button class="btn"><i class="ti ti-download"></i> Export báo cáo</button>
       </div>
     </div>
 
-    <!-- Reconcile status banner -->
-    <div class="recon-status">
-      <div class="recon-status__icon">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l3 3 7-7"/></svg>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:13px;color:var(--text);"><strong style="color:var(--c-green);">Daily reconcile: BALANCED</strong> · Provider statements khớp 100% với internal ledger.</div>
-        <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:2px;">last run · 2026-05-26 02:00:14 UTC+7 · checked 4,827 txns · variance 0.00 VND</div>
-      </div>
-      <button class="btn btn--sm btn--ghost">View report →</button>
-    </div>
-
-    <!-- KPIs -->
     <div class="kpi-grid">
       <div class="kpi kpi--green">
-        <div class="kpi__label">GMV today</div>
-        <div class="kpi__value">1.84<span class="kpi__unit">B</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__delta kpi__delta--up">▲ 8.7%</span>
-          <span class="kpi__caption">vs yesterday</span>
-        </div>
+        <div class="kpi__label">GMV tháng này</div>
+        <div class="kpi__value">42.8<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">▲ 18.4% MoM</div>
       </div>
       <div class="kpi">
         <div class="kpi__label">Commission</div>
-        <div class="kpi__value">372<span class="kpi__unit">M</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__caption">20.2% take rate</span>
-        </div>
+        <div class="kpi__value">8.65<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">take rate 20.2%</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Payout pending</div>
+        <div class="kpi__value">2.18<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">3,891 agents · settle hôm nay 18:00</div>
       </div>
       <div class="kpi kpi--amber">
-        <div class="kpi__label">Payouts pending</div>
-        <div class="kpi__value">847<span class="kpi__unit">M</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__caption">1,247 agents · daily cycle</span>
-        </div>
-      </div>
-      <div class="kpi kpi--red">
-        <div class="kpi__label">Refunds today</div>
-        <div class="kpi__value">14.2<span class="kpi__unit">M</span></div>
-        <div class="kpi__meta">
-          <span class="kpi__caption">28 cases · 0.77% rate</span>
-        </div>
+        <div class="kpi__label">Disputed</div>
+        <div class="kpi__value">14.2<span class="kpi__unit">M VND</span></div>
+        <div class="kpi__meta">28 step bị dispute · v2 giảm 60%</div>
       </div>
     </div>
 
-    <!-- Wallet breakdown -->
-    <div class="grid-3" style="margin-bottom:12px;">
-      <div class="wallet-card">
-        <span class="crosshair" style="top:-4px;left:-4px;"></span>
-        <span class="crosshair" style="top:-4px;right:-4px;"></span>
-        <div class="wallet-card__label">Customer wallet · available</div>
-        <div class="wallet-card__value text-green">12.4B VND</div>
-        <div class="wallet-card__sub">147,892 wallets · avg 84k</div>
-      </div>
-      <div class="wallet-card">
-        <span class="crosshair" style="top:-4px;left:-4px;"></span>
-        <span class="crosshair" style="top:-4px;right:-4px;"></span>
-        <div class="wallet-card__label">Agent wallet · earned</div>
-        <div class="wallet-card__value text-cyan">8.7B VND</div>
-        <div class="wallet-card__sub">3,891 agents · avg 2.2M</div>
-      </div>
-      <div class="wallet-card">
-        <span class="crosshair" style="top:-4px;left:-4px;"></span>
-        <span class="crosshair" style="top:-4px;right:-4px;"></span>
-        <div class="wallet-card__label">Escrow · hold</div>
-        <div class="wallet-card__value text-amber">2.1B VND</div>
-        <div class="wallet-card__sub">847 active orders · in-progress</div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="tabs">
-      <div class="tab tab--active">Ledger</div>
-      <div class="tab">Payouts queue<span class="tab__count">1,247</span></div>
-      <div class="tab">Refunds<span class="tab__count">28</span></div>
-      <div class="tab">Commission</div>
-      <div class="tab">Reconcile</div>
-    </div>
-
-    <!-- Recent ledger transactions (double-entry) -->
-    <div class="panel" style="margin-bottom:12px;">
+    <div class="panel" style="margin-bottom:16px;">
       <div class="panel__head">
-        <div class="panel__title"><span class="panel__title-num">01</span>Ledger · last 24h</div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn--sm btn--ghost">Filter: type ▾</button>
-          <button class="btn btn--sm btn--ghost">Account ▾</button>
+        <div>
+          <div class="panel__title">Revenue breakdown · step level</div>
+          <div class="panel__sub">Doanh thu theo từng loại step · v2 model</div>
         </div>
+        <a class="panel__action" href="reports.html">Full report →</a>
       </div>
-      <div class="panel__body panel__body--flush">
-        <div class="ledger-row ledger-row--head">
-          <div>TS</div>
-          <div>TXN_ID</div>
-          <div>DR ACCOUNT</div>
-          <div>CR ACCOUNT</div>
-          <div>DEBIT</div>
-          <div>CREDIT</div>
-          <div>STATUS</div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">08:17:31</div>
-          <div class="text-cyan">txn_01HX7K</div>
-          <div>customer:usr_K2M3<small style="color:var(--text-mute)"> · ord_01HX7K2M</small></div>
-          <div>platform:escrow</div>
-          <div class="ledger-row__amt-dr">−1,200,000</div>
-          <div class="ledger-row__amt-cr">+1,200,000</div>
-          <div><span class="pill pill--green">POSTED</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">08:16:54</div>
-          <div class="text-cyan">txn_01HX7J</div>
-          <div>platform:escrow</div>
-          <div>agent:agt_L2X7<small style="color:var(--text-mute)"> · ord_01HX7JN</small></div>
-          <div class="ledger-row__amt-dr">−680,000</div>
-          <div class="ledger-row__amt-cr">+544,000</div>
-          <div><span class="pill pill--green">POSTED</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">08:16:54</div>
-          <div class="text-cyan">txn_01HX7J</div>
-          <div>platform:escrow</div>
-          <div>platform:commission</div>
-          <div class="ledger-row__amt-dr"></div>
-          <div class="ledger-row__amt-cr">+136,000</div>
-          <div><span class="pill pill--green">POSTED</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">08:16:02</div>
-          <div class="text-cyan">txn_01HX7H</div>
-          <div>customer:usr_JL44</div>
-          <div>platform:escrow<small style="color:var(--text-mute)"> · stripe</small></div>
-          <div class="ledger-row__amt-dr">−980,000</div>
-          <div class="ledger-row__amt-cr">+980,000</div>
-          <div><span class="pill pill--green">POSTED</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">08:14:32</div>
-          <div class="text-cyan">txn_01HX7G</div>
-          <div>platform:commission</div>
-          <div>tnt:tnt_HCM_central<small style="color:var(--text-mute)"> · rev-share</small></div>
-          <div class="ledger-row__amt-dr">−42,000</div>
-          <div class="ledger-row__amt-cr">+42,000</div>
-          <div><span class="pill pill--green">POSTED</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">07:58:11</div>
-          <div class="text-cyan">txn_01HX7F</div>
-          <div>platform:escrow</div>
-          <div>customer:usr_R7Y4<small style="color:var(--text-mute)"> · refund</small></div>
-          <div class="ledger-row__amt-dr">−2,400,000</div>
-          <div class="ledger-row__amt-cr">+2,400,000</div>
-          <div><span class="pill pill--amber">PENDING</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">07:42:09</div>
-          <div class="text-cyan">txn_01HX7E</div>
-          <div>agent:agt_T4K9</div>
-          <div>external:vcb_bank<small style="color:var(--text-mute)"> · payout</small></div>
-          <div class="ledger-row__amt-dr">−4,200,000</div>
-          <div class="ledger-row__amt-cr">+4,200,000</div>
-          <div><span class="pill pill--cyan">PROCESSING</span></div>
-        </div>
-
-        <div class="ledger-row">
-          <div class="text-mute">06:00:00</div>
-          <div class="text-cyan">txn_01HX7C</div>
-          <div>platform:commission</div>
-          <div>platform:revenue<small style="color:var(--text-mute)"> · daily close</small></div>
-          <div class="ledger-row__amt-dr">−372,000,000</div>
-          <div class="ledger-row__amt-cr">+372,000,000</div>
-          <div><span class="pill pill--green">POSTED</span></div>
-        </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Step</th>
+              <th>Skill</th>
+              <th class="num">Volume (đơn)</th>
+              <th class="num">Avg labor</th>
+              <th class="num">Material revenue</th>
+              <th class="num">Total GMV</th>
+              <th class="num">Commission</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="id">ac-recharge-r32</span></td><td>ac-mechanic</td><td class="num mono">15,420</td><td class="num mono">120k</td><td class="num mono">5.2B</td><td class="num mono">7.07B</td><td class="num mono">1.42B</td></tr>
+            <tr><td><span class="id">ac-replace-block</span></td><td>ac-mechanic</td><td class="num mono">847</td><td class="num mono">800k</td><td class="num mono">2.1B</td><td class="num mono">2.78B</td><td class="num mono">560M</td></tr>
+            <tr><td><span class="id">ac-clean-indoor-unit</span></td><td>ac-cleaner</td><td class="num mono">25,420</td><td class="num mono">80k</td><td class="num mono">610M</td><td class="num mono">2.64B</td><td class="num mono">532M</td></tr>
+            <tr><td><span class="id">washer-clean-drum</span></td><td>washer-mechanic</td><td class="num mono">12,630</td><td class="num mono">280k</td><td class="num mono">631M</td><td class="num mono">4.16B</td><td class="num mono">832M</td></tr>
+            <tr><td><span class="id">heater-replace-element</span></td><td>heater-mechanic</td><td class="num mono">6,120</td><td class="num mono">150k</td><td class="num mono">1.71B</td><td class="num mono">2.63B</td><td class="num mono">530M</td></tr>
+            <tr><td><span class="id">fridge-recharge-gas</span></td><td>fridge-mechanic</td><td class="num mono">9,510</td><td class="num mono">180k</td><td class="num mono">499M</td><td class="num mono">2.21B</td><td class="num mono">446M</td></tr>
+            <tr><td><span class="id">plumb-unclog-drain</span></td><td>plumber</td><td class="num mono">10,260</td><td class="num mono">150k</td><td class="num mono">—</td><td class="num mono">1.54B</td><td class="num mono">308M</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Bottom: Payouts queue + Refund queue -->
-    <div class="grid-2">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="panel">
         <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">02</span>Payouts Queue · next batch 18:00</div>
-          <button class="panel__action">PROCESS ALL →</button>
+          <div>
+            <div class="panel__title">Pending payouts · today</div>
+            <div class="panel__sub">Tự động chuyển 18:00 hằng ngày</div>
+          </div>
         </div>
-        <div class="panel__body panel__body--flush">
+        <div class="table-wrap">
           <table class="data">
-            <thead><tr><th>Agent</th><th>Bank</th><th class="num">Amount</th><th>Schedule</th><th>Status</th></tr></thead>
+            <thead><tr><th>Bank</th><th class="num">Agents</th><th class="num">Total</th></tr></thead>
             <tbody>
-              <tr><td><span class="cell-id">agt_T4K9</span><br><small class="text-mute">Trương M.K.</small></td><td>VCB ••8821</td><td class="num">4,200,000</td><td>Daily</td><td><span class="pill pill--amber">QUEUED</span></td></tr>
-              <tr><td><span class="cell-id">agt_L2X7</span><br><small class="text-mute">Lê V.L.</small></td><td>TCB ••0019</td><td class="num">3,840,000</td><td>Daily</td><td><span class="pill pill--amber">QUEUED</span></td></tr>
-              <tr><td><span class="cell-id">agt_R7Y4</span><br><small class="text-mute">Đoàn H.R.</small></td><td>MB ••4477</td><td class="num">3,510,000</td><td>Daily</td><td><span class="pill pill--amber">QUEUED</span></td></tr>
-              <tr><td><span class="cell-id">agt_M4N1</span><br><small class="text-mute">Phạm Q.M.</small></td><td>ACB ••3398</td><td class="num">3,270,000</td><td>Daily</td><td><span class="pill pill--amber">QUEUED</span></td></tr>
-              <tr><td><span class="cell-id">agt_W8R2</span><br><small class="text-mute">Nguyễn T.W.</small></td><td>VCB ••2287</td><td class="num">3,020,000</td><td>Daily</td><td><span class="pill pill--cyan">VALIDATING</span></td></tr>
-              <tr><td><span class="cell-id">agt_K2Z8</span><br><small class="text-mute">Vũ K.Z.</small></td><td>VPB ••1142</td><td class="num">2,890,000</td><td>Daily</td><td><span class="pill pill--red">BANK ERR</span></td></tr>
+              <tr><td>Vietcombank (VCB)</td><td class="num mono">1,847</td><td class="num mono">1.03B</td></tr>
+              <tr><td>Techcombank (TCB)</td><td class="num mono">892</td><td class="num mono">487M</td></tr>
+              <tr><td>BIDV</td><td class="num mono">521</td><td class="num mono">284M</td></tr>
+              <tr><td>MoMo / e-wallet</td><td class="num mono">631</td><td class="num mono">348M</td></tr>
             </tbody>
           </table>
         </div>
@@ -379,41 +103,49 @@
 
       <div class="panel">
         <div class="panel__head">
-          <div class="panel__title"><span class="panel__title-num">03</span>Refund Queue · awaiting approval</div>
-          <span class="pill pill--amber">28</span>
+          <div>
+            <div class="panel__title">Disputes · open</div>
+            <div class="panel__sub">Phần lớn dispute là từng step riêng (v2 cho phép)</div>
+          </div>
+          <span class="pill pill--red">28 open</span>
         </div>
-        <div class="panel__body panel__body--flush">
-          <table class="data">
-            <thead><tr><th>Order</th><th>Customer</th><th class="num">Amount</th><th>Reason</th><th>Submitted</th><th>Authority</th></tr></thead>
-            <tbody>
-              <tr><td><span class="cell-id">ord_01HX7JQ2</span></td><td>Đinh Khải H.</td><td class="num">680,000</td><td>Service quality</td><td>2h ago</td><td><span class="pill pill--cyan">L1 · auto</span></td></tr>
-              <tr><td><span class="cell-id">ord_01HX7H9F</span></td><td>Lê Mai N.</td><td class="num">1,200,000</td><td>No-show agent</td><td>3h ago</td><td><span class="pill pill--cyan">L1 · auto</span></td></tr>
-              <tr><td><span class="cell-id">ord_01HX7G5K</span></td><td>Phan Hùng T.</td><td class="num">2,400,000</td><td>Disputed quote</td><td>4h ago</td><td><span class="pill pill--amber">L2 · @ops</span></td></tr>
-              <tr><td><span class="cell-id">ord_01HX7F8L</span></td><td>Bùi Tâm V.</td><td class="num">3,800,000</td><td>Major damage</td><td>6h ago</td><td><span class="pill pill--red">L3 · @cfo</span></td></tr>
-              <tr><td><span class="cell-id">ord_01HX7E1P</span></td><td>Hoàng Quang H.</td><td class="num">540,000</td><td>Cancel after dispatch</td><td>8h ago</td><td><span class="pill pill--cyan">L1 · auto</span></td></tr>
-              <tr><td><span class="cell-id">ord_01HX7D7Q</span></td><td>Trần Văn S.</td><td class="num">920,000</td><td>Service quality</td><td>12h ago</td><td><span class="pill pill--cyan">L1 · auto</span></td></tr>
-            </tbody>
-          </table>
+        <div>
+          <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+              <span class="mono">ord_01HX7JQ2 · step ac-replace-capacitor</span>
+              <span class="text-red">−240k</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Khách báo tụ cũ chưa hỏng · 2h ago</div>
+          </div>
+          <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+              <span class="mono">ord_01HX7JK1 · step ac-recharge-r32</span>
+              <span class="text-red">−440k</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Nạp dư gas · 3h ago</div>
+          </div>
+          <div style="padding:11px 16px;">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+              <span class="mono">ord_01HX7JG8 · step washer-replace-pump</span>
+              <span class="text-red">−350k</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Bơm thay không đúng loại · 5h ago</div>
+          </div>
         </div>
       </div>
     </div>
 
+    <div id="statusbar-mount"></div>
   </main>
-
-  <footer class="statusbar">
-    <div class="statusbar__item"><span class="statusbar__dot statusbar__dot--green"></span>BOOKS BALANCED</div>
-    <span class="statusbar__sep">|</span>
-    <div class="statusbar__item">LEDGER · 4,827 ENTRIES</div>
-    <span class="statusbar__sep">|</span>
-    <div class="statusbar__item">VARIANCE · 0.00 VND</div>
-    <span class="statusbar__sep">|</span>
-    <div class="statusbar__item">NEXT RECON · 02:00</div>
-    <div class="statusbar__right">
-      <div class="statusbar__item">DB · 142ms</div>
-      <div class="statusbar__item">08:17:42 UTC+7</div>
-    </div>
-  </footer>
-
 </div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({
+  page: 'finance',
+  crumbs: ['SMP', 'Modules', 'Finance'],
+  search: 'Search transactions...'
+});
+</script>
 </body>
 </html>

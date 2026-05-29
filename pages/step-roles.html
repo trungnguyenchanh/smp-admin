@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Step Roles & Splits</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .layout-2col {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .svc-picker {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+  }
+  .svc-picker__head {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .svc-picker__head h3 {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .svc-row {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: background 100ms;
+  }
+  .svc-row:hover { background: var(--bg-elev); }
+  .svc-row--active {
+    background: var(--primary-bg);
+    border-left: 3px solid var(--primary);
+    padding-left: 11px;
+  }
+  .svc-row__code {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--primary);
+    letter-spacing: 0.3px;
+  }
+  .svc-row__name {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .svc-row__meta {
+    font-size: 11px;
+    color: var(--text-mute);
+    margin-top: 2px;
+    font-family: var(--font-mono);
+  }
+
+  .weight-bar {
+    display: flex;
+    height: 30px;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin: 14px 0 6px;
+  }
+  .weight-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: white;
+    font-weight: 600;
+  }
+  .weight-sum {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-mute);
+    margin-bottom: 18px;
+  }
+  .weight-sum .ok { color: var(--green-text); font-weight: 600; }
+
+  .step-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .step-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .step-card__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .step-num {
+    width: 24px; height: 24px;
+    background: var(--primary-bg);
+    color: var(--primary-text);
+    border-radius: var(--r-sm);
+    display: grid; place-items: center;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+  .step-card__weight {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-mute);
+  }
+  .step-card__weight input {
+    width: 64px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-align: right;
+    background: var(--bg-elev);
+  }
+
+  .roles-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .roles-table th {
+    text-align: left;
+    padding: 8px 10px 6px 0;
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  .roles-table td {
+    padding: 10px 10px 10px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .roles-table tr:last-child td { border-bottom: none; }
+  .roles-table input[type="number"] {
+    width: 64px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-align: right;
+  }
+  .roles-table select {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 12px;
+    background: white;
+  }
+
+  .role-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .role-tag--lead { background: var(--primary-bg); color: var(--primary-text); }
+  .role-tag--specialist { background: var(--violet-bg); color: var(--violet-text); }
+  .role-tag--helper { background: var(--bg-elev); color: var(--text-mute); }
+
+  .save-bar {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    margin: 18px -16px -16px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 var(--r) var(--r);
+  }
+  .save-bar__hint {
+    font-size: 11px;
+    color: var(--text-mute);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Step roles &amp; splits</h1>
+        <div class="page-sub">Cấu hình step weights + ăn chia theo role (Lead / Helper / Specialist) · v3.5+ multi-agent</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-history"></i> History</button>
+        <button class="btn"><i class="ti ti-file-import"></i> Import CSV</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Service mới</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Validation rule:</strong> SUM(step weights) = 10000 bps (100%) cho mỗi service · SUM(role splits) = 10000 bps cho mỗi step · app-level enforcement per BR-MA-001/002/003.
+      </div>
+    </div>
+
+    <div class="layout-2col">
+
+      <!-- LEFT: Service picker -->
+      <div class="svc-picker">
+        <div class="svc-picker__head">
+          <h3>Services · 10</h3>
+          <button class="btn btn--sm"><i class="ti ti-plus"></i></button>
+        </div>
+
+        <div class="svc-row svc-row--active">
+          <div class="svc-row__code">svc_ac_repair</div>
+          <div class="svc-row__name">Sửa máy lạnh</div>
+          <div class="svc-row__meta">4 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_ac_install</div>
+          <div class="svc-row__name">Lắp đặt máy lạnh</div>
+          <div class="svc-row__meta">5 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_ac_periodic_clean</div>
+          <div class="svc-row__name">Vệ sinh máy lạnh định kỳ</div>
+          <div class="svc-row__meta">3 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_camera_install</div>
+          <div class="svc-row__name">Lắp camera an ninh</div>
+          <div class="svc-row__meta">4 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_washer_repair</div>
+          <div class="svc-row__name">Sửa máy giặt</div>
+          <div class="svc-row__meta">3 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_fridge_repair</div>
+          <div class="svc-row__name">Sửa tủ lạnh</div>
+          <div class="svc-row__meta">3 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_water_heater_install</div>
+          <div class="svc-row__name">Lắp máy nước nóng</div>
+          <div class="svc-row__meta">4 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_plumbing_general</div>
+          <div class="svc-row__name">Sửa ống nước</div>
+          <div class="svc-row__meta">3 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_electric_general</div>
+          <div class="svc-row__name">Sửa điện</div>
+          <div class="svc-row__meta">3 steps · validated ✓</div>
+        </div>
+        <div class="svc-row">
+          <div class="svc-row__code">svc_house_cleaning</div>
+          <div class="svc-row__name">Vệ sinh tổng quát</div>
+          <div class="svc-row__meta">4 steps · <span style="color:var(--amber-text);">draft ⚠</span></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Service editor -->
+      <div class="panel" style="padding:16px;">
+        <div class="panel__head" style="padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+          <div>
+            <div class="panel__title" style="font-size:18px;">Sửa máy lạnh</div>
+            <div class="panel__sub mono">svc_ac_repair · category=ac · base_price 350,000 ₫ · 4 steps</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn--sm"><i class="ti ti-copy"></i> Duplicate</button>
+            <button class="btn btn--sm"><i class="ti ti-history"></i> History</button>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:var(--text-mute);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:8px;">Step weight distribution</div>
+        <div class="weight-bar">
+          <div class="weight-seg" style="background:var(--primary); flex:1500;">15%</div>
+          <div class="weight-seg" style="background:var(--violet); flex:2000;">20%</div>
+          <div class="weight-seg" style="background:var(--green); flex:4000;">40%</div>
+          <div class="weight-seg" style="background:var(--amber); flex:2500;">25%</div>
+        </div>
+        <div class="weight-sum">
+          <span>4 steps · 1500 + 2000 + 4000 + 2500 bps</span>
+          <span class="ok">✓ Σ = 10000 bps (100%)</span>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-num">01</span>
+              <span style="font-size:14px;font-weight:600;">Khảo sát &amp; chẩn đoán</span>
+            </div>
+            <div class="step-card__weight">
+              Weight: <input type="number" value="1500" step="100"> bps = 15%
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width:120px;">Role</th>
+                <th style="width:180px;">Specialty</th>
+                <th style="width:110px;">Split (bps)</th>
+                <th style="width:60px;">%</th>
+                <th style="width:60px;">Min</th>
+                <th style="width:60px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-tag role-tag--lead"><i class="ti ti-star-filled" style="font-size:11px;"></i> Lead</span></td>
+                <td><em style="color:var(--text-faint);">— (generic)</em></td>
+                <td><input type="number" value="10000"></td>
+                <td><strong style="color:var(--primary);">100%</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-num">02</span>
+              <span style="font-size:14px;font-weight:600;">Tháo dỡ máy</span>
+            </div>
+            <div class="step-card__weight">
+              Weight: <input type="number" value="2000" step="100"> bps = 20%
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width:120px;">Role</th>
+                <th style="width:180px;">Specialty</th>
+                <th style="width:110px;">Split (bps)</th>
+                <th style="width:60px;">%</th>
+                <th style="width:60px;">Min</th>
+                <th style="width:60px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-tag role-tag--lead"><i class="ti ti-star-filled" style="font-size:11px;"></i> Lead</span></td>
+                <td><em style="color:var(--text-faint);">—</em></td>
+                <td><input type="number" value="6000"></td>
+                <td><strong style="color:var(--primary);">60%</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><span class="role-tag role-tag--helper"><i class="ti ti-user" style="font-size:11px;"></i> Helper</span></td>
+                <td><select><option>— (generic)</option><option>cleaner</option></select></td>
+                <td><input type="number" value="4000"></td>
+                <td><strong>40%</strong></td>
+                <td><input type="number" value="1" style="width:50px;"></td>
+                <td><input type="number" value="2" style="width:50px;"></td>
+                <td><button class="btn btn--sm btn--ghost"><i class="ti ti-x" style="color:var(--red);"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn--sm" style="margin-top:8px;"><i class="ti ti-plus"></i> Thêm role</button>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-num">03</span>
+              <span style="font-size:14px;font-weight:600;">Sửa chữa &amp; thay linh kiện</span>
+            </div>
+            <div class="step-card__weight">
+              Weight: <input type="number" value="4000" step="100"> bps = 40%
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width:120px;">Role</th>
+                <th style="width:180px;">Specialty</th>
+                <th style="width:110px;">Split (bps)</th>
+                <th style="width:60px;">%</th>
+                <th style="width:60px;">Min</th>
+                <th style="width:60px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-tag role-tag--lead"><i class="ti ti-star-filled" style="font-size:11px;"></i> Lead</span></td>
+                <td><em style="color:var(--text-faint);">—</em></td>
+                <td><input type="number" value="7000"></td>
+                <td><strong style="color:var(--primary);">70%</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><span class="role-tag role-tag--specialist"><i class="ti ti-bolt" style="font-size:11px;"></i> Specialist</span></td>
+                <td><select><option selected>electrician</option><option>plumber</option><option>refrigeration</option></select></td>
+                <td><input type="number" value="3000"></td>
+                <td><strong>30%</strong></td>
+                <td><input type="number" value="0" style="width:50px;"></td>
+                <td><input type="number" value="1" style="width:50px;"></td>
+                <td><button class="btn btn--sm btn--ghost"><i class="ti ti-x" style="color:var(--red);"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card">
+          <div class="step-card__head">
+            <div class="step-card__title">
+              <span class="step-num">04</span>
+              <span style="font-size:14px;font-weight:600;">Lắp lại &amp; test</span>
+            </div>
+            <div class="step-card__weight">
+              Weight: <input type="number" value="2500" step="100"> bps = 25%
+            </div>
+          </div>
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th style="width:120px;">Role</th>
+                <th style="width:180px;">Specialty</th>
+                <th style="width:110px;">Split (bps)</th>
+                <th style="width:60px;">%</th>
+                <th style="width:60px;">Min</th>
+                <th style="width:60px;">Max</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="role-tag role-tag--lead"><i class="ti ti-star-filled" style="font-size:11px;"></i> Lead</span></td>
+                <td><em style="color:var(--text-faint);">—</em></td>
+                <td><input type="number" value="7000"></td>
+                <td><strong style="color:var(--primary);">70%</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><span class="role-tag role-tag--helper"><i class="ti ti-user" style="font-size:11px;"></i> Helper</span></td>
+                <td><em style="color:var(--text-faint);">—</em></td>
+                <td><input type="number" value="3000"></td>
+                <td><strong>30%</strong></td>
+                <td><input type="number" value="0" style="width:50px;"></td>
+                <td><input type="number" value="1" style="width:50px;"></td>
+                <td><button class="btn btn--sm btn--ghost"><i class="ti ti-x" style="color:var(--red);"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="save-bar">
+          <div class="save-bar__hint"><i class="ti ti-clock"></i> Last edited 2h ago by Lê Hùng · ⌘S to save</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn">Discard</button>
+            <button class="btn btn--primary"><i class="ti ti-device-floppy"></i> Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'step-roles', crumbs: ['SMP', 'v3.5+', 'Step roles &amp; splits'], search: 'Tìm service...' });
+</script>
+</body>
+</html>

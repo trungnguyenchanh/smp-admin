@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Customer Assets</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Customer Assets</h1>
+        <div class="page-sub">Thiết bị của khách · serial · lịch sử service · QR code dán lên máy</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-qrcode"></i> Scan QR</button>
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Đăng ký asset</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total assets</div>
+        <div class="kpi__value">21,847</div>
+        <div class="kpi__meta">▲ 1,847 trong tháng</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Có QR code</div>
+        <div class="kpi__value">17,421<span class="kpi__unit"> / 21k</span></div>
+        <div class="kpi__meta">79.7% đã in QR · target 90%</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg service / asset</div>
+        <div class="kpi__value">2.4</div>
+        <div class="kpi__meta">Lần / năm</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Sắp hết bảo hành</div>
+        <div class="kpi__value">421</div>
+        <div class="kpi__meta">trong 30 ngày tới · cần upsell</div>
+      </div>
+    </div>
+
+    <div class="chips" style="margin-bottom:14px;">
+      <button class="chip active">Tất cả · 21,847</button>
+      <button class="chip">Điều hoà · 12,420</button>
+      <button class="chip">Máy giặt · 4,830</button>
+      <button class="chip">Tủ lạnh · 2,140</button>
+      <button class="chip">Bình nóng · 1,287</button>
+      <button class="chip">Khác · 1,170</button>
+      <button class="chip" style="margin-left:auto;"><i class="ti ti-filter" style="font-size:13px;"></i> Lọc</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:start;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Assets · 21,847 results</div>
+            <div class="panel__sub">Click để xem chi tiết và lịch sử service</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Owner</th>
+                <th>Serial</th>
+                <th>Mua / BH</th>
+                <th class="num">Services</th>
+                <th>Last service</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:var(--primary-bg);cursor:pointer;">
+                <td>
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:white;color:var(--primary);display:grid;place-items:center;"><i class="ti ti-air-conditioning" style="font-size:18px;"></i></div>
+                    <div>
+                      <div style="font-weight:600;">Điều hoà phòng ngủ</div>
+                      <div style="font-size:11px;color:var(--text-mute);">LG Inverter V10API 1HP</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Nguyễn Văn A.<br><small class="text-mute">15 Lê Lợi Q.1</small></td>
+                <td><span class="mono" style="font-size:11.5px;">401KP-8421-2024</span></td>
+                <td>03/2024<br><small class="text-green">BH còn 9th</small></td>
+                <td class="num mono">4</td>
+                <td>22/04/2026<br><small class="text-mute">vệ sinh + gas</small></td>
+                <td><span class="pill pill--green">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;"><i class="ti ti-air-conditioning" style="font-size:18px;"></i></div>
+                    <div>
+                      <div style="font-weight:600;">Điều hoà phòng khách</div>
+                      <div style="font-size:11px;color:var(--text-mute);">Daikin FTKM35 1.5HP</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Nguyễn Văn A.<br><small class="text-mute">15 Lê Lợi Q.1</small></td>
+                <td><span class="mono" style="font-size:11.5px;">DKM-7821-2023</span></td>
+                <td>06/2023<br><small class="text-amber">BH hết 4th nữa</small></td>
+                <td class="num mono">6</td>
+                <td>14/05/2026<br><small class="text-mute">vệ sinh định kỳ</small></td>
+                <td><span class="pill pill--green">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;"><i class="ti ti-wash-machine" style="font-size:18px;"></i></div>
+                    <div>
+                      <div style="font-weight:600;">Máy giặt</div>
+                      <div style="font-size:11px;color:var(--text-mute);">LG FV1408S4W 8kg</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Trần Thị B.<br><small class="text-mute">221 NĐC Q.3</small></td>
+                <td><span class="mono" style="font-size:11.5px;">LGF-8214-2022</span></td>
+                <td>11/2022<br><small class="text-mute">Hết BH</small></td>
+                <td class="num mono">3</td>
+                <td>18/05/2026<br><small class="text-mute">thay bơm xả</small></td>
+                <td><span class="pill pill--green">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;"><i class="ti ti-snowflake" style="font-size:18px;"></i></div>
+                    <div>
+                      <div style="font-weight:600;">Tủ lạnh</div>
+                      <div style="font-size:11px;color:var(--text-mute);">Samsung RF48 600L</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Phạm Quang C.<br><small class="text-mute">42 Hai Bà Trưng Q.1</small></td>
+                <td><span class="mono" style="font-size:11.5px;">SAM-RF48-1124</span></td>
+                <td>11/2024<br><small class="text-green">BH 17th</small></td>
+                <td class="num mono">1</td>
+                <td>12/04/2026<br><small class="text-mute">khảo sát</small></td>
+                <td><span class="pill pill--green">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;"><i class="ti ti-flame" style="font-size:18px;"></i></div>
+                    <div>
+                      <div style="font-weight:600;">Bình nóng lạnh</div>
+                      <div style="font-size:11px;color:var(--text-mute);">Ariston Andris 30L</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Lê Hoàng D.<br><small class="text-mute">12 Lý Tự Trọng Q.1</small></td>
+                <td><span class="mono" style="font-size:11.5px;">ARI-AN30-2021</span></td>
+                <td>03/2021<br><small class="text-mute">Hết BH</small></td>
+                <td class="num mono">5</td>
+                <td>10/05/2026<br><small class="text-mute">thay điện trở</small></td>
+                <td><span class="pill pill--green">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:var(--bg-elev);color:var(--text-mute);display:grid;place-items:center;"><i class="ti ti-air-conditioning" style="font-size:18px;"></i></div>
+                    <div>
+                      <div style="font-weight:600;color:var(--text-mute);">Điều hoà cũ</div>
+                      <div style="font-size:11px;color:var(--text-mute);">Panasonic CS-PV12 (đã thanh lý)</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Võ Anh E.<br><small class="text-mute">87 Cách Mạng Q.10</small></td>
+                <td><span class="mono" style="font-size:11.5px;">PAN-PV12-2018</span></td>
+                <td>—</td>
+                <td class="num mono">8</td>
+                <td>02/2025<br><small class="text-mute">thanh lý</small></td>
+                <td><span class="pill pill--gray">Retired</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Asset đang chọn</div>
+              <div class="panel__sub mono">ast_01HX5T74M2</div>
+            </div>
+            <button class="btn btn--sm"><i class="ti ti-edit"></i> Sửa</button>
+          </div>
+          <div style="padding:14px 16px;">
+            <div style="text-align:center;">
+              <div style="width:72px;height:72px;border-radius:14px;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;margin:0 auto 10px;">
+                <i class="ti ti-air-conditioning" style="font-size:36px;"></i>
+              </div>
+              <div style="font-size:15px;font-weight:600;">Điều hoà phòng ngủ</div>
+              <div style="font-size:12px;color:var(--text-mute);">LG Inverter V10API 1HP</div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12px;line-height:1.7;">
+              <div class="text-mute">Owner</div><div>Nguyễn Văn A.</div>
+              <div class="text-mute">Địa chỉ</div><div>15 Lê Lợi Q.1</div>
+              <div class="text-mute">Serial</div><div class="mono" style="font-size:11.5px;">401KP-8421-2024</div>
+              <div class="text-mute">Mua</div><div>03/2024 (Điện máy Xanh)</div>
+              <div class="text-mute">Bảo hành</div><div class="text-green">9 tháng nữa · 02/2027</div>
+              <div class="text-mute">Vị trí lắp</div><div>Phòng ngủ chính, tầng 3</div>
+              <div class="text-mute">Tags</div><div><span class="pill pill--gray no-dot">inverter</span> <span class="pill pill--gray no-dot">R32</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">QR Code · SMP-21847</div>
+            </div>
+            <button class="btn btn--sm btn--primary"><i class="ti ti-download"></i> PDF</button>
+          </div>
+          <div style="padding:14px 16px;text-align:center;">
+            <div class="qr-box" style="margin:0 auto 10px;">
+              <div class="qr-box__brand">SMP</div>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-mute);line-height:1.5;">
+              In QR ra giấy decal, dán lên máy.<br>Thợ scan QR sẽ tự load lịch sử.
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Lịch sử service · 4 lần</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>22/04/2026</span><span class="mono">704k</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Vệ sinh + nạp gas · agt_T4K9</div>
+              <div style="font-size:10.5px;color:var(--text-faint);font-family:var(--font-mono);margin-top:2px;">ord_01HX5K3F · 5/5 step · 4.94★</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>15/01/2026</span><span class="mono">335k</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Vệ sinh tổng quát · agt_R7Y4</div>
+              <div style="font-size:10.5px;color:var(--text-faint);font-family:var(--font-mono);margin-top:2px;">ord_01HW9X · từ contract</div>
+            </div>
+            <div style="padding:11px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>18/10/2025</span><span class="mono">335k</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Vệ sinh tổng quát · agt_R7Y4</div>
+              <div style="font-size:10.5px;color:var(--text-faint);font-family:var(--font-mono);margin-top:2px;">ord_01HV2K · từ contract</div>
+            </div>
+            <div style="padding:11px 16px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;">
+                <span>05/04/2024</span><span class="mono">1,200k</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">Lắp đặt + nghiệm thu (mới mua)</div>
+              <div style="font-size:10.5px;color:var(--text-faint);font-family:var(--font-mono);margin-top:2px;">ord_01HM4J · 1.5h</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'assets', crumbs: ['SMP', 'Customer', 'Assets'], search: 'Tìm theo serial, QR, model...' });
+</script>
+</body>
+</html>

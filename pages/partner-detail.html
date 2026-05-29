@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Partner Detail</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Hùng AC Service <span class="partner-role-badge partner-type-AB" style="font-size:11px;vertical-align:middle;margin-left:6px;">AB · Cả hai</span></h1>
+        <div class="page-sub">Hộ KD Nguyễn Hùng · TC 8901234567 · onboarded 20/02/2026 · 3 tháng tuổi</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-eye"></i> Xem portal view</button>
+        <button class="btn"><i class="ti ti-pencil"></i> Sửa config</button>
+        <button class="btn btn--danger"><i class="ti ti-player-pause"></i> Tạm dừng</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi kpi--green">
+        <div class="kpi__label">GMV 30 ngày</div>
+        <div class="kpi__value">12.8<span class="kpi__unit">M</span></div>
+        <div class="kpi__meta">87 đơn từ partner · ▲ 18%</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Payout pending</div>
+        <div class="kpi__value">6.2<span class="kpi__unit">M</span></div>
+        <div class="kpi__meta">8 thợ làm · sẽ chi T+7</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Wallet balance</div>
+        <div class="kpi__value">8.5<span class="kpi__unit">M</span></div>
+        <div class="kpi__meta">Đủ ~14 đơn nữa · cần topup</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Avg rating</div>
+        <div class="kpi__value">4.84<span class="kpi__unit">★</span></div>
+        <div class="kpi__meta">vs SMP avg 4.87</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+
+      <div>
+
+        <div class="tabs">
+          <div class="tab active">Tổng quan</div>
+          <div class="tab">Orders<span class="tab__count">87</span></div>
+          <div class="tab">Agents<span class="tab__count">8</span></div>
+          <div class="tab">Finance</div>
+          <div class="tab">Users<span class="tab__count">1</span></div>
+          <div class="tab">KYC</div>
+        </div>
+
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Customer-side config <span class="partner-role-badge partner-type-A" style="font-size:9px;margin-left:6px;">A</span></div>
+              <div class="panel__sub">Hùng đặt đơn cho khách của mình</div>
+            </div>
+          </div>
+          <div style="padding:14px 18px;">
+            <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+              <div class="text-mute">Payment mode</div>
+              <div><strong>Pre-paid wallet</strong> · current balance 8,500,000 đ</div>
+
+              <div class="text-mute">Journey mode</div>
+              <div><span class="pill pill--green no-dot">full_10steps</span> · end-customer thấy app SMP đầy đủ</div>
+
+              <div class="text-mute">Dispatch default</div>
+              <div><span class="pill pill--violet no-dot">private</span> · đơn chỉ dispatch cho 8 thợ của partner</div>
+
+              <div class="text-mute">Markup materials</div>
+              <div>+0% (không markup)</div>
+
+              <div class="text-mute">Volume discount</div>
+              <div>−5% labor (sau 50 đơn/tháng đầu)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Supplier-side config <span class="partner-role-badge partner-type-B" style="font-size:9px;margin-left:6px;">B</span></div>
+              <div class="panel__sub">8 thợ của Hùng có thể nhận đơn SMP</div>
+            </div>
+          </div>
+          <div style="padding:14px 18px;">
+            <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;font-size:12.5px;line-height:1.8;">
+              <div class="text-mute">Model</div>
+              <div><strong>Commission only</strong> · không SaaS fee</div>
+
+              <div class="text-mute">SaaS fee</div>
+              <div class="text-mute">0 đ / tháng</div>
+
+              <div class="text-mute">Commission</div>
+              <div><strong>6%</strong> trên labor mỗi đơn thợ partner làm</div>
+
+              <div class="text-mute">Agents count</div>
+              <div>8 thợ · 4 đang online · 1 KYC pending</div>
+
+              <div class="text-mute">Avg per agent</div>
+              <div class="mono">~775,000 đ commission / tháng</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Recent orders · 87 đơn 30d</div>
+              <div class="panel__sub">Cả customer-side và supplier-side</div>
+            </div>
+            <a class="panel__action" href="orders.html">Xem tất cả →</a>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Order</th><th>Source</th><th>Service</th><th>Agent</th><th class="num">Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><span class="id">ord_01HX7K2M</span></td><td><span class="partner-role-badge partner-type-A">A</span> Partner-customer</td><td>Sửa AC</td><td>Trương Minh K. (partner)</td><td class="num mono">750k</td><td><span class="pill pill--amber">06 · Báo giá</span></td></tr>
+                <tr><td><span class="id">ord_01HX7K1F</span></td><td><span class="partner-role-badge partner-type-A">A</span> Partner-customer</td><td>Vệ sinh AC</td><td>Lê Văn L. (partner)</td><td class="num mono">335k</td><td><span class="pill pill--green">08 · Done</span></td></tr>
+                <tr><td><span class="id">ord_01HX7K0V</span></td><td><span class="partner-role-badge partner-type-B">B</span> Đơn SMP</td><td>Sửa tủ lạnh</td><td>Đoàn Hữu R. (partner)</td><td class="num mono">487k</td><td><span class="pill pill--blue">08 · Đang sửa</span></td></tr>
+                <tr><td><span class="id">ord_01HX7JZP</span></td><td><span class="partner-role-badge partner-type-A">A</span> Partner-customer</td><td>Nóng lạnh</td><td>Phạm Quốc M. (partner)</td><td class="num mono">350k</td><td><span class="pill pill--green">10 · Đã rate</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="wallet-card" style="margin-bottom:12px;">
+          <div class="wallet-card__label">PRE-PAID WALLET</div>
+          <div class="wallet-card__balance">8,500,000 đ</div>
+          <div style="font-size:11px;opacity:0.85;margin-top:6px;">~14 đơn còn lại · cần topup khi &lt; 3M</div>
+          <button class="btn" style="background:white;color:var(--primary);margin-top:12px;font-size:11px;padding:4px 10px;">
+            <i class="ti ti-plus"></i> Topup wallet
+          </button>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Liên hệ</div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;">
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;font-weight:600;">NH</div>
+              <div>
+                <div class="fs-14 fw-bold">Nguyễn Hùng</div>
+                <div class="fs-11 text-mute">Chủ partner · representative</div>
+              </div>
+            </div>
+            <div style="font-size:11.5px;line-height:1.7;">
+              <div><i class="ti ti-phone" style="width:14px;color:var(--text-mute);"></i> +84 93 ••• 2841</div>
+              <div><i class="ti ti-mail" style="width:14px;color:var(--text-mute);"></i> hung@hungac.vn</div>
+              <div><i class="ti ti-map-pin" style="width:14px;color:var(--text-mute);"></i> 42 Hai Bà Trưng, Q.1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">KYC status</div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;">
+            <div style="background:var(--amber-bg);border-radius:6px;padding:8px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+              <span class="fs-12 fw-med" style="color:var(--amber-text);">Level BASIC</span>
+              <span class="fs-11" style="color:var(--amber-text);">3/4 docs</span>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step__icon kyc-step__icon--done"><i class="ti ti-check"></i></div>
+              <div>
+                <div class="kyc-step__name">CCCD đại diện</div>
+                <div class="kyc-step__meta">Verified 18/02/2026</div>
+              </div>
+              <i class="ti ti-eye" style="color:var(--text-mute);"></i>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step__icon kyc-step__icon--done"><i class="ti ti-check"></i></div>
+              <div>
+                <div class="kyc-step__name">GPKD</div>
+                <div class="kyc-step__meta">Verified 18/02/2026</div>
+              </div>
+              <i class="ti ti-eye" style="color:var(--text-mute);"></i>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step__icon kyc-step__icon--done"><i class="ti ti-check"></i></div>
+              <div>
+                <div class="kyc-step__name">Số tài khoản ACB</div>
+                <div class="kyc-step__meta">Verified 20/02/2026</div>
+              </div>
+              <i class="ti ti-eye" style="color:var(--text-mute);"></i>
+            </div>
+            <div class="kyc-step">
+              <div class="kyc-step__icon kyc-step__icon--missing"><i class="ti ti-file-x"></i></div>
+              <div>
+                <div class="kyc-step__name text-mute">Hợp đồng partner</div>
+                <div class="kyc-step__meta">Optional · upgrade FULL</div>
+              </div>
+              <button class="btn btn--sm">Upload</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Portal users · 1</div>
+              <div class="panel__sub">RBAC</div>
+            </div>
+            <button class="btn btn--sm"><i class="ti ti-plus"></i></button>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:12px 14px;display:flex;gap:10px;align-items:center;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:grid;place-items:center;font-weight:600;font-size:11px;">NH</div>
+              <div class="flex-1">
+                <div class="fs-12 fw-bold">Nguyễn Hùng</div>
+                <div class="fs-10 text-mute">hung@hungac.vn</div>
+              </div>
+              <span class="pill pill--violet" style="font-size:10px;">Owner</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'partner-detail', crumbs: ['SMP', 'Partners v3.3', 'Hùng AC Service'], search: 'Tìm trong partner này...' });
+</script>
+</body>
+</html>

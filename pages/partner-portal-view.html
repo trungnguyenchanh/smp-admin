@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Partner Portal View</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Partner portal view <span class="pill pill--violet" style="font-size:10px;vertical-align:middle;margin-left:6px;">SIMULATION</span></h1>
+        <div class="page-sub">Xem chính xác partner login admin SMP sẽ thấy gì · Internal team test RBAC trước khi share access</div>
+      </div>
+      <div class="page-actions">
+        <select class="btn">
+          <option>Đang xem: Nguyễn Hùng (Owner) · Hùng AC Service</option>
+          <option>Lê Văn Bình (Owner) · Vinhomes</option>
+          <option>Phạm Quốc Đạt (Finance) · Vinhomes</option>
+          <option>Lê Anh Tuấn (Dispatcher) · Vinhomes</option>
+          <option>Trần Quang Huy (Owner) · Điện Lạnh ABC</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="alert alert--info" style="background:#ede9fe;border-color:#a78bfa;color:#5b21b6;">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>Bạn đang giả lập là partner.</strong> Mọi data đã scoped theo partner_id · sidebar chỉ show navigation partner có quyền · không thấy được dữ liệu của partner khác.
+      </div>
+    </div>
+
+    <div class="portal-frame">
+      <div class="portal-frame__head">
+        <span><i class="ti ti-eye"></i> Partner Portal · login as <strong>Nguyễn Hùng</strong> · role <strong>partner_owner</strong></span>
+        <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:3px;font-size:10px;">Hùng AC Service</span>
+      </div>
+      <div class="portal-frame__body">
+
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:18px;">
+          <div style="background:white;border-radius:10px;padding:12px;border:1px solid var(--border);">
+            <div style="display:flex;gap:8px;align-items:center;padding:8px 6px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#dcfce7);color:#1e40af;display:grid;place-items:center;font-weight:700;font-size:12px;">HAS</div>
+              <div>
+                <div class="fs-12 fw-bold">Hùng AC Service</div>
+                <div class="fs-10 text-mute">Partner portal</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-mute);font-weight:600;letter-spacing:0.5px;padding:8px 6px 4px;">NAVIGATION</div>
+            <a class="nav-item nav-item--active" style="padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center;">
+              <i class="ti ti-layout-dashboard"></i> Dashboard
+            </a>
+            <a class="nav-item" style="padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center;">
+              <i class="ti ti-clipboard-list"></i> Đơn của tôi <span class="nav-badge">87</span>
+            </a>
+            <a class="nav-item" style="padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center;">
+              <i class="ti ti-plus"></i> Đặt đơn mới
+            </a>
+            <a class="nav-item" style="padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center;">
+              <i class="ti ti-users"></i> Thợ của tôi <span class="nav-badge">8</span>
+            </a>
+            <a class="nav-item" style="padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center;">
+              <i class="ti ti-wallet"></i> Tài chính
+            </a>
+            <a class="nav-item" style="padding:8px 10px;font-size:12px;display:flex;gap:8px;align-items:center;">
+              <i class="ti ti-settings"></i> Cài đặt
+            </a>
+            <div style="margin-top:14px;padding:10px;background:var(--bg-elev);border-radius:6px;font-size:10px;color:var(--text-mute);line-height:1.5;">
+              <strong style="color:var(--primary);">Không thấy:</strong><br>
+              Catalog, Geography, Material BOM, Integration, Other partners, System health
+            </div>
+          </div>
+
+          <div>
+            <div style="background:white;border-radius:10px;padding:18px;border:1px solid var(--border);margin-bottom:12px;">
+              <div style="font-size:18px;font-weight:600;margin-bottom:4px;">Xin chào, Nguyễn Hùng 👋</div>
+              <div style="font-size:12px;color:var(--text-mute);margin-bottom:14px;">Hôm nay Hùng AC Service có 3 đơn đang dispatch, 2 đơn chờ duyệt báo giá.</div>
+
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                <div style="background:var(--primary-bg);padding:12px;border-radius:8px;text-align:center;">
+                  <div class="fs-11 fw-med" style="color:var(--primary-text);">Đơn 30d</div>
+                  <div style="font-size:20px;font-weight:700;color:var(--primary);">87</div>
+                </div>
+                <div style="background:var(--green-bg);padding:12px;border-radius:8px;text-align:center;">
+                  <div class="fs-11 fw-med text-green">Hoàn thành</div>
+                  <div style="font-size:20px;font-weight:700;" class="text-green">81</div>
+                </div>
+                <div style="background:var(--amber-bg);padding:12px;border-radius:8px;text-align:center;">
+                  <div class="fs-11 fw-med" style="color:var(--amber-text);">Đang xử lý</div>
+                  <div style="font-size:20px;font-weight:700;color:var(--amber-text);">6</div>
+                </div>
+                <div style="background:#ede9fe;padding:12px;border-radius:8px;text-align:center;">
+                  <div class="fs-11 fw-med" style="color:#5b21b6;">Thợ online</div>
+                  <div style="font-size:20px;font-weight:700;color:#5b21b6;">4 / 8</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="wallet-card" style="margin-bottom:12px;">
+              <div class="wallet-card__label">PRE-PAID WALLET BALANCE</div>
+              <div class="wallet-card__balance">8,500,000 đ</div>
+              <div style="font-size:11px;opacity:0.85;margin-top:6px;">Đủ cho ~14 đơn nữa</div>
+              <button class="btn" style="background:white;color:var(--primary);margin-top:12px;font-size:11px;padding:6px 14px;">
+                <i class="ti ti-plus"></i> Nạp tiền
+              </button>
+            </div>
+
+            <div style="background:white;border-radius:10px;border:1px solid var(--border);">
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;">
+                <span class="fw-bold fs-13">Đơn gần đây · 5/87</span>
+                <a href="#" style="font-size:11px;color:var(--primary);">Xem tất cả →</a>
+              </div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:12px;">
+                <div>
+                  <div class="fw-med">Sửa AC · ord_01HX7K2M</div>
+                  <div class="text-mute fs-11">Khách Nguyễn Văn A · Q.1</div>
+                </div>
+                <span class="pill pill--amber">Báo giá</span>
+                <span class="mono">750k</span>
+              </div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:12px;">
+                <div>
+                  <div class="fw-med">Vệ sinh AC · ord_01HX7K1F</div>
+                  <div class="text-mute fs-11">Khách Trần Thị B · Q.3</div>
+                </div>
+                <span class="pill pill--green">Done</span>
+                <span class="mono">335k</span>
+              </div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:12px;">
+                <div>
+                  <div class="fw-med">Sửa tủ lạnh · ord_01HX7K0V</div>
+                  <div class="text-mute fs-11">Đơn SMP · thợ partner làm</div>
+                </div>
+                <span class="pill pill--blue">Đang sửa</span>
+                <span class="mono">487k</span>
+              </div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:12px;">
+                <div>
+                  <div class="fw-med">Nóng lạnh · ord_01HX7JZP</div>
+                  <div class="text-mute fs-11">Khách Lê Hoàng D · Q.10</div>
+                </div>
+                <span class="pill pill--green">Đã rate</span>
+                <span class="mono">350k</span>
+              </div>
+              <div style="padding:12px 16px;display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:12px;">
+                <div>
+                  <div class="fw-med">Vệ sinh máy giặt · ord_01HX7JX1</div>
+                  <div class="text-mute fs-11">Khách Phạm Quang C · Q.7</div>
+                </div>
+                <span class="pill pill--green">Done</span>
+                <span class="mono">280k</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">RBAC scopes · partner_owner</div>
+          <div class="panel__sub">Quyền của role này trong portal · Phase 1</div>
+        </div>
+      </div>
+      <div style="padding:14px 18px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;">
+          <div>
+            <div style="font-size:11px;color:var(--text-mute);font-weight:600;letter-spacing:0.5px;margin-bottom:6px;">ORDERS</div>
+            <span class="scope-chip">orders.view</span>
+            <span class="scope-chip">orders.create</span>
+            <span class="scope-chip">orders.cancel</span>
+            <span class="scope-chip">orders.dispatch</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-mute);font-weight:600;letter-spacing:0.5px;margin-bottom:6px;">AGENTS</div>
+            <span class="scope-chip">agents.view</span>
+            <span class="scope-chip">agents.toggle</span>
+            <span class="scope-chip">agents.invite</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-mute);font-weight:600;letter-spacing:0.5px;margin-bottom:6px;">FINANCE</div>
+            <span class="scope-chip">finance.view</span>
+            <span class="scope-chip">finance.export</span>
+            <span class="scope-chip">wallet.topup</span>
+            <span class="scope-chip">invoices.download</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-mute);font-weight:600;letter-spacing:0.5px;margin-bottom:6px;">SETTINGS</div>
+            <span class="scope-chip">profile.edit</span>
+            <span class="scope-chip">users.invite</span>
+            <span class="scope-chip">kyc.upload</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="font-size:12px;color:var(--text-mute);">
+          <strong>Không có quyền:</strong> Catalog management, geography setup, integration config, view other partners' data, edit SMP-wide settings, ops admin functions.
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'partner-portal-view', crumbs: ['SMP', 'Partners v3.3', 'Portal view'], search: 'Tìm scope...' });
+</script>
+</body>
+</html>

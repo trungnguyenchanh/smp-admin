@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Partners Overview</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Partners overview</h1>
+        <div class="page-sub">3-sided marketplace · partners đóng vai trò Customer + Supplier · 8 partners đang active</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Onboard partner mới</button>
+      </div>
+    </div>
+
+    <div class="alert alert--info" style="background:linear-gradient(90deg,var(--primary-bg),var(--bg-elev));">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <strong>v3.3 Partners:</strong> Partner là doanh nghiệp B2B hoặc cá nhân lớn, có thể vào hệ thống ở 1 trong 3 vai trò: <span class="partner-role-badge partner-type-A">A · CUSTOMER</span> đặt đơn cho khách của họ, <span class="partner-role-badge partner-type-B">B · SUPPLIER</span> cung cấp đội thợ riêng, hoặc <span class="partner-role-badge partner-type-AB">AB · CẢ HAI</span>. Phase 1 portal cho phép partner login vào admin SMP với role-based access scoped data.
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total partners</div>
+        <div class="kpi__value">8</div>
+        <div class="kpi__meta">7 active · 1 pending KYC</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">GMV partner-sourced</div>
+        <div class="kpi__value">282<span class="kpi__unit">M</span></div>
+        <div class="kpi__meta">30 ngày · 32% total GMV</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Partner agents</div>
+        <div class="kpi__value">53<span class="kpi__unit"> / 3,891</span></div>
+        <div class="kpi__meta">1.4% từ partners · 4 partners cung cấp</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Outstanding invoice</div>
+        <div class="kpi__value">265<span class="kpi__unit">M</span></div>
+        <div class="kpi__meta">4 partners · NET 30</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Segment theo role</div>
+            <div class="panel__sub">Phân bố Type A / B / AB</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="background:var(--bg-elev);height:24px;border-radius:6px;display:flex;overflow:hidden;margin-bottom:14px;">
+            <div style="background:#1d4ed8;width:50%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">A · 50%</div>
+            <div style="background:#15803d;width:25%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">B · 25%</div>
+            <div style="background:#7c3aed;width:25%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">AB · 25%</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;">
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:#1d4ed8;">4</div>
+              <div class="text-mute">Customer-side</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:#15803d;">2</div>
+              <div class="text-mute">Supplier-side</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:#7c3aed;">2</div>
+              <div class="text-mute">Cả hai (AB)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Segment theo type</div>
+            <div class="panel__sub">B2B vs cá nhân lớn</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="background:var(--bg-elev);height:24px;border-radius:6px;display:flex;overflow:hidden;margin-bottom:14px;">
+            <div style="background:var(--primary);width:75%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">Business · 75%</div>
+            <div style="background:var(--amber);width:25%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">Individual · 25%</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:var(--primary);">6</div>
+              <div class="text-mute">B2B doanh nghiệp</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:var(--amber-text);">2</div>
+              <div class="text-mute">Cá nhân lớn</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Payment models</div>
+            <div class="panel__sub">Customer-side payment</div>
+          </div>
+        </div>
+        <div style="padding:14px 16px;">
+          <div style="background:var(--bg-elev);height:24px;border-radius:6px;display:flex;overflow:hidden;margin-bottom:14px;">
+            <div style="background:var(--green);width:66.7%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">Invoice · 67%</div>
+            <div style="background:#0ea5e9;width:33.3%;display:grid;place-items:center;color:white;font-weight:600;font-size:11px;">Prepaid · 33%</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:var(--green);">4</div>
+              <div class="text-mute">Monthly invoice NET 30</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-weight:600;font-size:18px;color:#0ea5e9;">2</div>
+              <div class="text-mute">Pre-paid wallet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Top 5 partners (theo GMV 30d)</div>
+            <div class="panel__sub">Xếp hạng partners đóng góp doanh thu cao</div>
+          </div>
+          <a class="panel__action" href="partners-list.html">Xem tất cả →</a>
+        </div>
+        <div style="padding:0;">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:24px 1fr 100px 100px 100px;gap:12px;align-items:center;">
+            <span class="fw-bold text-mute mono">1</span>
+            <div>
+              <div class="fs-13 fw-bold">Vinhomes Property Mgmt</div>
+              <div class="fs-11 text-mute"><span class="partner-role-badge partner-type-A">A</span> Business · invoice NET 30</div>
+            </div>
+            <div class="num mono fw-med text-green">184.7M</div>
+            <div class="num mono text-mute">412 đơn</div>
+            <div class="num">4.78★</div>
+          </div>
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:24px 1fr 100px 100px 100px;gap:12px;align-items:center;">
+            <span class="fw-bold text-mute mono">2</span>
+            <div>
+              <div class="fs-13 fw-bold">Savills Property Mgmt</div>
+              <div class="fs-11 text-mute"><span class="partner-role-badge partner-type-A">A</span> Business · invoice NET 30</div>
+            </div>
+            <div class="num mono fw-med text-green">42.1M</div>
+            <div class="num mono text-mute">87 đơn</div>
+            <div class="num">4.81★</div>
+          </div>
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:24px 1fr 100px 100px 100px;gap:12px;align-items:center;">
+            <span class="fw-bold text-mute mono">3</span>
+            <div>
+              <div class="fs-13 fw-bold">Điện Máy Xanh (Pilot Q.7)</div>
+              <div class="fs-11 text-mute"><span class="partner-role-badge partner-type-A">A</span> Business · invoice NET 30</div>
+            </div>
+            <div class="num mono fw-med text-green">38.4M</div>
+            <div class="num mono text-mute">142 đơn</div>
+            <div class="num">4.69★</div>
+          </div>
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);display:grid;grid-template-columns:24px 1fr 100px 100px 100px;gap:12px;align-items:center;">
+            <span class="fw-bold text-mute mono">4</span>
+            <div>
+              <div class="fs-13 fw-bold">Hùng AC Service</div>
+              <div class="fs-11 text-mute"><span class="partner-role-badge partner-type-AB">AB</span> Business · prepaid wallet</div>
+            </div>
+            <div class="num mono fw-med text-green">12.8M</div>
+            <div class="num mono text-mute">87 đơn</div>
+            <div class="num">4.84★</div>
+          </div>
+          <div style="padding:14px 16px;display:grid;grid-template-columns:24px 1fr 100px 100px 100px;gap:12px;align-items:center;">
+            <span class="fw-bold text-mute mono">5</span>
+            <div>
+              <div class="fs-13 fw-bold">Anh Duyên Homes</div>
+              <div class="fs-11 text-mute"><span class="partner-role-badge partner-type-A">A</span> Individual · prepaid wallet</div>
+            </div>
+            <div class="num mono fw-med text-green">4.8M</div>
+            <div class="num mono text-mute">18 đơn</div>
+            <div class="num">4.82★</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Top supplier partners</div>
+              <div class="panel__sub">Theo số đơn thợ làm</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div class="row between fs-12 fw-med">
+                <span>Điện Lạnh ABC</span><span class="mono text-violet">287 đơn</span>
+              </div>
+              <div class="fs-11 text-mute" style="margin-top:1px;">28 thợ · hybrid model</div>
+            </div>
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div class="row between fs-12 fw-med">
+                <span>Hùng AC Service</span><span class="mono text-violet">87 đơn</span>
+              </div>
+              <div class="fs-11 text-mute" style="margin-top:1px;">8 thợ · commission only</div>
+            </div>
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div class="row between fs-12 fw-med">
+                <span>Kim Air</span><span class="mono text-violet">64 đơn</span>
+              </div>
+              <div class="fs-11 text-mute" style="margin-top:1px;">5 thợ · SaaS only 500k/th</div>
+            </div>
+            <div style="padding:11px 14px;">
+              <div class="row between fs-12 fw-med text-faint">
+                <span>FreshAir Group</span><span class="mono">0 đơn</span>
+              </div>
+              <div class="fs-11 text-mute" style="margin-top:1px;">12 thợ · pending KYC</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <div>
+              <div class="panel__title">Action items</div>
+              <div class="panel__sub">Cần ops xử lý</div>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div class="row between fs-12">
+                <span>KYC pending review</span><span class="pill pill--amber">1</span>
+              </div>
+              <div class="fs-11 text-mute">FreshAir Group · 3 ngày</div>
+            </div>
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border-soft);">
+              <div class="row between fs-12">
+                <span>Invoice quá hạn</span><span class="pill pill--red">2</span>
+              </div>
+              <div class="fs-11 text-mute">42.1M · NET +5 ngày</div>
+            </div>
+            <div style="padding:11px 14px;">
+              <div class="row between fs-12">
+                <span>Wallet sắp hết</span><span class="pill pill--amber">1</span>
+              </div>
+              <div class="fs-11 text-mute">Anh Duyên · &lt; 5M</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'partners-overview', crumbs: ['SMP', 'Partners v3.3', 'Overview'], search: 'Tìm partner...' });
+</script>
+</body>
+</html>
