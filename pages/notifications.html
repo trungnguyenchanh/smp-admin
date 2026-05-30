@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Notification settings</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .filter-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 12px 14px; background: white; border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 14px; }
+  .filter-bar label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .filter-bar select, .filter-bar input { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); font-family: inherit; font-size: 12px; background: white; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+  <main class="main">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Notification settings</h1>
+        <div class="page-sub">5 channels · 24 event triggers · per-role configuration</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-template"></i> Templates</button>
+        <button class="btn"><i class="ti ti-history"></i> Delivery log</button>
+        <button class="btn btn--primary"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi__label">Notifications sent (24h)</div><div class="kpi__value">38,247</div><div class="kpi__meta">push 28k · SMS 6k · email 4k</div></div>
+      <div class="kpi kpi--violet"><div class="kpi__label">Delivery rate</div><div class="kpi__value">98.2<span class="kpi__unit">%</span></div><div class="kpi__meta">across all channels</div></div>
+      <div class="kpi kpi--green"><div class="kpi__label">Engagement rate</div><div class="kpi__value">42<span class="kpi__unit">%</span></div><div class="kpi__meta">open/click rate</div></div>
+      <div class="kpi kpi--amber"><div class="kpi__label">Cost MTD</div><div class="kpi__value">8.4<span class="kpi__unit">M VND</span></div><div class="kpi__meta">SMS 5.2M · email 2.4M · push free</div></div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Channels configured</div></div></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Channel</th><th>Provider</th><th>Volume MTD</th><th>Cost</th><th>Success rate</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>📱 Mobile push</td><td>Firebase FCM</td><td class="right mono">847k</td><td class="right mono">Free</td><td class="right" style="color:var(--green-text);">98.7%</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Configure</button></td></tr>
+            <tr><td>💬 SMS</td><td>SMS Gateway VN</td><td class="right mono">187k</td><td class="right mono">5.2M ₫</td><td class="right" style="color:var(--green-text);">99.4%</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Configure</button></td></tr>
+            <tr><td>📧 Email</td><td>Mailgun</td><td class="right mono">128k</td><td class="right mono">2.4M ₫</td><td class="right" style="color:var(--green-text);">99.8%</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Configure</button></td></tr>
+            <tr><td>📨 Zalo OA</td><td>Zalo Official Account</td><td class="right mono">42k</td><td class="right mono">820k ₫</td><td class="right" style="color:var(--green-text);">97.2%</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Configure</button></td></tr>
+            <tr><td>📞 Voice call</td><td>Stringee</td><td class="right mono">487</td><td class="right mono">120k ₫</td><td class="right">94.5%</td><td><span class="pill pill--amber no-dot">Limited use</span></td><td><button class="btn btn--sm">Configure</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><div><div class="panel__title">Event triggers · customer side</div></div></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Event</th><th class="right">Push</th><th class="right">SMS</th><th class="right">Email</th><th class="right">Zalo</th><th>Quiet hours</th></tr></thead>
+          <tbody>
+            <tr><td>Order created</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td class="right">✓</td><td>None</td></tr>
+            <tr><td>Technician assigned</td><td class="right">✓</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td>None</td></tr>
+            <tr><td>Tech en-route (30 min before)</td><td class="right">✓</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td>None</td></tr>
+            <tr><td>Tech arrived</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td><td class="right">−</td><td>None</td></tr>
+            <tr><td>Quote ready · need approval</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td>None (urgent)</td></tr>
+            <tr><td>Order completed</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td class="right">−</td><td>None</td></tr>
+            <tr><td>Rate &amp; review request</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td class="right">−</td><td>22:00-08:00</td></tr>
+            <tr><td>Warranty expiry · 30 days</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td class="right">✓</td><td>22:00-08:00</td></tr>
+            <tr><td>Promotional · voucher</td><td class="right">✓</td><td class="right">−</td><td class="right">✓</td><td class="right">−</td><td>20:00-09:00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+<script src="../assets/shell.js"></script>
+<script>SMPAdmin.init({ page: 'notifications', crumbs: ['SMP', 'System', 'Notifications'], search: 'Search...' });</script>
+</body>
+</html>

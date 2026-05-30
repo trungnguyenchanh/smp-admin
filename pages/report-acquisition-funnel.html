@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Acquisition Funnel & CAC</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px; color: var(--text-mute); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm);
+    font-family: inherit; font-size: 12px; background: white;
+  }
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+
+  .heatmap-grid {
+    display: grid; grid-template-columns: 110px repeat(12, 1fr);
+    gap: 3px; font-size: 10px;
+  }
+  .heat-cell {
+    padding: 8px 4px; text-align: center; border-radius: 3px; font-family: var(--font-mono);
+  }
+  .heat-0 { background: #F1F5F9; color: var(--text-faint); }
+  .heat-1 { background: #E0E7FF; color: #3730A3; }
+  .heat-2 { background: #C7D2FE; color: #3730A3; }
+  .heat-3 { background: #A5B4FC; color: white; }
+  .heat-4 { background: #818CF8; color: white; }
+  .heat-5 { background: #6366F1; color: white; }
+  .heat-h { padding: 8px 8px; color: var(--text-mute); font-weight: 600; }
+
+  .stage-row {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  }
+  .stage-row__label {
+    width: 130px; font-size: 11px; color: var(--text-mute);
+    font-family: var(--font-mono); text-align: right;
+  }
+  .stage-row__bar {
+    flex: 1; height: 36px; border-radius: 6px;
+    display: flex; align-items: center; padding: 0 14px;
+    color: white; font-weight: 600; font-size: 12px;
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="reports.html" style="color:inherit;text-decoration:none;">← Reports</a>
+        </div>
+        <h1 class="page-title">Acquisition Funnel & CAC</h1>
+        <div class="page-sub">Funnel impressions → first order · CAC by channel · payback period</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+
+    <div class="filter-bar">
+      <label>Period:</label>
+      <select><option>30 ngày</option><option>Q2 2026</option></select>
+      <label>Channel:</label>
+      <select><option>Tất cả</option><option>Organic</option><option>Paid</option><option>Referral</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">App installs</div>
+        <div class="kpi__value">8,420<span class="kpi__unit">/ 30d</span></div>
+        <div class="kpi__meta">280/day avg</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Sign-up rate</div>
+        <div class="kpi__value">68<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">5,725 sign-ups</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">First order rate</div>
+        <div class="kpi__value">42<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">2,404 first orders</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">CAC blended</div>
+        <div class="kpi__value">187<span class="kpi__unit">k VND</span></div>
+        <div class="kpi__meta">Payback: 3.2 months</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Acquisition funnel · last 30 days</div></div></div>
+      <div style="padding:20px;">
+        <div class="stage-row">
+          <span class="stage-row__label">IMPRESSIONS</span>
+          <div class="stage-row__bar" style="background:var(--primary);width:100%;">2,847,000 · 100%</div>
+        </div>
+        <div class="stage-row">
+          <span class="stage-row__label">APP INSTALL</span>
+          <div class="stage-row__bar" style="background:#6366f1;width:0.3%;min-width:140px;">8,420 · 0.30%</div>
+        </div>
+        <div class="stage-row">
+          <span class="stage-row__label">SIGN-UP</span>
+          <div class="stage-row__bar" style="background:var(--violet);width:0.2%;min-width:140px;">5,725 · 0.20%</div>
+        </div>
+        <div class="stage-row">
+          <span class="stage-row__label">PROFILE COMPLETE</span>
+          <div class="stage-row__bar" style="background:#A855F7;width:0.18%;min-width:140px;">5,127 · 0.18%</div>
+        </div>
+        <div class="stage-row">
+          <span class="stage-row__label">VIEW SERVICE</span>
+          <div class="stage-row__bar" style="background:var(--green);width:0.15%;min-width:140px;">4,287 · 0.15%</div>
+        </div>
+        <div class="stage-row">
+          <span class="stage-row__label">FIRST ORDER</span>
+          <div class="stage-row__bar" style="background:#10B981;width:0.084%;min-width:140px;">2,404 · 0.084%</div>
+        </div>
+        <div class="stage-row">
+          <span class="stage-row__label">REORDER (60d)</span>
+          <div class="stage-row__bar" style="background:var(--amber);width:0.025%;min-width:140px;">720 · 0.025%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">CAC by channel</div></div></div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Channel</th><th class="right">Spend</th><th class="right">Installs</th><th class="right">First orders</th><th class="right">CAC</th><th class="right">LTV/CAC</th></tr></thead>
+            <tbody>
+              <tr><td>Google Ads</td><td class="right mono">125M</td><td class="right mono">2,847</td><td class="right mono">847</td><td class="right mono" style="color:var(--green-text);">148k</td><td class="right" style="color:var(--green-text);font-weight:600;">23x</td></tr>
+              <tr><td>Facebook Ads</td><td class="right mono">98M</td><td class="right mono">2,142</td><td class="right mono">587</td><td class="right mono" style="color:var(--green-text);">167k</td><td class="right" style="color:var(--green-text);">20x</td></tr>
+              <tr><td>Zalo Ads</td><td class="right mono">45M</td><td class="right mono">1,287</td><td class="right mono">412</td><td class="right mono" style="color:var(--green-text);">109k</td><td class="right" style="color:var(--green-text);font-weight:600;">31x</td></tr>
+              <tr><td>Organic SEO</td><td class="right mono">22M</td><td class="right mono">847</td><td class="right mono">312</td><td class="right mono" style="color:var(--green-text);">71k</td><td class="right" style="color:var(--green-text);font-weight:600;">48x</td></tr>
+              <tr><td>Referral</td><td class="right mono">18M</td><td class="right mono">512</td><td class="right mono">187</td><td class="right mono" style="color:var(--green-text);">96k</td><td class="right" style="color:var(--green-text);font-weight:600;">36x</td></tr>
+              <tr><td>Affiliate</td><td class="right mono">28M</td><td class="right mono">385</td><td class="right mono">59</td><td class="right mono" style="color:var(--red-text);">474k</td><td class="right" style="color:var(--red-text);">7.2x</td></tr>
+              <tr style="background:var(--bg-elev);font-weight:600;"><td>Total</td><td class="right mono">336M</td><td class="right mono">8,020</td><td class="right mono">2,404</td><td class="right mono">140k</td><td class="right" style="color:var(--green-text);">24x</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Payback analysis</div></div></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Zalo Ads</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:25%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">2.1 mo</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Organic SEO</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:18%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">1.4 mo</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Referral</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:22%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">1.9 mo</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Google Ads</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:35%;background:var(--primary);"></div></div>
+            <span class="data-bar-row__val">2.8 mo</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Facebook Ads</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:38%;background:var(--primary);"></div></div>
+            <span class="data-bar-row__val">3.2 mo</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Affiliate</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:var(--red);"></div></div>
+            <span class="data-bar-row__val">9.1 mo</span>
+          </div>
+          <div class="insight-card" style="margin-top:14px;">
+            <i class="ti ti-bulb"></i>
+            <div class="insight-card__text">
+              Tăng spend Zalo + Organic. Pause Affiliate channel.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'Reports', 'Acquisition'], search: 'Filter data...' });
+</script>
+</body>
+</html>

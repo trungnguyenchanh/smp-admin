@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Sales Dashboard</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .filter-bar select { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); font-family: inherit; font-size: 12px; background: white; }
+
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="report-sales-dashboard.html" style="color:inherit;text-decoration:none;">← Sales Reports</a>
+        </div>
+        <h1 class="page-title">Sales Dashboard</h1>
+        <div class="page-sub">Overview tổng quát · MTD 48.2B · ▲ 34% YoY · 22% take rate</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label>Period:</label>
+      <select><option>MTD June 2026</option><option>QTD Q2</option><option>YTD 2026</option><option>Trailing 30d</option></select>
+      <label>Compare:</label>
+      <select><option>vs prior period</option><option>vs YoY</option><option>vs target</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <!-- TOP KPI ROW -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Sales GMV (MTD)</div>
+        <div class="kpi__value">48.2<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">▲ 34% YoY · target 52B (92% pace)</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Orders (MTD)</div>
+        <div class="kpi__value">8,247<span class="kpi__unit">orders</span></div>
+        <div class="kpi__meta">▲ 28% YoY · 274/day avg</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Avg Order Value</div>
+        <div class="kpi__value">585<span class="kpi__unit">k VND</span></div>
+        <div class="kpi__meta">▲ 5% MoM</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Take rate</div>
+        <div class="kpi__value">20.4<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">commission 9.84B</div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <i class="ti ti-trending-up"></i>
+      <div class="insight-card__text">
+        <strong>Sales Highlights MTD:</strong> AC service đóng góp 48% GMV với 5.96B. Fridge category tăng nhanh nhất ▲ 87% YoY. Office customers (147 tài khoản) tạo ra 6.3B - chiếm 13% GMV với chỉ 0.5% số khách. Q.1 + Q.7 chiếm 41% sales.
+      </div>
+    </div>
+
+    <!-- DRILL-DOWN: 6 dimensions -->
+    <div class="grid-equal">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">By Customer · Top 5</div></div><a href="report-sales-by-customer.html" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">Drill-down →</a></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">PT Office Tower (B2B)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:#FEF3C7;"></div></div><span class="data-bar-row__val">820M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Lotte Mart Q.7 (B2B)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:83%;background:#FEF3C7;"></div></div><span class="data-bar-row__val">680M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Vingroup Tower</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:62%;background:#FEF3C7;"></div></div><span class="data-bar-row__val">510M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Trần Đức D. (VIP)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:28%;"></div></div><span class="data-bar-row__val">22.4M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Phạm Văn E.</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:24%;"></div></div><span class="data-bar-row__val">19.8M</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">By Service · Top 5</div></div><a href="report-sales-by-service.html" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">Drill-down →</a></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">❄️ Sửa điều hoà</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;"></div></div><span class="data-bar-row__val">23.1B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🧺 Sửa máy giặt</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:51%;background:var(--violet);"></div></div><span class="data-bar-row__val">11.8B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🧊 Sửa tủ lạnh</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:30%;background:var(--green);"></div></div><span class="data-bar-row__val">6.9B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🚿 Sửa ống nước</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:24%;background:var(--amber);"></div></div><span class="data-bar-row__val">5.6B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">⚡ Sửa điện</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:7%;background:#06B6D4;"></div></div><span class="data-bar-row__val">1.7B</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-equal">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">By Technician · Top 5</div></div><a href="report-sales-by-technician.html" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">Drill-down →</a></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">Phạm Văn D. (L4)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:var(--green);"></div></div><span class="data-bar-row__val">487 đơn</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Trương Minh K. (L4)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:94%;background:var(--green);"></div></div><span class="data-bar-row__val">456 đơn</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Nguyễn Văn A. (L4)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:87%;background:var(--green);"></div></div><span class="data-bar-row__val">421 đơn</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Lê Văn L. (L4)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:85%;background:var(--green);"></div></div><span class="data-bar-row__val">412 đơn</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Đỗ Tiến H. (L3)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:82%;"></div></div><span class="data-bar-row__val">398 đơn</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">By Area · Top 5 districts</div></div><a href="report-sales-by-area.html" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">Drill-down →</a></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">📍 Q.1, HCM</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;"></div></div><span class="data-bar-row__val">10.6B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">📍 Q.7, HCM</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:87%;"></div></div><span class="data-bar-row__val">9.2B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">📍 Q.3, HCM</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:72%;background:var(--violet);"></div></div><span class="data-bar-row__val">7.6B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">📍 Bình Thạnh, HCM</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:60%;background:var(--violet);"></div></div><span class="data-bar-row__val">6.3B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">📍 Phú Nhuận, HCM</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:48%;background:var(--green);"></div></div><span class="data-bar-row__val">5.1B</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-equal">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">By Partner · Top 5 B2B</div></div><a href="report-sales-by-partner.html" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">Drill-down →</a></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">🏢 PT Office Tower</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:#FEF3C7;"></div></div><span class="data-bar-row__val">820M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🏪 Lotte Mart Q.7</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:83%;background:#FEF3C7;"></div></div><span class="data-bar-row__val">680M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🏢 Vingroup Tower</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:62%;background:#FEF3C7;"></div></div><span class="data-bar-row__val">510M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🏪 Long Châu Pharma</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:39%;"></div></div><span class="data-bar-row__val">320M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🏢 Hyundai Plaza</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:34%;"></div></div><span class="data-bar-row__val">280M</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">By Material · Top consumed</div></div><a href="report-sales-by-material.html" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">Drill-down →</a></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">Gas R32 (1kg)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:#06B6D4;"></div></div><span class="data-bar-row__val">3,247 units</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Capacitor 35MFD</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:62%;background:#06B6D4;"></div></div><span class="data-bar-row__val">2,012 units</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Washer belt 1/4"</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:38%;background:var(--violet);"></div></div><span class="data-bar-row__val">1,247 units</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Filter PM2.5</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:32%;background:var(--violet);"></div></div><span class="data-bar-row__val">1,058 units</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">Thermostat universal</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:18%;background:var(--green);"></div></div><span class="data-bar-row__val">587 units</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><div><div class="panel__title">Daily sales trend · MTD</div></div></div>
+      <div style="padding:14px;">
+        <div class="chart-area" style="height:160px;"><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:80px;"></div><div class="bar-label">1</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:85px;"></div><div class="bar-label">2</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:90px;"></div><div class="bar-label">3</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:98px;"></div><div class="bar-label">4</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:60px;"></div><div class="bar-label">5</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:52px;"></div><div class="bar-label">6</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:88px;"></div><div class="bar-label">7</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:95px;"></div><div class="bar-label">8</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:98px;"></div><div class="bar-label">9</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:105px;"></div><div class="bar-label">10</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:110px;"></div><div class="bar-label">11</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:112px;"></div><div class="bar-label">12</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:68px;"></div><div class="bar-label">13</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:55px;"></div><div class="bar-label">14</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:100px;"></div><div class="bar-label">15</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:105px;"></div><div class="bar-label">16</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:108px;"></div><div class="bar-label">17</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:115px;"></div><div class="bar-label">18</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:118px;"></div><div class="bar-label">19</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:120px;"></div><div class="bar-label">20</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:72px;"></div><div class="bar-label">21</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:62px;"></div><div class="bar-label">22</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:110px;"></div><div class="bar-label">23</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:115px;"></div><div class="bar-label">24</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:118px;"></div><div class="bar-label">25</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:122px;"></div><div class="bar-label">26</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:125px;"></div><div class="bar-label">27</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:128px;"></div><div class="bar-label">28</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:130px;"></div><div class="bar-label">29</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:135px;"></div><div class="bar-label">30</div></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--primary);"></span>Daily GMV (M VND)</span>
+          <span style="margin-left:auto;">Min: 1.04B · Max: 1.95B · MTD: 48.2B</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+<script src="../assets/shell.js"></script>
+<script>SMPAdmin.init({ page: 'report-sales-dashboard', crumbs: ['SMP', 'Sales Reports', 'Dashboard'], search: 'Filter sales data...' });</script>
+</body>
+</html>

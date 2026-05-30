@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Warranty Financials Deep-Dive</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 12px;
+    background: white;
+  }
+
+  .chart-area {
+    height: 200px;
+    padding: 14px 0 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .bar-seg {
+    border-radius: 2px 2px 0 0;
+    transition: opacity 100ms;
+  }
+  .bar-seg:hover { opacity: 0.8; }
+  .bar-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-mute);
+    margin-top: 6px;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-mute);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* Sparkline-style line chart */
+  .line-chart {
+    height: 80px;
+    width: 100%;
+    margin: 8px 0;
+  }
+  .line-chart svg { width: 100%; height: 100%; }
+
+  /* Donut chart */
+  .donut {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 16px;
+  }
+
+  .insight-card {
+    background: var(--primary-bg);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm);
+    padding: 10px 14px;
+    margin: 8px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .grid-equal-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .data-bar-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 100px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar {
+    background: var(--bg-elev);
+    border-radius: 10px;
+    height: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .data-bar-row__bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--primary);
+    border-radius: 10px;
+  }
+  .data-bar-row__val {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
+  .heatmap {
+    display: grid;
+    grid-template-columns: 70px repeat(7, 1fr);
+    gap: 3px;
+    font-size: 11px;
+  }
+  .heatmap-cell {
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+  }
+  .heatmap-h { text-align: right; padding: 8px 8px; color: var(--text-mute); }
+  .heat-1 { background: #E0E7FF; color: #3730A3; }
+  .heat-2 { background: #C7D2FE; color: #3730A3; }
+  .heat-3 { background: #A5B4FC; color: white; }
+  .heat-4 { background: #818CF8; color: white; }
+  .heat-5 { background: #6366F1; color: white; }
+
+  .breadcrumb-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .tab-pill {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab-pill--active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+  }
+
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="reports.html" style="color:inherit;text-decoration:none;">← Reports</a>
+        </div>
+        <h1 class="page-title">Warranty Financials Deep-Dive</h1>
+        <div class="page-sub">v3.5+ · Deferred revenue · per-package P&L · LTV · cohort</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+
+    <div class="filter-bar">
+      <label>Cohort:</label>
+      <select><option>Pilot 100 (May 2026)</option><option>Cohort 2 (Jun)</option><option>All cohorts</option></select>
+      <label>Period:</label>
+      <select><option>YTD</option><option>QTD</option><option>MTD</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Subscriptions sold</div>
+        <div class="kpi__value">87<span class="kpi__unit">/ 100 pilot</span></div>
+        <div class="kpi__meta">87% target capture</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Revenue collected</div>
+        <div class="kpi__value">119.2<span class="kpi__unit">M VND</span></div>
+        <div class="kpi__meta">22.8M recognized · 96.4M deferred</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg LTV (warranty)</div>
+        <div class="kpi__value">1.37<span class="kpi__unit">M VND</span></div>
+        <div class="kpi__meta">1y package avg</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Service cost ratio</div>
+        <div class="kpi__value">17<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">of recognized · target ≤25%</div>
+      </div>
+    </div>
+
+    <div class="grid-2col" style="margin-top:14px;">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Per-package P&amp;L · MTD June</div></div></div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Package</th><th class="right">Subs</th><th class="right">Revenue</th><th class="right">Cost</th><th class="right">Margin</th></tr></thead>
+            <tbody>
+              <tr><td>❄️ AC Basic</td><td class="right mono">42</td><td class="right mono">5.2M</td><td class="right mono">1.9M</td><td class="right" style="color:var(--green-text);font-weight:600;">63%</td></tr>
+              <tr><td>❄️ AC Premium</td><td class="right mono">15</td><td class="right mono">2.8M</td><td class="right mono">1.1M</td><td class="right" style="color:var(--green-text);font-weight:600;">61%</td></tr>
+              <tr><td>🧺 Washer Basic</td><td class="right mono">14</td><td class="right mono">1.2M</td><td class="right mono">0.4M</td><td class="right" style="color:var(--green-text);font-weight:600;">67%</td></tr>
+              <tr><td>🧊 Fridge Basic</td><td class="right mono">9</td><td class="right mono">0.8M</td><td class="right mono">0.2M</td><td class="right" style="color:var(--green-text);font-weight:600;">75%</td></tr>
+              <tr><td>🚿 Water Heater</td><td class="right mono">7</td><td class="right mono">0.5M</td><td class="right mono">0.2M</td><td class="right" style="color:var(--green-text);font-weight:600;">60%</td></tr>
+              <tr style="background:var(--bg-elev);font-weight:600;">
+                <td>Total</td><td class="right mono">87</td><td class="right mono">11.2M</td><td class="right mono">3.8M</td><td class="right" style="color:var(--green-text);">66%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Utilization · quota consumption</div></div></div>
+        <div style="padding:14px;">
+          <div style="font-size:11px;color:var(--text-mute);margin-bottom:8px;">Avg % of quota used at month 6 of 12</div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">AC Premium · vệ sinh</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:90%;background:var(--amber);"></div></div>
+            <span class="data-bar-row__val">52%</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">AC Premium · sửa</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:70%;"></div></div>
+            <span class="data-bar-row__val">42%</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">AC Basic · vệ sinh</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:62%;"></div></div>
+            <span class="data-bar-row__val">38%</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">AC Basic · sửa</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:48%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">28%</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Washer Basic</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:42%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">28%</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Fridge Basic</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:32%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">22%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><div><div class="panel__title">12-month revenue recognition projection</div></div></div>
+      <div style="padding:14px;">
+        <div class="chart-area" style="height:140px;">
+          <div class="bar-col"><div class="bar-seg" style="background:var(--green);height:25px;"></div><div class="bar-label">Jun</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--green);height:32px;"></div><div class="bar-label">Jul</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--green);height:38px;"></div><div class="bar-label">Aug</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:44px;"></div><div class="bar-label">Sep</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:46px;"></div><div class="bar-label">Oct</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:48px;"></div><div class="bar-label">Nov</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:48px;"></div><div class="bar-label">Dec</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:44px;"></div><div class="bar-label">Jan</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:36px;"></div><div class="bar-label">Feb</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:30px;"></div><div class="bar-label">Mar</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:21px;"></div><div class="bar-label">Apr</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--amber);height:13px;"></div><div class="bar-label">May</div></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--green);"></span>Recognized to date (22.8M)</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--amber);"></span>Deferred → recognize (96.4M)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <i class="ti ti-bulb"></i>
+      <div class="insight-card__text">
+        <strong>Insight Finance:</strong> Margin 66% (above target 65%) at current utilization 34%. Risk if utilization → 100%: margin drops to 40%. Recommend Finance review before scaling beyond 1000 subs.
+      </div>
+    </div>
+
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'Reports', 'Warranty financials'], search: 'Filter data...' });
+</script>
+</body>
+</html>

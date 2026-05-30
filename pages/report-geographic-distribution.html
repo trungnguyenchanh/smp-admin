@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Geographic Distribution</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px; color: var(--text-mute); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm);
+    font-family: inherit; font-size: 12px; background: white;
+  }
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+
+  .heatmap-grid {
+    display: grid; grid-template-columns: 110px repeat(12, 1fr);
+    gap: 3px; font-size: 10px;
+  }
+  .heat-cell {
+    padding: 8px 4px; text-align: center; border-radius: 3px; font-family: var(--font-mono);
+  }
+  .heat-0 { background: #F1F5F9; color: var(--text-faint); }
+  .heat-1 { background: #E0E7FF; color: #3730A3; }
+  .heat-2 { background: #C7D2FE; color: #3730A3; }
+  .heat-3 { background: #A5B4FC; color: white; }
+  .heat-4 { background: #818CF8; color: white; }
+  .heat-5 { background: #6366F1; color: white; }
+  .heat-h { padding: 8px 8px; color: var(--text-mute); font-weight: 600; }
+
+  .stage-row {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  }
+  .stage-row__label {
+    width: 130px; font-size: 11px; color: var(--text-mute);
+    font-family: var(--font-mono); text-align: right;
+  }
+  .stage-row__bar {
+    flex: 1; height: 36px; border-radius: 6px;
+    display: flex; align-items: center; padding: 0 14px;
+    color: white; font-weight: 600; font-size: 12px;
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="reports.html" style="color:inherit;text-decoration:none;">← Reports</a>
+        </div>
+        <h1 class="page-title">Geographic Distribution</h1>
+        <div class="page-sub">Orders by province/district · coverage map · expansion plan</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+
+    <div class="filter-bar">
+      <label>Region:</label>
+      <select><option>HCM</option><option>HN</option><option>ĐN</option><option>Tất cả</option></select>
+      <label>Metric:</label>
+      <select><option>Order volume</option><option>GMV</option><option>Customers</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Provinces active</div>
+        <div class="kpi__value">12<span class="kpi__unit">/ 63</span></div>
+        <div class="kpi__meta">+3 planned Q3-Q4</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Top province</div>
+        <div class="kpi__value">HCM</div>
+        <div class="kpi__meta">68% GMV · 19,847 orders</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Coverage area</div>
+        <div class="kpi__value">2,847<span class="kpi__unit">km²</span></div>
+        <div class="kpi__meta">expanding 18 km²/month</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Underserved areas</div>
+        <div class="kpi__value">8<span class="kpi__unit">districts</span></div>
+        <div class="kpi__meta">demand &gt; supply 30%+</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Orders by district · HCM</div><div class="panel__sub">Top 12 quận theo volume</div></div></div>
+      <div style="padding:14px;">
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Quận 1</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:var(--primary);"></div></div>
+          <span class="data-bar-row__val">3,847 · 22%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Quận 7</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:85%;background:var(--primary);"></div></div>
+          <span class="data-bar-row__val">3,268 · 19%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Quận 3</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:72%;background:var(--primary);"></div></div>
+          <span class="data-bar-row__val">2,768 · 16%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Bình Thạnh</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:60%;background:var(--violet);"></div></div>
+          <span class="data-bar-row__val">2,310 · 13%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Phú Nhuận</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:48%;background:var(--violet);"></div></div>
+          <span class="data-bar-row__val">1,848 · 11%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Quận 10</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:35%;background:var(--green);"></div></div>
+          <span class="data-bar-row__val">1,347 · 8%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Tân Bình</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:24%;background:var(--green);"></div></div>
+          <span class="data-bar-row__val">924 · 5%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Quận 5</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:18%;background:var(--amber);"></div></div>
+          <span class="data-bar-row__val">693 · 4%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Gò Vấp</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:12%;background:var(--amber);"></div></div>
+          <span class="data-bar-row__val">462 · 3%</span>
+        </div>
+        <div class="data-bar-row">
+          <span class="data-bar-row__name">Thủ Đức</span>
+          <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:8%;background:var(--red);"></div></div>
+          <span class="data-bar-row__val">308 · 2%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Province expansion plan</div></div></div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Province</th><th>Phase</th><th class="right">Population</th><th class="right">Est demand/month</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>HCM</td><td>Live</td><td class="right mono">9.2M</td><td class="right mono">19,847</td><td><span class="pill pill--green no-dot">Active</span></td></tr>
+              <tr><td>Hà Nội</td><td>Live</td><td class="right mono">8.5M</td><td class="right mono">6,142</td><td><span class="pill pill--green no-dot">Active</span></td></tr>
+              <tr><td>Đà Nẵng</td><td>Live</td><td class="right mono">1.2M</td><td class="right mono">1,247</td><td><span class="pill pill--green no-dot">Active</span></td></tr>
+              <tr><td>Bình Dương</td><td>Q3 2026</td><td class="right mono">2.7M</td><td class="right mono">2,800 (est)</td><td><span class="pill pill--amber no-dot">Planning</span></td></tr>
+              <tr><td>Hải Phòng</td><td>Q3 2026</td><td class="right mono">2.1M</td><td class="right mono">1,900 (est)</td><td><span class="pill pill--amber no-dot">Planning</span></td></tr>
+              <tr><td>Cần Thơ</td><td>Q4 2026</td><td class="right mono">1.3M</td><td class="right mono">1,200 (est)</td><td><span class="pill pill--amber no-dot">Planning</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Underserved districts (demand &gt; supply)</div></div></div>
+        <div style="padding:14px;">
+          <div class="insight-card" style="background:var(--red-bg);border-color:var(--red);">
+            <i class="ti ti-alert-triangle"></i>
+            <div class="insight-card__text" style="color:var(--red-text);">
+              <strong>8 districts under-supplied:</strong> Thủ Đức, Quận 9, Bình Tân, Hóc Môn, Quận 12, Cần Giờ, Nhà Bè, Bình Chánh. Demand cao nhưng &lt; 30% có thợ cover.
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-mute);margin:12px 0 8px;text-transform:uppercase;font-weight:600;">Action plan</div>
+          <div style="font-size:12px;line-height:1.7;">
+            • Recruit 20+ thợ địa phương tại Thủ Đức, Q.9<br>
+            • Subsidize travel cost cho thợ cross-area<br>
+            • Marketing campaign tại these areas
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'Reports', 'Geographic'], search: 'Filter data...' });
+</script>
+</body>
+</html>

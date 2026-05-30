@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Users & roles</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .filter-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 12px 14px; background: white; border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 14px; }
+  .filter-bar label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .filter-bar select, .filter-bar input { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); font-family: inherit; font-size: 12px; background: white; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+  <main class="main">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Users &amp; roles</h1>
+        <div class="page-sub">12 admin users · 6 roles defined · RBAC permissions</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-shield"></i> Permission matrix</button>
+        <button class="btn"><i class="ti ti-history"></i> Access log</button>
+        <button class="btn btn--primary"><i class="ti ti-user-plus"></i> Invite user</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi__label">Active users</div><div class="kpi__value">12</div><div class="kpi__meta">last 30 days</div></div>
+      <div class="kpi kpi--violet"><div class="kpi__label">Roles defined</div><div class="kpi__value">6</div><div class="kpi__meta">Owner · Admin · Ops · CS · Finance · Viewer</div></div>
+      <div class="kpi kpi--green"><div class="kpi__label">2FA enabled</div><div class="kpi__value">100<span class="kpi__unit">%</span></div><div class="kpi__meta">enforced for admin role</div></div>
+      <div class="kpi kpi--amber"><div class="kpi__label">Last login &gt; 30d</div><div class="kpi__value">2<span class="kpi__unit">users</span></div><div class="kpi__meta">review for deactivation</div></div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Admin users</div></div></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Department</th><th>Last login</th><th>2FA</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Trung Nguyễn</strong> (you)</td><td class="mono">trung@smp.vn</td><td><span class="pill" style="background:#FEF3C7;color:#854D0E;">👑 Owner</span></td><td>Founder</td><td>Now</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Profile</button></td></tr>
+            <tr><td>Phạm Hùng</td><td class="mono">hung.le@smp.vn</td><td><span class="pill" style="background:#EDE9FE;color:#5B21B6;">Admin</span></td><td>Ops Manager</td><td>10 min ago</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr><td>Lê Hùng</td><td class="mono">ops.lee@smp.vn</td><td><span class="pill" style="background:#D1FAE5;color:#065F46;">Ops</span></td><td>Operations</td><td>2h ago</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr><td>Trần Mai</td><td class="mono">mai.tran@smp.vn</td><td><span class="pill" style="background:#D1FAE5;color:#065F46;">Ops</span></td><td>Operations</td><td>1h ago</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr><td>Phạm Linh</td><td class="mono">linh.cs@smp.vn</td><td><span class="pill no-dot" style="background:#FCE7F3;color:#BE185D;">CS</span></td><td>Customer support</td><td>4h ago</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr><td>Nguyễn Quân</td><td class="mono">quan.fin@smp.vn</td><td><span class="pill" style="background:#FFE0B2;color:#663300;">Finance</span></td><td>Finance</td><td>Yesterday</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr><td>Hoàng An</td><td class="mono">an.bd@smp.vn</td><td><span class="pill no-dot">Viewer</span></td><td>BD / Sales</td><td>3 days ago</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr><td>Vũ Tiến (intern)</td><td class="mono">tien.intern@smp.vn</td><td><span class="pill no-dot">Viewer</span></td><td>Internship</td><td>5 days ago</td><td>✓ TOTP</td><td><span class="pill pill--green no-dot">Active</span></td><td><button class="btn btn--sm">Edit</button></td></tr>
+            <tr style="opacity:0.6;"><td>Đỗ Minh (former)</td><td class="mono">minh@smp.vn</td><td><span class="pill no-dot">Ops</span></td><td>Operations</td><td>45 days ago</td><td>✓ TOTP</td><td><span class="pill pill--amber no-dot">Inactive</span></td><td><button class="btn btn--sm">Reactivate</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><div><div class="panel__title">Role permissions matrix</div></div></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Permission</th><th class="right">Owner</th><th class="right">Admin</th><th class="right">Ops</th><th class="right">CS</th><th class="right">Finance</th><th class="right">Viewer</th></tr></thead>
+          <tbody>
+            <tr><td>View dashboards</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td></tr>
+            <tr><td>Manage orders</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">limited</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>Manage customers</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>Manage technicians</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>Approve warranty claims</td><td class="right">✓</td><td class="right">✓</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>Finance reports</td><td class="right">✓</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td><td class="right">✓</td><td class="right">view only</td></tr>
+            <tr><td>Manage users &amp; roles</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td><td class="right">−</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>System config</td><td class="right">✓</td><td class="right">limited</td><td class="right">−</td><td class="right">−</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>Audit log access</td><td class="right">✓</td><td class="right">✓</td><td class="right">view own</td><td class="right">−</td><td class="right">−</td><td class="right">−</td></tr>
+            <tr><td>API key management</td><td class="right">✓</td><td class="right">−</td><td class="right">−</td><td class="right">−</td><td class="right">−</td><td class="right">−</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+<script src="../assets/shell.js"></script>
+<script>SMPAdmin.init({ page: 'users-roles', crumbs: ['SMP', 'System', 'Users & roles'], search: 'Search...' });</script>
+</body>
+</html>

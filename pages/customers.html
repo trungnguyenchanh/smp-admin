@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — All Customers</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .seg-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .seg-tab {
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .seg-tab:hover { color: var(--text); }
+  .seg-tab--active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+  }
+  .seg-tab__count {
+    background: var(--bg-elev);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+  }
+  .seg-tab--active .seg-tab__count {
+    background: var(--primary-bg);
+    color: var(--primary-text);
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 12px;
+    background: white;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+  }
+
+  .cust-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-bg);
+    color: var(--primary-text);
+    display: inline-grid;
+    place-items: center;
+    font-weight: 600;
+    font-size: 12px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .cust-row {
+    display: flex;
+    align-items: center;
+  }
+  .cust-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .cust-name { font-weight: 500; color: var(--text); }
+  .cust-id { font-size: 10px; color: var(--text-mute); font-family: var(--font-mono); }
+
+  .bulk-bar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--primary-bg);
+    border-radius: var(--r);
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .bulk-bar.show { display: flex; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Customers</h1>
+        <div class="page-sub">28,479 total customers · 1,247 new this month · 87% active rate</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-upload"></i> Import CSV</button>
+        <button class="btn"><i class="ti ti-download"></i> Export</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Add customer</button>
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total customers</div>
+        <div class="kpi__value">28,479</div>
+        <div class="kpi__meta">▲ 1,247 this month</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">New this month</div>
+        <div class="kpi__value">1,247<span class="kpi__unit">signups</span></div>
+        <div class="kpi__meta">▲ 18% vs last month</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Active rate</div>
+        <div class="kpi__value">87<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">order ≥1 trong 90 days</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Avg LTV</div>
+        <div class="kpi__value">3.42<span class="kpi__unit">M VND</span></div>
+        <div class="kpi__meta">12-month rolling</div>
+      </div>
+    </div>
+
+    <!-- Segment tabs -->
+    <div class="seg-tabs">
+      <button class="seg-tab seg-tab--active">All <span class="seg-tab__count">28,479</span></button>
+      <button class="seg-tab">⭐ VIP <span class="seg-tab__count">285</span></button>
+      <button class="seg-tab">🏢 B2B / Office <span class="seg-tab__count">147</span></button>
+      <button class="seg-tab">👥 Regular <span class="seg-tab__count">5,696</span></button>
+      <button class="seg-tab">🌱 New (30d) <span class="seg-tab__count">1,247</span></button>
+      <button class="seg-tab">⚠️ At-risk <span class="seg-tab__count">412</span></button>
+      <button class="seg-tab">💤 Churned <span class="seg-tab__count">847</span></button>
+      <button class="seg-tab">🚫 Inactive <span class="seg-tab__count">3,705</span></button>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <i class="ti ti-search" style="color:var(--text-mute);"></i>
+      <input class="search-input" type="search" placeholder="Tìm theo tên, SĐT, email, ID...">
+      <label>Khu vực:</label>
+      <select><option>Tất cả</option><option>HCM</option><option>HN</option><option>ĐN</option></select>
+      <label>Đăng ký:</label>
+      <select><option>Tất cả</option><option>30 ngày qua</option><option>90 ngày</option><option>Năm nay</option></select>
+      <label>Trạng thái:</label>
+      <select><option>Tất cả</option><option>Active</option><option>Inactive</option><option>Blocked</option></select>
+      <label>Loại KH:</label>
+      <select><option>Tất cả</option><option>B2C</option><option>B2B</option><option>Office</option></select>
+      <button class="btn btn--sm" style="margin-left:auto;">Reset</button>
+      <button class="btn btn--primary btn--sm">Apply</button>
+    </div>
+
+    <!-- Bulk actions bar (when selected) -->
+    <div class="bulk-bar" id="bulk-bar">
+      <i class="ti ti-checks" style="color:var(--primary);font-size:18px;"></i>
+      <span><strong>3 selected</strong></span>
+      <span style="color:var(--text-mute);">·</span>
+      <button class="btn btn--sm">Send notification</button>
+      <button class="btn btn--sm">Add tag</button>
+      <button class="btn btn--sm">Mark inactive</button>
+      <button class="btn btn--sm">Export</button>
+      <button class="btn btn--sm" style="margin-left:auto;color:var(--red);border-color:var(--red);">Block</button>
+    </div>
+
+    <!-- Customer table -->
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Customer list · sorted by registration date</div>
+          <div class="panel__sub">Showing 1-25 of 28,479</div>
+        </div>
+        <div class="row" style="gap:8px;">
+          <button class="btn btn--sm"><i class="ti ti-arrows-sort"></i> Sort</button>
+          <button class="btn btn--sm"><i class="ti ti-columns"></i> Columns</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th style="width:30px;"><input type="checkbox"></th>
+              <th>Customer</th>
+              <th>Contact</th>
+              <th>Area</th>
+              <th>Registered</th>
+              <th class="right">Orders</th>
+              <th class="right">GMV</th>
+              <th>Last order</th>
+              <th>Segment</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar">NA</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Nguyễn Văn A</span>
+                    <span class="cust-id">cust_HX5K3</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 90 ••• 7842</div>
+                <div class="fs-11 text-mute">nguyenvana@gmail.com</div>
+              </td>
+              <td>Q.1, HCM</td>
+              <td class="mono">Hôm nay 09:42</td>
+              <td class="right mono">0</td>
+              <td class="right mono">0 ₫</td>
+              <td class="mono">-</td>
+              <td><span class="pill" style="background:#D1FAE5;color:#065F46;">🌱 New</span></td>
+              <td><span class="pill pill--green no-dot">Active</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar" style="background:#FCE7F3;color:#BE185D;">LB</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Lê Thị Bình</span>
+                    <span class="cust-id">cust_HX5J2</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 90 ••• 4521</div>
+                <div class="fs-11 text-mute">lethibinh@gmail.com</div>
+              </td>
+              <td>Q.7, HCM</td>
+              <td class="mono">Hôm nay 08:15</td>
+              <td class="right mono">1</td>
+              <td class="right mono">450k</td>
+              <td class="mono">Hôm nay 11:30</td>
+              <td><span class="pill" style="background:#D1FAE5;color:#065F46;">🌱 New</span></td>
+              <td><span class="pill pill--green no-dot">Active</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar" style="background:#FEF3C7;color:#854D0E;">PT</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Phạm Tú · PT Office Tower</span>
+                    <span class="cust-id">cust_AAB12</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 28 ••• 1100</div>
+                <div class="fs-11 text-mute">facility@ptoffice.vn</div>
+              </td>
+              <td>Q.1, HCM</td>
+              <td class="mono">2024-03-15</td>
+              <td class="right mono">487</td>
+              <td class="right mono fw-bold" style="color:var(--green);">820M</td>
+              <td class="mono">Hôm qua</td>
+              <td><span class="pill" style="background:#FEF3C7;color:#854D0E;">🏢 B2B Office</span></td>
+              <td><span class="pill pill--green no-dot">Active</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar" style="background:#EDE9FE;color:#5B21B6;">TD</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Trần Đức D.</span>
+                    <span class="cust-id">cust_GH8X1</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 90 ••• 9874</div>
+                <div class="fs-11 text-mute">tranducd@yahoo.com</div>
+              </td>
+              <td>Bình Thạnh, HCM</td>
+              <td class="mono">2024-08-22</td>
+              <td class="right mono">38</td>
+              <td class="right mono">22.4M</td>
+              <td class="mono">3 ngày trước</td>
+              <td><span class="pill" style="background:#FEF3C7;color:#854D0E;">⭐ VIP</span></td>
+              <td><span class="pill pill--green no-dot">Active</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar">VL</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Vũ Thị L.</span>
+                    <span class="cust-id">cust_FE2K9</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 90 ••• 3322</div>
+                <div class="fs-11 text-mute">vuthil88@gmail.com</div>
+              </td>
+              <td>Q.3, HCM</td>
+              <td class="mono">2025-01-10</td>
+              <td class="right mono">14</td>
+              <td class="right mono">6.8M</td>
+              <td class="mono">2 tuần trước</td>
+              <td><span class="pill no-dot">👥 Regular</span></td>
+              <td><span class="pill pill--green no-dot">Active</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar">DH</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Đỗ Văn H.</span>
+                    <span class="cust-id">cust_BC5L4</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 90 ••• 5566</div>
+                <div class="fs-11 text-mute">dovanh@gmail.com</div>
+              </td>
+              <td>Q.10, HCM</td>
+              <td class="mono">2024-11-05</td>
+              <td class="right mono">6</td>
+              <td class="right mono">2.3M</td>
+              <td class="mono">68 ngày trước</td>
+              <td><span class="pill" style="background:#FEF3C7;color:#854D0E;">⚠️ At-risk</span></td>
+              <td><span class="pill pill--green no-dot">Active</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr style="opacity:0.7;">
+              <td><input type="checkbox"></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar">HK</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Hoàng Thị K.</span>
+                    <span class="cust-id">cust_AA9P2</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 90 ••• 7788</div>
+                <div class="fs-11 text-mute">hoangtk@hotmail.com</div>
+              </td>
+              <td>Q.5, HCM</td>
+              <td class="mono">2024-02-18</td>
+              <td class="right mono">3</td>
+              <td class="right mono">820k</td>
+              <td class="mono">154 ngày trước</td>
+              <td><span class="pill pill--red no-dot">💤 Churned</span></td>
+              <td><span class="pill pill--amber no-dot">Inactive</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+            <tr style="opacity:0.6;">
+              <td><input type="checkbox"></td>
+              <td>
+                <div class="cust-row">
+                  <div class="cust-avatar" style="background:var(--red-bg);color:var(--red-text);">XX</div>
+                  <div class="cust-info">
+                    <span class="cust-name">Spammer Test</span>
+                    <span class="cust-id">cust_BLOCK01</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-12 mono">+84 88 ••• 0000</div>
+                <div class="fs-11 text-mute">fake@spam.io</div>
+              </td>
+              <td>?</td>
+              <td class="mono">2025-04-01</td>
+              <td class="right mono">0</td>
+              <td class="right mono">0 ₫</td>
+              <td class="mono">-</td>
+              <td><span class="pill pill--red no-dot">🚫 Blocked</span></td>
+              <td><span class="pill pill--red no-dot">Blocked</span></td>
+              <td><a href="customer-detail.html" class="btn btn--sm">View</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel__footer">
+        <div class="row" style="justify-content:space-between;width:100%;">
+          <div class="fs-12 text-mute">Showing 1-8 of 28,479 customers</div>
+          <div class="row" style="gap:8px;">
+            <button class="btn btn--sm" disabled>← Previous</button>
+            <span class="fs-12 mono" style="padding:0 8px;">Page 1 of 3,560</span>
+            <button class="btn btn--sm">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'customers', crumbs: ['SMP', 'Customer', 'All customers'], search: 'Search customers...' });
+
+// Toggle bulk bar based on checkbox selection
+const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+const bulkBar = document.getElementById('bulk-bar');
+function updateBulk() {
+  const selected = document.querySelectorAll('tbody input[type="checkbox"]:checked').length;
+  if (selected > 0) {
+    bulkBar.classList.add('show');
+    bulkBar.querySelector('strong').textContent = selected + ' selected';
+  } else {
+    bulkBar.classList.remove('show');
+  }
+}
+checkboxes.forEach(cb => cb.addEventListener('change', updateBulk));
+updateBulk();
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Sales by Technician</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .filter-bar select { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); font-family: inherit; font-size: 12px; background: white; }
+
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="report-sales-dashboard.html" style="color:inherit;text-decoration:none;">← Sales Reports</a>
+        </div>
+        <h1 class="page-title">Sales by Technician</h1>
+        <div class="page-sub">Leaderboard · level distribution · multi-agent participation</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label>Period:</label>
+      <select><option>MTD June</option><option>QTD</option><option>YTD</option></select>
+      <label>Level:</label>
+      <select><option>All</option><option>L4</option><option>L3</option><option>L2</option></select>
+      <label>Area:</label>
+      <select><option>All</option><option>HCM</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Active technicians</div>
+        <div class="kpi__value">847<span class="kpi__unit">techs</span></div>
+        <div class="kpi__meta">L4: 187 · L3: 425 · L2: 187 · L1: 48</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Top performer GMV</div>
+        <div class="kpi__value">32.8<span class="kpi__unit">M VND</span></div>
+        <div class="kpi__meta">Phạm Văn D. · 487 đơn</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg GMV/tech</div>
+        <div class="kpi__value">14.6<span class="kpi__unit">M VND</span></div>
+        <div class="kpi__meta">L4 avg: 22.4M · L1-2 avg: 7.8M</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Top 10% techs</div>
+        <div class="kpi__value">28<span class="kpi__unit">% GMV</span></div>
+        <div class="kpi__meta">85 techs · concentration risk</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Leaderboard · top 20 by GMV</div></div></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th>Rank</th><th>Technician</th><th>Level</th><th class="right">Orders</th><th class="right">Lead/Helper split</th><th class="right">GMV generated</th><th class="right">Earnings</th><th class="right">Rating</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>🥇 1</strong></td><td>Phạm Văn D.</td><td>L4</td><td class="right mono">487</td><td class="right mono">412 chính · 75 phụ</td><td class="right mono fw-bold" style="color:var(--green);">156M</td><td class="right mono">32.8M</td><td class="right" style="color:var(--green-text);">4.96 ⭐</td></tr>
+            <tr><td><strong>🥈 2</strong></td><td>Trương Minh K.</td><td>L4</td><td class="right mono">456</td><td class="right mono">398 chính · 58 phụ</td><td class="right mono fw-bold" style="color:var(--green);">147M</td><td class="right mono">30.7M</td><td class="right" style="color:var(--green-text);">4.94 ⭐</td></tr>
+            <tr><td><strong>🥉 3</strong></td><td>Nguyễn Văn A.</td><td>L4</td><td class="right mono">421</td><td class="right mono">365 chính · 56 phụ</td><td class="right mono fw-bold" style="color:var(--green);">135M</td><td class="right mono">28.4M</td><td class="right" style="color:var(--green-text);">4.92 ⭐</td></tr>
+            <tr><td>4</td><td>Lê Văn L.</td><td>L4</td><td class="right mono">412</td><td class="right mono">348 chính · 64 phụ</td><td class="right mono">131M</td><td class="right mono">27.6M</td><td class="right" style="color:var(--green-text);">4.91 ⭐</td></tr>
+            <tr><td>5</td><td>Đỗ Tiến H.</td><td>L3</td><td class="right mono">398</td><td class="right mono">312 chính · 86 phụ</td><td class="right mono">109M</td><td class="right mono">22.9M</td><td class="right" style="color:var(--green-text);">4.89 ⭐</td></tr>
+            <tr><td>6</td><td>Trần Quốc B.</td><td>L4</td><td class="right mono">387</td><td class="right mono">328 chính · 59 phụ</td><td class="right mono">124M</td><td class="right mono">26.1M</td><td class="right" style="color:var(--green-text);">4.88 ⭐</td></tr>
+            <tr><td>7</td><td>Vũ Nam C.</td><td>L3</td><td class="right mono">372</td><td class="right mono">298 chính · 74 phụ</td><td class="right mono">102M</td><td class="right mono">21.4M</td><td class="right" style="color:var(--green-text);">4.87 ⭐</td></tr>
+            <tr><td>8</td><td>Hoàng Văn E.</td><td>L3</td><td class="right mono">368</td><td class="right mono">285 chính · 83 phụ</td><td class="right mono">101M</td><td class="right mono">21.2M</td><td class="right" style="color:var(--amber-text);">4.85 ⭐</td></tr>
+            <tr><td>9</td><td>Phan Thanh F.</td><td>L4</td><td class="right mono">358</td><td class="right mono">305 chính · 53 phụ</td><td class="right mono">115M</td><td class="right mono">24.1M</td><td class="right" style="color:var(--green-text);">4.86 ⭐</td></tr>
+            <tr><td>10</td><td>Đoàn Hữu R.</td><td>L3</td><td class="right mono">347</td><td class="right mono">268 chính · 79 phụ</td><td class="right mono">95M</td><td class="right mono">19.9M</td><td class="right" style="color:var(--amber-text);">4.84 ⭐</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-equal">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">GMV distribution by level</div></div></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">L4 (187 techs · 22% pop)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:var(--green);"></div></div><span class="data-bar-row__val">46% GMV</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">L3 (425 techs · 50% pop)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:80%;"></div></div><span class="data-bar-row__val">37% GMV</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">L2 (187 techs · 22% pop)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:26%;background:var(--violet);"></div></div><span class="data-bar-row__val">12% GMV</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">L1 (48 techs · 6% pop)</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:10%;background:var(--amber);"></div></div><span class="data-bar-row__val">5% GMV</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Multi-agent participation</div></div></div>
+        <div style="padding:14px;font-size:13px;">
+          <div class="row between mb-12"><span>Solo orders</span><span class="mono fw-bold">82% · 6,762 đơn</span></div>
+          <div class="row between mb-12"><span>Multi-agent orders</span><span class="mono fw-bold">18% · 1,485 đơn</span></div>
+          <div class="row between mb-12"><span>Avg team size</span><span class="mono">2.3 thợ</span></div>
+          <div class="row between"><span>Avg time saved</span><span class="mono" style="color:var(--green);">▼ 28%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+<script src="../assets/shell.js"></script>
+<script>SMPAdmin.init({ page: 'report-sales-by-technician', crumbs: ['SMP', 'Sales Reports', 'By Technician'], search: 'Filter sales data...' });</script>
+</body>
+</html>

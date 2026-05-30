@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Step Performance Analysis</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: 12px;
+    background: white;
+  }
+
+  .chart-area {
+    height: 200px;
+    padding: 14px 0 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .bar-seg {
+    border-radius: 2px 2px 0 0;
+    transition: opacity 100ms;
+  }
+  .bar-seg:hover { opacity: 0.8; }
+  .bar-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-mute);
+    margin-top: 6px;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-mute);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* Sparkline-style line chart */
+  .line-chart {
+    height: 80px;
+    width: 100%;
+    margin: 8px 0;
+  }
+  .line-chart svg { width: 100%; height: 100%; }
+
+  /* Donut chart */
+  .donut {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 16px;
+  }
+
+  .insight-card {
+    background: var(--primary-bg);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm);
+    padding: 10px 14px;
+    margin: 8px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .grid-equal-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .data-bar-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 100px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar {
+    background: var(--bg-elev);
+    border-radius: 10px;
+    height: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .data-bar-row__bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--primary);
+    border-radius: 10px;
+  }
+  .data-bar-row__val {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
+  .heatmap {
+    display: grid;
+    grid-template-columns: 70px repeat(7, 1fr);
+    gap: 3px;
+    font-size: 11px;
+  }
+  .heatmap-cell {
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+  }
+  .heatmap-h { text-align: right; padding: 8px 8px; color: var(--text-mute); }
+  .heat-1 { background: #E0E7FF; color: #3730A3; }
+  .heat-2 { background: #C7D2FE; color: #3730A3; }
+  .heat-3 { background: #A5B4FC; color: white; }
+  .heat-4 { background: #818CF8; color: white; }
+  .heat-5 { background: #6366F1; color: white; }
+
+  .breadcrumb-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+  .tab-pill {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab-pill--active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+  }
+
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="reports.html" style="color:inherit;text-decoration:none;">← Reports</a>
+        </div>
+        <h1 class="page-title">Step Performance Analysis</h1>
+        <div class="page-sub">Top step theo GMV/volume · cost · margin · trend · drill-down</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+
+    <div class="filter-bar">
+      <label>Khoảng thời gian:</label>
+      <select><option>30 ngày qua</option><option>7 ngày</option><option>Quý này</option><option>Năm 2026</option></select>
+      <label>Service category:</label>
+      <select><option>Tất cả</option><option>AC</option><option>Washer</option><option>Fridge</option><option>Plumbing</option></select>
+      <label>Level:</label>
+      <select><option>Tất cả</option><option>L1-L2</option><option>L3+</option><option>L4 only</option></select>
+      <button class="btn btn--sm" style="margin-left:auto;">Reset</button>
+      <button class="btn btn--primary btn--sm">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total steps · 30d</div>
+        <div class="kpi__value">87,234<span class="kpi__unit">steps</span></div>
+        <div class="kpi__meta">▲ 12% MoM</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg duration</div>
+        <div class="kpi__value">18.4<span class="kpi__unit">min</span></div>
+        <div class="kpi__meta">▼ 2.1 min vs Q4</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">GMV per step</div>
+        <div class="kpi__value">142k<span class="kpi__unit">VND</span></div>
+        <div class="kpi__meta">▲ 8% MoM</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Quote acceptance</div>
+        <div class="kpi__value">71<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">target ≥ 75%</div>
+      </div>
+    </div>
+
+    <div class="insight-card" style="margin-top:14px;">
+      <i class="ti ti-bulb"></i>
+      <div class="insight-card__text">
+        <strong>Insight:</strong> Top 5 steps đóng góp 62% GMV. "ac-recharge-r32" tăng 18% MoM, có thể là do mùa hè. Đề xuất tăng inventory R32 ở 3 quận trung tâm.
+      </div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Top steps theo GMV · 30 ngày qua</div>
+            <div class="panel__sub">Click 1 step để drill-down</div>
+          </div>
+        </div>
+        <div style="padding:6px 0;">
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">ac-recharge-r32</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;"></div></div>
+            <span class="data-bar-row__val">5.1M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">ac-inspect-diagnose</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:85%;"></div></div>
+            <span class="data-bar-row__val">4.3M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">ac-replace-capacitor</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:75%;background:var(--violet);"></div></div>
+            <span class="data-bar-row__val">3.9M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">ac-final-test</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:65%;"></div></div>
+            <span class="data-bar-row__val">3.4M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">washer-belt-replace</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:52%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">2.7M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">ac-clean-filter</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:48%;"></div></div>
+            <span class="data-bar-row__val">2.5M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">fridge-thermostat</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:42%;background:var(--amber);"></div></div>
+            <span class="data-bar-row__val">2.2M ₫</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">plumbing-pipe-fix</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:38%;"></div></div>
+            <span class="data-bar-row__val">2.0M ₫</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Distribution by category</div>
+          </div>
+        </div>
+        <div style="padding:14px;">
+          <div style="text-align:center;margin-bottom:14px;">
+            <svg viewBox="0 0 36 36" class="donut">
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--bg-elev)" stroke-width="3"/>
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="48 100" transform="rotate(-90 18 18)"/>
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--violet)" stroke-width="3" stroke-dasharray="24 100" stroke-dashoffset="-48" transform="rotate(-90 18 18)"/>
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="14 100" stroke-dashoffset="-72" transform="rotate(-90 18 18)"/>
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--amber)" stroke-width="3" stroke-dasharray="14 100" stroke-dashoffset="-86" transform="rotate(-90 18 18)"/>
+              <text x="18" y="20" text-anchor="middle" font-size="6" font-family="var(--font-mono)" font-weight="600">87k</text>
+            </svg>
+          </div>
+          <div style="font-size:12px;line-height:1.8;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span><span class="legend-dot" style="background:var(--primary);display:inline-block;margin-right:6px;"></span>AC</span>
+              <span class="mono">48%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span><span class="legend-dot" style="background:var(--violet);display:inline-block;margin-right:6px;"></span>Washer</span>
+              <span class="mono">24%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span><span class="legend-dot" style="background:var(--green);display:inline-block;margin-right:6px;"></span>Fridge</span>
+              <span class="mono">14%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span><span class="legend-dot" style="background:var(--amber);display:inline-block;margin-right:6px;"></span>Plumbing</span>
+              <span class="mono">14%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">GMV trend · 12 tuần qua</div>
+          <div class="panel__sub">Weekly cumulative</div>
+        </div>
+      </div>
+      <div style="padding:14px;">
+        <div class="chart-area">
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:60px;"></div><div class="bar-label">W1</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:70px;"></div><div class="bar-label">W2</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:82px;"></div><div class="bar-label">W3</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:88px;"></div><div class="bar-label">W4</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:95px;"></div><div class="bar-label">W5</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:105px;"></div><div class="bar-label">W6</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:120px;"></div><div class="bar-label">W7</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:135px;"></div><div class="bar-label">W8</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:150px;"></div><div class="bar-label">W9</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:155px;"></div><div class="bar-label">W10</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:165px;"></div><div class="bar-label">W11</div></div>
+          <div class="bar-col"><div class="bar-seg" style="background:var(--green);height:180px;"></div><div class="bar-label">W12</div></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--primary);"></span>Weekly GMV (M VND)</span>
+          <span style="margin-left:auto;">Min: 5.2M · Max: 14.1M · Total: 95.6M</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">Detailed table · top 20 steps</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Step ID</th>
+              <th>Service</th>
+              <th class="right">Volume</th>
+              <th class="right">Avg duration</th>
+              <th class="right">Avg price</th>
+              <th class="right">GMV</th>
+              <th class="right">Quote acc rate</th>
+              <th class="right">Dispute %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">ac-recharge-r32</td><td>Sửa máy lạnh</td><td class="right mono">1,247</td><td class="right mono">28 min</td><td class="right mono">440k</td><td class="right mono">5.1M</td><td class="right" style="color:var(--green-text);">74%</td><td class="right">0.8%</td></tr>
+            <tr><td class="mono">ac-inspect-diagnose</td><td>Sửa máy lạnh</td><td class="right mono">2,184</td><td class="right mono">14 min</td><td class="right mono">70k</td><td class="right mono">4.3M</td><td class="right" style="color:var(--green-text);">96%</td><td class="right">0.3%</td></tr>
+            <tr><td class="mono">ac-replace-capacitor</td><td>Sửa máy lạnh</td><td class="right mono">847</td><td class="right mono">22 min</td><td class="right mono">260k</td><td class="right mono">3.9M</td><td class="right" style="color:var(--green-text);">68%</td><td class="right">1.2%</td></tr>
+            <tr><td class="mono">ac-final-test</td><td>Sửa máy lạnh</td><td class="right mono">2,184</td><td class="right mono">10 min</td><td class="right mono">40k</td><td class="right mono">3.4M</td><td class="right" style="color:var(--green-text);">100%</td><td class="right">0.1%</td></tr>
+            <tr><td class="mono">washer-belt-replace</td><td>Sửa máy giặt</td><td class="right mono">412</td><td class="right mono">25 min</td><td class="right mono">280k</td><td class="right mono">2.7M</td><td class="right" style="color:var(--amber-text);">62%</td><td class="right">1.4%</td></tr>
+            <tr><td class="mono">ac-clean-filter</td><td>Sửa máy lạnh</td><td class="right mono">1,548</td><td class="right mono">18 min</td><td class="right mono">80k</td><td class="right mono">2.5M</td><td class="right" style="color:var(--green-text);">94%</td><td class="right">0.4%</td></tr>
+            <tr><td class="mono">fridge-thermostat</td><td>Sửa tủ lạnh</td><td class="right mono">387</td><td class="right mono">30 min</td><td class="right mono">320k</td><td class="right mono">2.2M</td><td class="right" style="color:var(--amber-text);">58%</td><td class="right">2.1%</td></tr>
+            <tr><td class="mono">plumbing-pipe-fix</td><td>Sửa ống nước</td><td class="right mono">298</td><td class="right mono">35 min</td><td class="right mono">350k</td><td class="right mono">2.0M</td><td class="right" style="color:var(--green-text);">71%</td><td class="right">1.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'Reports', 'Step performance'], search: 'Filter data...' });
+</script>
+</body>
+</html>

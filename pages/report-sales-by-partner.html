@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Sales by Partner</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .filter-bar select { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); font-family: inherit; font-size: 12px; background: white; }
+
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="report-sales-dashboard.html" style="color:inherit;text-decoration:none;">← Sales Reports</a>
+        </div>
+        <h1 class="page-title">Sales by Partner</h1>
+        <div class="page-sub">B2B accounts · concentration risk · churn signals</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label>Period:</label>
+      <select><option>MTD June</option><option>QTD</option><option>YTD</option></select>
+      <label>Partner type:</label>
+      <select><option>All</option><option>Office</option><option>Retail</option><option>Mixed</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Active partners</div>
+        <div class="kpi__value">23<span class="kpi__unit">B2B accounts</span></div>
+        <div class="kpi__meta">18 customers · 5 suppliers</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Partner GMV</div>
+        <div class="kpi__value">3.84<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">31% of total · MTD</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Top 3 concentration</div>
+        <div class="kpi__value">52<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">⚠ risk if reliance high</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Churn risk</div>
+        <div class="kpi__value">2<span class="kpi__unit">partners</span></div>
+        <div class="kpi__meta">order ▼ 30%+ vs avg</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Top partners by GMV · MTD</div></div></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Rank</th><th>Partner</th><th>Type</th><th class="right">Orders</th><th class="right">GMV</th><th class="right">% share</th><th class="right">MoM trend</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td>PT Office Tower</td><td>🏢 Office</td><td class="right mono">487</td><td class="right mono fw-bold" style="color:var(--green);">820M</td><td class="right">21%</td><td class="right" style="color:var(--green-text);">▲ 12%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+            <tr><td><strong>2</strong></td><td>Lotte Mart Q.7</td><td>🏪 Retail</td><td class="right mono">342</td><td class="right mono fw-bold" style="color:var(--green);">680M</td><td class="right">18%</td><td class="right" style="color:var(--green-text);">▲ 8%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+            <tr><td><strong>3</strong></td><td>Vingroup Tower</td><td>🏢 Mixed</td><td class="right mono">298</td><td class="right mono fw-bold" style="color:var(--green);">510M</td><td class="right">13%</td><td class="right">+2%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+            <tr><td>4</td><td>Long Châu Pharma</td><td>🏪 Retail</td><td class="right mono">187</td><td class="right mono">320M</td><td class="right">8%</td><td class="right" style="color:var(--green-text);">▲ 18%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+            <tr><td>5</td><td>Hyundai Plaza</td><td>🏢 Office</td><td class="right mono">142</td><td class="right mono">280M</td><td class="right">7%</td><td class="right">−3%</td><td><span class="pill pill--amber no-dot">Watch</span></td></tr>
+            <tr><td>6</td><td>SC VivoCity</td><td>🏪 Retail</td><td class="right mono">128</td><td class="right mono">240M</td><td class="right">6%</td><td class="right" style="color:var(--green-text);">▲ 24%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+            <tr style="background:var(--red-bg);"><td>7</td><td>Times City North</td><td>🏢 Office</td><td class="right mono">87</td><td class="right mono">180M</td><td class="right">5%</td><td class="right" style="color:var(--red-text);">▼ 32%</td><td><span class="pill pill--red no-dot">Churn risk</span></td></tr>
+            <tr><td>8</td><td>Big C Phú Mỹ Hưng</td><td>🏪 Retail</td><td class="right mono">76</td><td class="right mono">154M</td><td class="right">4%</td><td class="right" style="color:var(--green-text);">▲ 6%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+            <tr style="background:var(--red-bg);"><td>9</td><td>Saigon Pearl Tower</td><td>🏢 Office</td><td class="right mono">52</td><td class="right mono">98M</td><td class="right">3%</td><td class="right" style="color:var(--red-text);">▼ 38%</td><td><span class="pill pill--red no-dot">Churn risk</span></td></tr>
+            <tr><td>10</td><td>Co.opmart Q.4</td><td>🏪 Retail</td><td class="right mono">48</td><td class="right mono">88M</td><td class="right">2%</td><td class="right" style="color:var(--green-text);">▲ 14%</td><td><span class="pill pill--green no-dot">Healthy</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-equal">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Partner type · sales mix</div></div></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row"><span class="data-bar-row__name">🏢 Office buildings</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;"></div></div><span class="data-bar-row__val">55% · 2.1B</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🏪 Retail chains</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:45%;background:var(--violet);"></div></div><span class="data-bar-row__val">25% · 960M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🏬 Mixed-use</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:25%;background:var(--green);"></div></div><span class="data-bar-row__val">14% · 540M</span></div>
+          <div class="data-bar-row"><span class="data-bar-row__name">🚚 Suppliers</span><div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:11%;background:var(--amber);"></div></div><span class="data-bar-row__val">6% · 240M</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Churn risk action plan</div></div></div>
+        <div style="padding:14px;">
+          <div class="insight-card" style="background:var(--red-bg);border-color:var(--red);">
+            <i class="ti ti-alert-triangle"></i>
+            <div class="insight-card__text" style="color:var(--red-text);">
+              <strong>2 partners flagged:</strong><br>Times City North · ▼ 32% · last contact 14 days ago<br>Saigon Pearl Tower · ▼ 38% · NPS dropped 8→5
+            </div>
+          </div>
+          <button class="btn btn--primary btn--full" style="margin-top:12px;"><i class="ti ti-phone"></i> Schedule check-in calls</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+<script src="../assets/shell.js"></script>
+<script>SMPAdmin.init({ page: 'report-sales-by-partner', crumbs: ['SMP', 'Sales Reports', 'By Partner'], search: 'Filter sales data...' });</script>
+</body>
+</html>

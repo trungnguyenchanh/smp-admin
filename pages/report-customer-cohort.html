@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Customer Cohort Retention</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px; color: var(--text-mute); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm);
+    font-family: inherit; font-size: 12px; background: white;
+  }
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+
+  .heatmap-grid {
+    display: grid; grid-template-columns: 110px repeat(12, 1fr);
+    gap: 3px; font-size: 10px;
+  }
+  .heat-cell {
+    padding: 8px 4px; text-align: center; border-radius: 3px; font-family: var(--font-mono);
+  }
+  .heat-0 { background: #F1F5F9; color: var(--text-faint); }
+  .heat-1 { background: #E0E7FF; color: #3730A3; }
+  .heat-2 { background: #C7D2FE; color: #3730A3; }
+  .heat-3 { background: #A5B4FC; color: white; }
+  .heat-4 { background: #818CF8; color: white; }
+  .heat-5 { background: #6366F1; color: white; }
+  .heat-h { padding: 8px 8px; color: var(--text-mute); font-weight: 600; }
+
+  .stage-row {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  }
+  .stage-row__label {
+    width: 130px; font-size: 11px; color: var(--text-mute);
+    font-family: var(--font-mono); text-align: right;
+  }
+  .stage-row__bar {
+    flex: 1; height: 36px; border-radius: 6px;
+    display: flex; align-items: center; padding: 0 14px;
+    color: white; font-weight: 600; font-size: 12px;
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="reports.html" style="color:inherit;text-decoration:none;">← Reports</a>
+        </div>
+        <h1 class="page-title">Customer Cohort Retention</h1>
+        <div class="page-sub">Retention heatmap by acquisition cohort · M1-M12 analysis</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+
+    <div class="filter-bar">
+      <label>Cohort by:</label>
+      <select><option>Acquisition month</option><option>First service</option><option>Source</option></select>
+      <label>Metric:</label>
+      <select><option>Retention %</option><option>Avg orders</option><option>Avg GMV</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total customers</div>
+        <div class="kpi__value">28,479</div>
+        <div class="kpi__meta">+1,247 new in MTD</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">M3 retention</div>
+        <div class="kpi__value">42<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">target ≥ 40%</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">M6 retention</div>
+        <div class="kpi__value">31<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">▲ 4 pp vs Q1</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">M12 retention</div>
+        <div class="kpi__value">24<span class="kpi__unit">%</span></div>
+        <div class="kpi__meta">target 25%</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head"><div><div class="panel__title">Retention heatmap · % of cohort active each month</div></div></div>
+      <div style="padding:14px;overflow-x:auto;">
+        <div class="heatmap-grid">
+          <span class="heat-h">Cohort</span>
+          <span class="heat-h" style="text-align:center;">M0</span>
+          <span class="heat-h" style="text-align:center;">M1</span>
+          <span class="heat-h" style="text-align:center;">M2</span>
+          <span class="heat-h" style="text-align:center;">M3</span>
+          <span class="heat-h" style="text-align:center;">M4</span>
+          <span class="heat-h" style="text-align:center;">M5</span>
+          <span class="heat-h" style="text-align:center;">M6</span>
+          <span class="heat-h" style="text-align:center;">M7</span>
+          <span class="heat-h" style="text-align:center;">M8</span>
+          <span class="heat-h" style="text-align:center;">M9</span>
+          <span class="heat-h" style="text-align:center;">M10</span>
+          <span class="heat-h" style="text-align:center;">M11</span>
+
+          <span class="heat-h">Jun 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">68</span>
+          <span class="heat-cell heat-3">52</span>
+          <span class="heat-cell heat-3">45</span>
+          <span class="heat-cell heat-2">38</span>
+          <span class="heat-cell heat-2">34</span>
+          <span class="heat-cell heat-2">31</span>
+          <span class="heat-cell heat-2">29</span>
+          <span class="heat-cell heat-1">27</span>
+          <span class="heat-cell heat-1">25</span>
+          <span class="heat-cell heat-1">24</span>
+          <span class="heat-cell heat-1">23</span>
+
+          <span class="heat-h">Jul 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">72</span>
+          <span class="heat-cell heat-3">55</span>
+          <span class="heat-cell heat-3">47</span>
+          <span class="heat-cell heat-3">42</span>
+          <span class="heat-cell heat-2">36</span>
+          <span class="heat-cell heat-2">33</span>
+          <span class="heat-cell heat-2">30</span>
+          <span class="heat-cell heat-2">28</span>
+          <span class="heat-cell heat-1">26</span>
+          <span class="heat-cell heat-1">25</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Aug 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">74</span>
+          <span class="heat-cell heat-4">58</span>
+          <span class="heat-cell heat-3">48</span>
+          <span class="heat-cell heat-3">43</span>
+          <span class="heat-cell heat-3">38</span>
+          <span class="heat-cell heat-2">34</span>
+          <span class="heat-cell heat-2">31</span>
+          <span class="heat-cell heat-2">29</span>
+          <span class="heat-cell heat-2">27</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Sep 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">76</span>
+          <span class="heat-cell heat-4">60</span>
+          <span class="heat-cell heat-3">50</span>
+          <span class="heat-cell heat-3">44</span>
+          <span class="heat-cell heat-3">40</span>
+          <span class="heat-cell heat-2">36</span>
+          <span class="heat-cell heat-2">32</span>
+          <span class="heat-cell heat-2">30</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Oct 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">78</span>
+          <span class="heat-cell heat-4">62</span>
+          <span class="heat-cell heat-3">52</span>
+          <span class="heat-cell heat-3">46</span>
+          <span class="heat-cell heat-3">42</span>
+          <span class="heat-cell heat-3">38</span>
+          <span class="heat-cell heat-2">34</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Nov 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">80</span>
+          <span class="heat-cell heat-4">64</span>
+          <span class="heat-cell heat-3">54</span>
+          <span class="heat-cell heat-3">48</span>
+          <span class="heat-cell heat-3">44</span>
+          <span class="heat-cell heat-3">40</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Dec 2025</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-4">82</span>
+          <span class="heat-cell heat-4">66</span>
+          <span class="heat-cell heat-3">56</span>
+          <span class="heat-cell heat-3">50</span>
+          <span class="heat-cell heat-3">46</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Jan 2026</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-5">85</span>
+          <span class="heat-cell heat-4">68</span>
+          <span class="heat-cell heat-4">58</span>
+          <span class="heat-cell heat-3">52</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Feb 2026</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-5">87</span>
+          <span class="heat-cell heat-4">70</span>
+          <span class="heat-cell heat-4">60</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+
+          <span class="heat-h">Mar 2026</span>
+          <span class="heat-cell heat-5">100</span>
+          <span class="heat-cell heat-5">88</span>
+          <span class="heat-cell heat-4">72</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+          <span class="heat-cell heat-0">−</span>
+        </div>
+        <div class="chart-legend" style="margin-top:14px;">
+          <span class="legend-item"><span class="legend-dot heat-0"></span>0%</span>
+          <span class="legend-item"><span class="legend-dot heat-1"></span>20-30%</span>
+          <span class="legend-item"><span class="legend-dot heat-2"></span>30-40%</span>
+          <span class="legend-item"><span class="legend-dot heat-3"></span>40-55%</span>
+          <span class="legend-item"><span class="legend-dot heat-4"></span>55-75%</span>
+          <span class="legend-item"><span class="legend-dot heat-5"></span>85-100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <i class="ti ti-trending-up"></i>
+      <div class="insight-card__text">
+        <strong>Cohort improvement:</strong> M1 retention tăng từ 68% (Jun 2025) lên 88% (Mar 2026) · cải thiện onboarding hiệu quả. M3 cohort gần đây cũng cao hơn 13 pp so 9 tháng trước.
+      </div>
+    </div>
+
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'Reports', 'Cohort'], search: 'Filter data...' });
+</script>
+</body>
+</html>

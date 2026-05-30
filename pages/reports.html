@@ -5,6 +5,98 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMP Admin — Reports & Analytics</title>
 <link rel="stylesheet" href="../assets/style.css">
+<style>
+  .rep-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .rep-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 100ms;
+    position: relative;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .rep-card:hover {
+    border-color: var(--primary-border);
+    box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+    transform: translateY(-1px);
+  }
+  .rep-card__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--r-sm);
+    display: grid;
+    place-items: center;
+    margin-bottom: 10px;
+  }
+  .rep-card__icon i { font-size: 20px; }
+  .rep-card__icon--cyan { background: #E0F2FE; color: #0369A1; }
+  .rep-card__icon--violet { background: #EDE9FE; color: #6D28D9; }
+  .rep-card__icon--green { background: #D1FAE5; color: var(--green-text); }
+  .rep-card__icon--amber { background: #FEF3C7; color: var(--amber-text); }
+  .rep-card__icon--red { background: #FEE2E2; color: var(--red-text); }
+  .rep-card__icon--primary { background: var(--primary-bg); color: var(--primary-text); }
+  .rep-card__icon--pink { background: #FCE7F3; color: #BE185D; }
+  .rep-card__icon--teal { background: #CCFBF1; color: #0F766E; }
+
+  .rep-card__title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .rep-card__sub { font-size: 11px; color: var(--text-mute); margin-bottom: 12px; line-height: 1.5; }
+  .rep-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 11px;
+    font-family: var(--font-mono);
+  }
+  .rep-card__owner { color: var(--text-mute); }
+  .rep-card__schedule { color: var(--primary); }
+  .rep-card__tag-row {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    gap: 4px;
+  }
+  .rep-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .rep-tag--new { background: #06B6D4; color: white; }
+  .rep-tag--hot { background: var(--red); color: white; }
+
+  .category-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 24px 0 12px;
+  }
+  .category-head h2 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+  }
+  .category-head__count {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-family: var(--font-mono);
+  }
+</style>
 </head>
 <body>
 <div class="app">
@@ -14,41 +106,392 @@
   <main class="main">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Reports & Analytics</h1>
-        <div class="page-sub">Step-level analytics · v2 unlocked dimension mới</div>
+        <h1 class="page-title">Reports &amp; Analytics</h1>
+        <div class="page-sub">Step-level analytics · 22 reports active · v3.5 reports unlocked · Finance + Customer + Growth modules</div>
       </div>
       <div class="page-actions">
-        <button class="btn"><i class="ti ti-download"></i> Export</button>
-        <button class="btn btn--primary"><i class="ti ti-plus"></i> Add new</button>
+        <button class="btn"><i class="ti ti-download"></i> Export tất cả</button>
+        <button class="btn"><i class="ti ti-calendar"></i> Lịch chạy</button>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> Report mới</button>
       </div>
     </div>
 
     <div class="kpi-grid">
-      <div class="kpi "><div class="kpi__label">Reports saved</div><div class="kpi__value">42</div><div class="kpi__meta">12 scheduled</div></div>
-<div class="kpi kpi--violet"><div class="kpi__label">Most-viewed</div><div class="kpi__value">Step performance</div><div class="kpi__meta">184 views tuần này</div></div>
-<div class="kpi kpi--green"><div class="kpi__label">Data freshness</div><div class="kpi__value">2 min</div><div class="kpi__meta">Realtime pipeline</div></div>
-<div class="kpi kpi--amber"><div class="kpi__label">Export volume</div><div class="kpi__value">1.8 GB</div><div class="kpi__meta">tháng này</div></div>
+      <div class="kpi">
+        <div class="kpi__label">Reports active</div>
+        <div class="kpi__value">22<span class="kpi__unit">reports</span></div>
+        <div class="kpi__meta">14 scheduled · 8 ad-hoc</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Most-viewed</div>
+        <div class="kpi__value">Step perf</div>
+        <div class="kpi__meta">184 views tuần này</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Data freshness</div>
+        <div class="kpi__value">2<span class="kpi__unit">min</span></div>
+        <div class="kpi__meta">Realtime pipeline ✓</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Export volume</div>
+        <div class="kpi__value">1.8<span class="kpi__unit">GB</span></div>
+        <div class="kpi__meta">tháng này</div>
+      </div>
+    </div>
 
+    <div class="category-head">
+      <h2>📊 Sales Reports <span style="font-size:11px;background:#10B981;color:white;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;">NEW</span></h2>
+      <span class="category-head__count">7 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-sales-dashboard.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span><span class="rep-tag">HUB</span></div>
+        <div class="rep-card__icon rep-card__icon--primary"><i class="ti ti-chart-pie"></i></div>
+        <div class="rep-card__title">Sales dashboard</div>
+        <div class="rep-card__sub">Hybrid view · top KPIs + drill-down across 6 dimensions · daily trend</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@founder · @bd</span>
+          <span class="rep-card__schedule">Realtime</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-sales-by-customer.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span></div>
+        <div class="rep-card__icon rep-card__icon--violet"><i class="ti ti-user-dollar"></i></div>
+        <div class="rep-card__title">Sales by customer</div>
+        <div class="rep-card__sub">ABC segmentation · Pareto · top 20 ranking · concentration risk · new vs returning</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@bd</span>
+          <span class="rep-card__schedule">Daily</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-sales-by-service.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span></div>
+        <div class="rep-card__icon rep-card__icon--teal"><i class="ti ti-box-multiple"></i></div>
+        <div class="rep-card__title">Sales by service</div>
+        <div class="rep-card__sub">Service templates GMV · category waterfall · margin %  · MoM growth</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@product · @ops</span>
+          <span class="rep-card__schedule">Daily</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-sales-by-technician.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span></div>
+        <div class="rep-card__icon rep-card__icon--green"><i class="ti ti-tool"></i></div>
+        <div class="rep-card__title">Sales by technician</div>
+        <div class="rep-card__sub">Top 20 leaderboard · level distribution · multi-agent participation · ratings</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops</span>
+          <span class="rep-card__schedule">Daily</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-sales-by-area.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span></div>
+        <div class="rep-card__icon rep-card__icon--amber"><i class="ti ti-map-pin"></i></div>
+        <div class="rep-card__title">Sales by area</div>
+        <div class="rep-card__sub">Top districts HCM · province expansion · growth leaders · underserved areas</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@bd · @ops</span>
+          <span class="rep-card__schedule">Weekly</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-sales-by-partner.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span></div>
+        <div class="rep-card__icon rep-card__icon--primary"><i class="ti ti-building-bank"></i></div>
+        <div class="rep-card__title">Sales by partner</div>
+        <div class="rep-card__sub">B2B accounts · concentration risk · churn signals · top 10 ranking</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@bd</span>
+          <span class="rep-card__schedule">Daily</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-sales-by-material.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW</span></div>
+        <div class="rep-card__icon rep-card__icon--teal"><i class="ti ti-package"></i></div>
+        <div class="rep-card__title">Sales by material</div>
+        <div class="rep-card__sub">Most/least consumed · 187 SKUs · 42 slow movers · margin · inventory actions</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops · @procurement</span>
+          <span class="rep-card__schedule">Daily</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>v3.5+ Reports</h2>
+      <span class="category-head__count">3 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-multi-agent.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW v3.5</span></div>
+        <div class="rep-card__icon rep-card__icon--teal"><i class="ti ti-users-group"></i></div>
+        <div class="rep-card__title">Multi-agent step performance</div>
+        <div class="rep-card__sub">Step weight + role splits · Lead/Helper/Specialist earnings · efficiency multi vs solo</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops · @product</span>
+          <span class="rep-card__schedule">Realtime</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-warranty-financials.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW v3.5</span></div>
+        <div class="rep-card__icon rep-card__icon--primary"><i class="ti ti-shield-check"></i></div>
+        <div class="rep-card__title">Warranty financials deep-dive</div>
+        <div class="rep-card__sub">Deferred revenue · per-package P&amp;L · utilization · churn · cohort analysis</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@finance</span>
+          <span class="rep-card__schedule">Daily 02:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-claim-approval.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--new">NEW v3.5</span></div>
+        <div class="rep-card__icon rep-card__icon--amber"><i class="ti ti-clock-hour-4"></i></div>
+        <div class="rep-card__title">Claim approval analytics</div>
+        <div class="rep-card__sub">SLA performance · approval rate · Ops productivity · fraud signals</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops · @cs</span>
+          <span class="rep-card__schedule">Hourly</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Business · Revenue &amp; growth</h2>
+      <span class="category-head__count">3 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-step-performance.html">
+        <div class="rep-card__tag-row"><span class="rep-tag rep-tag--hot">🔥 HOT</span></div>
+        <div class="rep-card__icon rep-card__icon--cyan"><i class="ti ti-chart-bar"></i></div>
+        <div class="rep-card__title">Step performance analysis</div>
+        <div class="rep-card__sub">Top step by GMV/volume · cost · margin · trend · drill-down theo skill/agent/level</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-service-gmv.html">
+        <div class="rep-card__icon rep-card__icon--violet"><i class="ti ti-chart-pie"></i></div>
+        <div class="rep-card__title">Service GMV by category</div>
+        <div class="rep-card__sub">Doanh thu theo nhóm dịch vụ · waterfall · YoY · MoM · top services</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@finance</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-partner-revenue.html">
+        <div class="rep-card__icon rep-card__icon--pink"><i class="ti ti-handshake"></i></div>
+        <div class="rep-card__title">Partner revenue mix</div>
+        <div class="rep-card__sub">B2B partners · order volume · GMV · concentration · churn risk</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@bd</span>
+          <span class="rep-card__schedule">Monthly</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Operational · Dispatch &amp; execution</h2>
+      <span class="category-head__count">3 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-agent-utilization.html">
+        <div class="rep-card__icon rep-card__icon--green"><i class="ti ti-user-check"></i></div>
+        <div class="rep-card__title">Agent utilization L3+</div>
+        <div class="rep-card__sub">Hours worked · steps done · earnings · rating · skill mix · top performers</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-quote-conversion.html">
+        <div class="rep-card__icon rep-card__icon--amber"><i class="ti ti-funnel"></i></div>
+        <div class="rep-card__title">Quote conversion rate</div>
+        <div class="rep-card__sub">Funnel quote → approve → execute · cancel reasons · price elasticity</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@product</span>
+          <span class="rep-card__schedule">Weekly Mon</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-skill-demand.html">
+        <div class="rep-card__icon rep-card__icon--violet"><i class="ti ti-certificate"></i></div>
+        <div class="rep-card__title">Skill demand vs supply</div>
+        <div class="rep-card__sub">Skill gaps · level distribution · shortage areas · training priorities</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@hr</span>
+          <span class="rep-card__schedule">Weekly Mon</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Quality &amp; trust</h2>
+      <span class="category-head__count">2 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-quality-disputes.html">
+        <div class="rep-card__icon rep-card__icon--red"><i class="ti ti-alert-triangle"></i></div>
+        <div class="rep-card__title">Dispute rate per step</div>
+        <div class="rep-card__sub">Disputes per 1000 steps · resolution time · root cause · agent risk score</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@cx</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-rating-distribution.html">
+        <div class="rep-card__icon rep-card__icon--amber"><i class="ti ti-star"></i></div>
+        <div class="rep-card__title">Rating distribution</div>
+        <div class="rep-card__sub">⭐ ratings by service/agent/area · NPS · review sentiment · trend</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@cx</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Finance · Revenue &amp; cash</h2>
+      <span class="category-head__count">4 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-revenue-trend.html">
+        <div class="rep-card__icon rep-card__icon--green"><i class="ti ti-trending-up"></i></div>
+        <div class="rep-card__title">Revenue trend</div>
+        <div class="rep-card__sub">Daily/weekly/monthly trends · YoY comparison · 30-day forecast · weekday patterns</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@finance · @ceo</span>
+          <span class="rep-card__schedule">Hourly</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-commission-breakdown.html">
+        <div class="rep-card__icon rep-card__icon--violet"><i class="ti ti-percentage"></i></div>
+        <div class="rep-card__title">Commission breakdown</div>
+        <div class="rep-card__sub">Platform 20.4% take rate · tech earnings · level distribution · by service</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@finance</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-cash-flow.html">
+        <div class="rep-card__icon rep-card__icon--cyan"><i class="ti ti-cash"></i></div>
+        <div class="rep-card__title">Cash flow analysis</div>
+        <div class="rep-card__sub">Cash in/out waterfall · AR aging · payable schedule · 30-day forecast</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@finance · @cfo</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-refund-chargeback.html">
+        <div class="rep-card__icon rep-card__icon--red"><i class="ti ti-receipt-refund"></i></div>
+        <div class="rep-card__title">Refund &amp; chargeback</div>
+        <div class="rep-card__sub">Refund rate · root cause · chargeback trend · resolution time · tech responsibility</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@cs · @finance</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Customer · Retention &amp; LTV</h2>
+      <span class="category-head__count">3 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-customer-cohort.html">
+        <div class="rep-card__icon rep-card__icon--primary"><i class="ti ti-users"></i></div>
+        <div class="rep-card__title">Customer cohort retention</div>
+        <div class="rep-card__sub">Retention heatmap by acquisition month · M1-M12 · monthly improvement track</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@product</span>
+          <span class="rep-card__schedule">Weekly Mon</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-customer-ltv.html">
+        <div class="rep-card__icon rep-card__icon--violet"><i class="ti ti-user-dollar"></i></div>
+        <div class="rep-card__title">Customer LTV analysis</div>
+        <div class="rep-card__sub">LTV distribution · whales/regulars/light · by segment Office/SMB/Residential</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@product · @bd</span>
+          <span class="rep-card__schedule">Weekly Mon</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-geographic-distribution.html">
+        <div class="rep-card__icon rep-card__icon--green"><i class="ti ti-map-pin"></i></div>
+        <div class="rep-card__title">Geographic distribution</div>
+        <div class="rep-card__sub">Orders by province/district · coverage map · expansion plan · underserved areas</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops · @bd</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Growth · Acquisition &amp; marketing</h2>
+      <span class="category-head__count">2 reports</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-acquisition-funnel.html">
+        <div class="rep-card__icon rep-card__icon--cyan"><i class="ti ti-funnel"></i></div>
+        <div class="rep-card__title">Acquisition funnel &amp; CAC</div>
+        <div class="rep-card__sub">Funnel impressions → first order · CAC by channel · payback period · LTV/CAC</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@marketing</span>
+          <span class="rep-card__schedule">Daily 07:00</span>
+        </div>
+      </a>
+      <a class="rep-card" href="report-voucher-roi.html">
+        <div class="rep-card__icon rep-card__icon--pink"><i class="ti ti-ticket"></i></div>
+        <div class="rep-card__title">Voucher campaign ROI</div>
+        <div class="rep-card__sub">8 campaigns · redemption rate · ROI 9.3x · channel mix · campaign winners</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@marketing</span>
+          <span class="rep-card__schedule">Weekly Mon</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Operational · Dispatch (extended)</h2>
+      <span class="category-head__count">1 report</span>
+    </div>
+    <div class="rep-grid">
+      <a class="rep-card" href="report-dispatch-funnel.html">
+        <div class="rep-card__icon rep-card__icon--amber"><i class="ti ti-route"></i></div>
+        <div class="rep-card__title">Order dispatch funnel · 10 stages</div>
+        <div class="rep-card__sub">Full 10-stage funnel · auto vs pool · drop-off reasons · 82.1% end-to-end</div>
+        <div class="rep-card__footer">
+          <span class="rep-card__owner">@ops</span>
+          <span class="rep-card__schedule">Hourly</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="category-head">
+      <h2>Custom queries &amp; saved</h2>
+      <span class="category-head__count">SQL builder</span>
     </div>
 
     <div class="panel">
       <div class="panel__head">
         <div>
-          <div class="panel__title">Saved reports</div>
-          <div class="panel__sub">Dashboards & exports thường dùng</div>
+          <div class="panel__title">Custom report builder</div>
+          <div class="panel__sub">Tạo report tuỳ chỉnh từ data warehouse</div>
         </div>
+        <button class="btn btn--primary"><i class="ti ti-plus"></i> New query</button>
       </div>
       <div class="table-wrap">
         <table class="data">
-          <thead><tr><th>Name</th><th>Type</th><th>Owner</th><th>Schedule</th><th>Last run</th><th>Subscribers</th></tr></thead>
-          <tbody><tr><td>Step performance analysis</td><td>Step dimension</td><td>@ops</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td>8</td></tr>
-<tr><td>Service GMV by category</td><td>Service dimension</td><td>@finance</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td>12</td></tr>
-<tr><td>Skill demand vs supply</td><td>Skill dimension</td><td>@hr</td><td>Weekly Mon</td><td>Thứ 2 trước</td><td>5</td></tr>
-<tr><td>Agent utilization L3+</td><td>Agent dimension</td><td>@ops</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td>6</td></tr>
-<tr><td>Quote conversion rate</td><td>Step dimension</td><td>@product</td><td>Weekly Mon</td><td>Thứ 2 trước</td><td>4</td></tr>
-<tr><td>Dispute rate per step</td><td>Quality dimension</td><td>@cx</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td>9</td></tr>
-<tr><td>Partner revenue mix</td><td>Partner dimension</td><td>@bd</td><td>Monthly</td><td>01/05</td><td>3</td></tr>
-</tbody>
+          <thead>
+            <tr>
+              <th>Name</th><th>Dimension</th><th>Owner</th><th>Schedule</th><th>Last run</th><th class="right">Subs</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Avg step duration by skill</strong></td><td>Step + Skill</td><td>@ops</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td class="right">5</td><td><button class="btn btn--sm">Open</button></td></tr>
+            <tr><td><strong>Revenue per customer cohort</strong></td><td>Customer dimension</td><td>@product</td><td>Weekly Mon</td><td>Thứ 2 trước</td><td class="right">4</td><td><button class="btn btn--sm">Open</button></td></tr>
+            <tr><td><strong>Area heatmap · orders</strong></td><td>Geography</td><td>@ops</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td class="right">7</td><td><button class="btn btn--sm">Open</button></td></tr>
+            <tr><td><strong>Material cost per service</strong></td><td>Material + Service</td><td>@finance</td><td>Weekly Mon</td><td>Thứ 2 trước</td><td class="right">3</td><td><button class="btn btn--sm">Open</button></td></tr>
+            <tr><td><strong>Refund rate analysis</strong></td><td>Finance + Quality</td><td>@cs</td><td>Daily 07:00</td><td>Hôm nay 07:00</td><td class="right">6</td><td><button class="btn btn--sm">Open</button></td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -59,11 +502,7 @@
 
 <script src="../assets/shell.js"></script>
 <script>
-SMPAdmin.init({
-  page: 'reports',
-  crumbs: ["SMP", "System", "Reports"],
-  search: 'Search...'
-});
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'System', 'Reports'], search: 'Search reports...' });
 </script>
 </body>
 </html>

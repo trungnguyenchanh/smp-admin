@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Customer Detail</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .cust-hero {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px;
+  }
+  .cust-hero__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--primary-bg);
+    color: var(--primary-text);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .cust-hero__main { flex: 1; }
+  .cust-hero__name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .cust-hero__id {
+    font-size: 12px;
+    color: var(--text-mute);
+    font-family: var(--font-mono);
+    margin-bottom: 10px;
+  }
+  .cust-hero__meta {
+    display: flex;
+    gap: 18px;
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+  }
+  .meta-item i { color: var(--text-mute); }
+
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-nav__item {
+    padding: 10px 18px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-nav__item--active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .order-row {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-soft);
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .order-row:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="customers.html" style="color:inherit;text-decoration:none;">← All customers</a>
+        </div>
+        <h1 class="page-title">Customer detail</h1>
+        <div class="page-sub">cust_GH8X1 · Registered Aug 22, 2024 · VIP segment</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-mail"></i> Send email</button>
+        <button class="btn"><i class="ti ti-message"></i> Send notification</button>
+        <button class="btn"><i class="ti ti-tag"></i> Add tag</button>
+        <button class="btn btn--primary"><i class="ti ti-edit"></i> Edit</button>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="cust-hero">
+      <div class="cust-hero__avatar" style="background:#EDE9FE;color:#5B21B6;">TD</div>
+      <div class="cust-hero__main">
+        <div class="cust-hero__name">Trần Đức D. <span class="pill" style="background:#FEF3C7;color:#854D0E;margin-left:8px;">⭐ VIP</span></div>
+        <div class="cust-hero__id">cust_GH8X1 · Joined 22-08-2024 · 9 months ago</div>
+        <div class="cust-hero__meta">
+          <span class="meta-item"><i class="ti ti-phone"></i> +84 90 ••• 9874</span>
+          <span class="meta-item"><i class="ti ti-mail"></i> tranducd@yahoo.com</span>
+          <span class="meta-item"><i class="ti ti-map-pin"></i> 142 Đinh Tiên Hoàng, Bình Thạnh, HCM</span>
+          <span class="meta-item"><i class="ti ti-language"></i> Vietnamese</span>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="fs-11 text-mute" style="text-transform:uppercase;letter-spacing:0.5px;">Lifetime GMV</div>
+        <div class="fs-32 fw-bold mono" style="color:var(--green);">22.4M</div>
+        <div class="fs-12 text-mute">38 đơn · NPS 9</div>
+      </div>
+    </div>
+
+    <!-- KPI grid -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">Total orders</div>
+        <div class="kpi__value">38<span class="kpi__unit">orders</span></div>
+        <div class="kpi__meta">last 12 months</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">Avg order value</div>
+        <div class="kpi__value">589<span class="kpi__unit">k VND</span></div>
+        <div class="kpi__meta">higher than 78% customers</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Order frequency</div>
+        <div class="kpi__value">4.2<span class="kpi__unit">/month</span></div>
+        <div class="kpi__meta">heavy user</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Avg rating given</div>
+        <div class="kpi__value">4.86<span class="kpi__unit">⭐</span></div>
+        <div class="kpi__meta">37 reviews submitted</div>
+      </div>
+    </div>
+
+    <!-- Tab nav -->
+    <div class="tab-nav">
+      <button class="tab-nav__item tab-nav__item--active"><i class="ti ti-list"></i> Overview</button>
+      <button class="tab-nav__item"><i class="ti ti-shopping-cart"></i> Orders (38)</button>
+      <button class="tab-nav__item"><i class="ti ti-devices"></i> Assets (4)</button>
+      <button class="tab-nav__item"><i class="ti ti-file-certificate"></i> Contracts (2)</button>
+      <button class="tab-nav__item"><i class="ti ti-shield-check"></i> Warranties (3)</button>
+      <button class="tab-nav__item"><i class="ti ti-ticket"></i> Vouchers (8)</button>
+      <button class="tab-nav__item"><i class="ti ti-notes"></i> Notes</button>
+      <button class="tab-nav__item"><i class="ti ti-history"></i> Activity log</button>
+    </div>
+
+    <div class="info-grid">
+      <!-- Recent orders -->
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Recent orders</div>
+            <div class="panel__sub">Last 10 of 38</div>
+          </div>
+          <a href="#" style="color:var(--primary);text-decoration:none;font-size:12px;font-weight:500;">View all →</a>
+        </div>
+        <div style="padding:0 14px 14px;">
+          <div class="order-row">
+            <span class="pill pill--green no-dot">✓ Done</span>
+            <div>
+              <div class="fs-13 fw-bold">Sửa điều hoà · standard</div>
+              <div class="fs-11 text-mute">ord_HX5K3 · 3 ngày trước · Trương Minh K. (L4)</div>
+            </div>
+            <span class="mono fw-bold">680k</span>
+            <button class="btn btn--sm">View</button>
+          </div>
+          <div class="order-row">
+            <span class="pill pill--green no-dot">✓ Done</span>
+            <div>
+              <div class="fs-13 fw-bold">Vệ sinh máy lạnh · Q2 maintenance</div>
+              <div class="fs-11 text-mute">ord_HX4P2 · 18 ngày trước · Lê Văn L. (L4)</div>
+            </div>
+            <span class="mono fw-bold">320k</span>
+            <button class="btn btn--sm">View</button>
+          </div>
+          <div class="order-row">
+            <span class="pill pill--green no-dot">✓ Done</span>
+            <div>
+              <div class="fs-13 fw-bold">Sửa máy giặt · belt replacement</div>
+              <div class="fs-11 text-mute">ord_HX3K1 · 32 ngày trước · Phạm Văn D. (L4)</div>
+            </div>
+            <span class="mono fw-bold">450k</span>
+            <button class="btn btn--sm">View</button>
+          </div>
+          <div class="order-row">
+            <span class="pill pill--green no-dot">✓ Done</span>
+            <div>
+              <div class="fs-13 fw-bold">Sửa tủ lạnh · thermostat</div>
+              <div class="fs-11 text-mute">ord_HW8X4 · 45 ngày trước · Trần Quốc B. (L4)</div>
+            </div>
+            <span class="mono fw-bold">820k</span>
+            <button class="btn btn--sm">View</button>
+          </div>
+          <div class="order-row">
+            <span class="pill pill--green no-dot">✓ Done</span>
+            <div>
+              <div class="fs-13 fw-bold">Lắp đặt điều hoà · install new unit</div>
+              <div class="fs-11 text-mute">ord_HW6J9 · 62 ngày trước · Multi-agent</div>
+            </div>
+            <span class="mono fw-bold">2.4M</span>
+            <button class="btn btn--sm">View</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side panels -->
+      <div>
+        <div class="panel">
+          <div class="panel__head">
+            <div><div class="panel__title">Tags & segments</div></div>
+          </div>
+          <div style="padding:14px;display:flex;flex-wrap:wrap;gap:6px;">
+            <span class="pill" style="background:#FEF3C7;color:#854D0E;">⭐ VIP</span>
+            <span class="pill pill--green no-dot">High-value</span>
+            <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Multi-asset owner</span>
+            <span class="pill no-dot">Bình Thạnh resident</span>
+            <span class="pill no-dot">+ Add tag</span>
+          </div>
+        </div>
+
+        <div class="panel mt-14">
+          <div class="panel__head">
+            <div><div class="panel__title">Loyalty status</div></div>
+          </div>
+          <div style="padding:14px;">
+            <div class="row between mb-8">
+              <span class="fs-13">Current tier</span>
+              <span class="pill" style="background:#FEF3C7;color:#854D0E;">Gold</span>
+            </div>
+            <div class="row between mb-8">
+              <span class="fs-13">Points balance</span>
+              <span class="mono fw-bold">2,847</span>
+            </div>
+            <div class="row between mb-8">
+              <span class="fs-13">Next tier (Platinum)</span>
+              <span class="mono">7,153 points</span>
+            </div>
+            <div style="height:6px;background:var(--bg-elev);border-radius:3px;margin-top:8px;overflow:hidden;">
+              <div style="width:28%;height:100%;background:linear-gradient(90deg,#FEF3C7,#FCD34D);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel mt-14">
+          <div class="panel__head">
+            <div><div class="panel__title">Communication preferences</div></div>
+          </div>
+          <div style="padding:14px;font-size:13px;line-height:1.8;">
+            <div class="row between"><span>📧 Email</span><span class="pill pill--green no-dot">Opt-in</span></div>
+            <div class="row between"><span>💬 SMS</span><span class="pill pill--green no-dot">Opt-in</span></div>
+            <div class="row between"><span>📱 Push notif</span><span class="pill pill--green no-dot">Opt-in</span></div>
+            <div class="row between"><span>📞 Phone calls</span><span class="pill pill--amber no-dot">Limited</span></div>
+            <div class="row between"><span>📨 Zalo</span><span class="pill pill--green no-dot">Opt-in</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom: Assets & contracts summary -->
+    <div class="info-grid">
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Assets owned · 4 devices</div>
+            <div class="panel__sub">Connected for service history & warranty</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr><th>Device</th><th>Brand · Model</th><th>Installed</th><th>Warranty</th><th>Last serviced</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>❄️ Điều hoà · Master room</td><td>Daikin FTKM35</td><td>2023-06-15</td><td><span class="pill pill--green no-dot">v3.5 BH 12mo · 4mo left</span></td><td>3 days ago</td></tr>
+              <tr><td>❄️ Điều hoà · Living room</td><td>Panasonic CU-S12</td><td>2022-04-20</td><td><span class="pill no-dot">Out of mfr warranty</span></td><td>18 days ago</td></tr>
+              <tr><td>🧺 Máy giặt</td><td>LG WT-W7501</td><td>2021-09-10</td><td><span class="pill no-dot">Out of mfr warranty</span></td><td>32 days ago</td></tr>
+              <tr><td>🧊 Tủ lạnh</td><td>Samsung RT38</td><td>2023-11-05</td><td><span class="pill no-dot">Mfr warranty</span></td><td>45 days ago</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div>
+            <div class="panel__title">Notes & history</div>
+          </div>
+        </div>
+        <div style="padding:14px;">
+          <div style="padding:10px;background:var(--bg-elev);border-radius:var(--r-sm);margin-bottom:8px;">
+            <div class="fs-11 text-mute mono">Ops · 15-05-2026</div>
+            <div class="fs-12">KH yêu cầu thợ Lê Văn L. cho lần sau (preference)</div>
+          </div>
+          <div style="padding:10px;background:var(--bg-elev);border-radius:var(--r-sm);margin-bottom:8px;">
+            <div class="fs-11 text-mute mono">CS · 02-04-2026</div>
+            <div class="fs-12">Yêu cầu báo trước 30 phút khi thợ đến. Có thú cưng.</div>
+          </div>
+          <div style="padding:10px;background:var(--bg-elev);border-radius:var(--r-sm);margin-bottom:12px;">
+            <div class="fs-11 text-mute mono">System · 22-08-2024</div>
+            <div class="fs-12">Customer registered via referral from cust_AA9P2</div>
+          </div>
+          <button class="btn btn--full"><i class="ti ti-plus"></i> Add note</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'customer-detail', crumbs: ['SMP', 'Customer', 'Detail'], search: 'Search this customer...' });
+</script>
+</body>
+</html>

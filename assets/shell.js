@@ -1,19 +1,25 @@
 (function() {
   const NAV = [
     { label: 'Operations', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'layout-dashboard' },
+      { id: 'dashboard', label: 'Operations dashboard', icon: 'layout-dashboard' },
       { id: 'dispatch', label: 'Dispatch monitor', icon: 'radar', badge: 'LIVE', badgeType: 'live' },
       { id: 'orders', label: 'Orders', icon: 'clipboard-list', badge: '847' },
       { id: 'order-flow', label: 'Order flow', icon: 'route' },
       { id: 'quality', label: 'Quality & disputes', icon: 'shield-check', badge: '12', badgeType: 'alert' },
     ]},
-    { label: 'Partners · v3.3', items: [
-      { id: 'partners-overview', label: 'Partners overview', icon: 'building-bank', badge: 'v3.3', badgeType: 'new' },
+    { label: 'Customer', items: [
+      { id: 'customers', label: 'All customers', icon: 'users', badge: '28k' },
+      { id: 'customer-detail', label: 'Customer detail', icon: 'user-circle' },
+      { id: 'assets', label: 'Customer assets', icon: 'devices' },
+      { id: 'contracts', label: 'Maintenance contracts', icon: 'file-certificate' },
+    ]},
+    { label: 'Partners', items: [
+      { id: 'partners-overview', label: 'Partners overview', icon: 'building-bank' },
       { id: 'partners-list', label: 'All partners', icon: 'building-store', badge: '8' },
       { id: 'partner-detail', label: 'Partner detail', icon: 'id-badge-2' },
-      { id: 'partner-portal-view', label: 'Portal view', icon: 'eye-check', badge: 'v3.3', badgeType: 'new' },
+      { id: 'partner-portal-view', label: 'Portal view', icon: 'eye-check' },
     ]},
-    { label: 'Catalog · v3', items: [
+    { label: 'Catalog', items: [
       { id: 'services', label: 'Service templates', icon: 'box-multiple' },
       { id: 'steps', label: 'Steps + BOM', icon: 'list-check', badge: '22' },
       { id: 'skills', label: 'Master skills', icon: 'certificate' },
@@ -21,11 +27,7 @@
       { id: 'material-types', label: 'Material types', icon: 'package' },
       { id: 'material-variants', label: 'Material variants', icon: 'category' },
     ]},
-    { label: 'Customer · v3', items: [
-      { id: 'assets', label: 'Customer assets', icon: 'devices' },
-      { id: 'contracts', label: 'Maintenance contracts', icon: 'file-certificate' },
-    ]},
-    { label: 'Geography · v3', items: [
+    { label: 'Geography', items: [
       { id: 'coverage', label: 'Coverage map', icon: 'map-2' },
       { id: 'areas', label: 'Provinces & areas', icon: 'map-pin' },
     ]},
@@ -33,20 +35,43 @@
       { id: 'agents', label: 'Agents & KYC', icon: 'users' },
       { id: 'finance', label: 'Finance', icon: 'wallet' },
     ]},
-    { label: 'Integration · v3.2', items: [
+    { label: 'Integration', items: [
       { id: 'integration-health', label: 'Integration health', icon: 'plug-connected' },
       { id: 'material-verify', label: 'Material verification', icon: 'shield-half', badge: '23', badgeType: 'alert' },
     ]},
-    { label: 'v3.5+ · Multi-agent & Warranty', items: [
+    { label: 'Multi-agent & Warranty', items: [
       { id: 'step-roles', label: 'Step roles & splits', icon: 'users-group', badge: 'v3.5', badgeType: 'new' },
       { id: 'warranty-packages', label: 'Warranty packages', icon: 'shield-check', badge: 'v3.5', badgeType: 'new' },
       { id: 'warranty-claims', label: 'Claim queue', icon: 'clock-hour-4', badge: '5', badgeType: 'alert' },
       { id: 'warranty-revenue', label: 'Warranty revenue', icon: 'report-money', badge: 'v3.5', badgeType: 'new' },
     ]},
+    { label: 'Sales Reports', items: [
+      { id: 'report-sales-dashboard', label: 'Sales dashboard', icon: 'chart-pie', badge: 'NEW', badgeType: 'new' },
+      { id: 'report-sales-by-customer', label: 'By customer', icon: 'user-dollar' },
+      { id: 'report-sales-by-service', label: 'By service', icon: 'box-multiple' },
+      { id: 'report-sales-by-technician', label: 'By technician', icon: 'tool' },
+      { id: 'report-sales-by-area', label: 'By area', icon: 'map-pin' },
+      { id: 'report-sales-by-partner', label: 'By partner', icon: 'building-bank' },
+      { id: 'report-sales-by-material', label: 'By material', icon: 'package' },
+    ]},
+    { label: 'Analytics', items: [
+      { id: 'reports', label: 'All reports', icon: 'chart-bar' },
+      { id: 'report-step-performance', label: 'Step performance', icon: 'chart-line', badge: 'HOT', badgeType: 'alert' },
+      { id: 'report-revenue-trend', label: 'Revenue trend', icon: 'trending-up' },
+      { id: 'report-customer-cohort', label: 'Customer cohort', icon: 'users' },
+      { id: 'report-acquisition-funnel', label: 'Acquisition · CAC', icon: 'funnel' },
+      { id: 'report-multi-agent', label: 'Multi-agent perf', icon: 'users-group', badge: 'v3.5', badgeType: 'new' },
+      { id: 'report-warranty-financials', label: 'Warranty financials', icon: 'shield-check', badge: 'v3.5', badgeType: 'new' },
+      { id: 'report-claim-approval', label: 'Claim approval', icon: 'clock-hour-4', badge: 'v3.5', badgeType: 'new' },
+    ]},
     { label: 'System', items: [
-      { id: 'reports', label: 'Reports', icon: 'chart-bar' },
       { id: 'health', label: 'System health', icon: 'activity-heartbeat' },
-      { id: 'settings', label: 'Settings', icon: 'settings' },
+      { id: 'audit-log', label: 'Audit log', icon: 'history' },
+      { id: 'users-roles', label: 'Users & roles', icon: 'shield-lock' },
+      { id: 'api-keys', label: 'API keys', icon: 'key' },
+      { id: 'webhooks', label: 'Webhooks', icon: 'webhook' },
+      { id: 'notifications', label: 'Notification settings', icon: 'bell' },
+      { id: 'settings', label: 'General settings', icon: 'settings' },
     ]}
   ];
 
@@ -79,8 +104,43 @@
     'warranty-claims': 'warranty-claims.html',
     'warranty-revenue': 'warranty-revenue.html',
     reports: 'reports.html',
+    'report-step-performance': 'report-step-performance.html',
+    'report-service-gmv': 'report-service-gmv.html',
+    'report-agent-utilization': 'report-agent-utilization.html',
+    'report-quote-conversion': 'report-quote-conversion.html',
+    'report-skill-demand': 'report-skill-demand.html',
+    'report-quality-disputes': 'report-quality-disputes.html',
+    'report-rating-distribution': 'report-rating-distribution.html',
+    'report-partner-revenue': 'report-partner-revenue.html',
+    'report-multi-agent': 'report-multi-agent.html',
+    'report-warranty-financials': 'report-warranty-financials.html',
+    'report-claim-approval': 'report-claim-approval.html',
+    'report-revenue-trend': 'report-revenue-trend.html',
+    'report-commission-breakdown': 'report-commission-breakdown.html',
+    'report-cash-flow': 'report-cash-flow.html',
+    'report-refund-chargeback': 'report-refund-chargeback.html',
+    'report-customer-cohort': 'report-customer-cohort.html',
+    'report-customer-ltv': 'report-customer-ltv.html',
+    'report-geographic-distribution': 'report-geographic-distribution.html',
+    'report-voucher-roi': 'report-voucher-roi.html',
+    'report-acquisition-funnel': 'report-acquisition-funnel.html',
+    'report-dispatch-funnel': 'report-dispatch-funnel.html',
     health: 'system-health.html',
     settings: 'settings.html',
+    customers: 'customers.html',
+    'customer-detail': 'customer-detail.html',
+    'audit-log': 'audit-log.html',
+    'users-roles': 'users-roles.html',
+    'api-keys': 'api-keys.html',
+    webhooks: 'webhooks.html',
+    notifications: 'notifications.html',
+    'report-sales-dashboard': 'report-sales-dashboard.html',
+    'report-sales-by-customer': 'report-sales-by-customer.html',
+    'report-sales-by-service': 'report-sales-by-service.html',
+    'report-sales-by-technician': 'report-sales-by-technician.html',
+    'report-sales-by-area': 'report-sales-by-area.html',
+    'report-sales-by-partner': 'report-sales-by-partner.html',
+    'report-sales-by-material': 'report-sales-by-material.html',
   };
 
   function badge(text, type) {

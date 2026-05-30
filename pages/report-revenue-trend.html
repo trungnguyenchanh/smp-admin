@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMP Admin — Revenue Trend</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 12px 14px; background: white; border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 14px;
+  }
+  .filter-bar label {
+    font-size: 11px; color: var(--text-mute); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--r-sm);
+    font-family: inherit; font-size: 12px; background: white;
+  }
+  .chart-area { height: 200px; padding: 14px 0 0; display: flex; align-items: flex-end; gap: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; }
+  .bar-seg { border-radius: 2px 2px 0 0; }
+  .bar-label { text-align: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; }
+  .chart-legend { display: flex; gap: 14px; margin-top: 14px; font-size: 11px; font-family: var(--font-mono); color: var(--text-mute); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .insight-card {
+    background: var(--primary-bg); border-left: 3px solid var(--primary);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 8px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .insight-card i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+  .insight-card__text { font-size: 12px; color: var(--primary-text); line-height: 1.5; }
+
+  .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-equal-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+  .data-bar-row {
+    display: grid; grid-template-columns: 1fr 80px 100px; gap: 8px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 12px;
+  }
+  .data-bar-row:last-child { border-bottom: none; }
+  .data-bar-row__name { font-weight: 500; }
+  .data-bar-row__bar { background: var(--bg-elev); border-radius: 10px; height: 8px; position: relative; overflow: hidden; }
+  .data-bar-row__bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 10px; }
+  .data-bar-row__val { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+
+  .heatmap-grid {
+    display: grid; grid-template-columns: 110px repeat(12, 1fr);
+    gap: 3px; font-size: 10px;
+  }
+  .heat-cell {
+    padding: 8px 4px; text-align: center; border-radius: 3px; font-family: var(--font-mono);
+  }
+  .heat-0 { background: #F1F5F9; color: var(--text-faint); }
+  .heat-1 { background: #E0E7FF; color: #3730A3; }
+  .heat-2 { background: #C7D2FE; color: #3730A3; }
+  .heat-3 { background: #A5B4FC; color: white; }
+  .heat-4 { background: #818CF8; color: white; }
+  .heat-5 { background: #6366F1; color: white; }
+  .heat-h { padding: 8px 8px; color: var(--text-mute); font-weight: 600; }
+
+  .stage-row {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  }
+  .stage-row__label {
+    width: 130px; font-size: 11px; color: var(--text-mute);
+    font-family: var(--font-mono); text-align: right;
+  }
+  .stage-row__bar {
+    flex: 1; height: 36px; border-radius: 6px;
+    display: flex; align-items: center; padding: 0 14px;
+    color: white; font-weight: 600; font-size: 12px;
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sidebar-mount"></div>
+  <div id="topbar-mount"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+          <a href="reports.html" style="color:inherit;text-decoration:none;">← Reports</a>
+        </div>
+        <h1 class="page-title">Revenue Trend</h1>
+        <div class="page-sub">Daily/weekly/monthly revenue trends · YoY comparison · forecast</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn"><i class="ti ti-share"></i> Share</button>
+        <button class="btn"><i class="ti ti-bell"></i> Subscribe</button>
+        <button class="btn btn--primary"><i class="ti ti-download"></i> Export</button>
+      </div>
+    </div>
+
+
+    <div class="filter-bar">
+      <label>Period:</label>
+      <select><option>30 ngày</option><option>YTD 2026</option><option>12 tháng qua</option></select>
+      <label>Granularity:</label>
+      <select><option>Daily</option><option>Weekly</option><option>Monthly</option></select>
+      <label>Compare to:</label>
+      <select><option>Prior period</option><option>YoY</option><option>Target</option></select>
+      <button class="btn btn--primary btn--sm" style="margin-left:auto;">Apply</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi__label">GMV today</div>
+        <div class="kpi__value">1.84<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">▲ 12% vs yesterday</div>
+      </div>
+      <div class="kpi kpi--violet">
+        <div class="kpi__label">GMV MTD</div>
+        <div class="kpi__value">48.2<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">target 52B · 92% pace</div>
+      </div>
+      <div class="kpi kpi--green">
+        <div class="kpi__label">Commission MTD</div>
+        <div class="kpi__value">9.84<span class="kpi__unit">B VND</span></div>
+        <div class="kpi__meta">take rate 20.4%</div>
+      </div>
+      <div class="kpi kpi--amber">
+        <div class="kpi__label">Daily run-rate</div>
+        <div class="kpi__value">1.78<span class="kpi__unit">B/day</span></div>
+        <div class="kpi__meta">avg last 7 days</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head">
+        <div>
+          <div class="panel__title">GMV daily · 30 ngày qua</div>
+          <div class="panel__sub">Lines: actual vs target · weekend pattern visible</div>
+        </div>
+      </div>
+      <div style="padding:14px;">
+        <div class="chart-area" style="height:200px;"><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:110px;"></div><div class="bar-label">1</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:115px;"></div><div class="bar-label">2</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:120px;"></div><div class="bar-label">3</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:130px;"></div><div class="bar-label">4</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:80px;"></div><div class="bar-label">5</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:70px;"></div><div class="bar-label">6</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:118px;"></div><div class="bar-label">7</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:125px;"></div><div class="bar-label">8</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:128px;"></div><div class="bar-label">9</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:135px;"></div><div class="bar-label">10</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:140px;"></div><div class="bar-label">11</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:142px;"></div><div class="bar-label">12</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:90px;"></div><div class="bar-label">13</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:75px;"></div><div class="bar-label">14</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:130px;"></div><div class="bar-label">15</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:135px;"></div><div class="bar-label">16</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:138px;"></div><div class="bar-label">17</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:145px;"></div><div class="bar-label">18</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:148px;"></div><div class="bar-label">19</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:150px;"></div><div class="bar-label">20</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:95px;"></div><div class="bar-label">21</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:82px;"></div><div class="bar-label">22</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:140px;"></div><div class="bar-label">23</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:145px;"></div><div class="bar-label">24</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:148px;"></div><div class="bar-label">25</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:152px;"></div><div class="bar-label">26</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:155px;"></div><div class="bar-label">27</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:158px;"></div><div class="bar-label">28</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:160px;"></div><div class="bar-label">29</div></div><div class="bar-col"><div class="bar-seg" style="background:var(--primary);height:165px;"></div><div class="bar-label">30</div></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--primary);"></span>Daily GMV (M VND)</span>
+          <span style="margin-left:auto;">Min: 1.4B · Max: 1.84B · Total: 48.2B</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">Weekly trend</div></div></div>
+        <div style="padding:14px;">
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Tuần 22 (hiện tại)</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:100%;background:var(--green);"></div></div>
+            <span class="data-bar-row__val">12.4B</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Tuần 21</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:90%;"></div></div>
+            <span class="data-bar-row__val">11.2B</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Tuần 20</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:88%;"></div></div>
+            <span class="data-bar-row__val">10.9B</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Tuần 19</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:82%;"></div></div>
+            <span class="data-bar-row__val">10.2B</span>
+          </div>
+          <div class="data-bar-row">
+            <span class="data-bar-row__name">Tuần 18</span>
+            <div class="data-bar-row__bar"><div class="data-bar-row__bar-fill" style="width:75%;"></div></div>
+            <span class="data-bar-row__val">9.3B</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><div><div class="panel__title">YoY · 12 tháng qua</div></div></div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Tháng</th><th class="right">2026</th><th class="right">2025</th><th class="right">YoY</th></tr></thead>
+            <tbody>
+              <tr><td>Jun 2026 MTD</td><td class="right mono">48.2B</td><td class="right mono">36.1B</td><td class="right" style="color:var(--green-text);">▲ 34%</td></tr>
+              <tr><td>May</td><td class="right mono">52.4B</td><td class="right mono">38.7B</td><td class="right" style="color:var(--green-text);">▲ 35%</td></tr>
+              <tr><td>Apr</td><td class="right mono">48.9B</td><td class="right mono">35.2B</td><td class="right" style="color:var(--green-text);">▲ 39%</td></tr>
+              <tr><td>Mar</td><td class="right mono">45.2B</td><td class="right mono">33.8B</td><td class="right" style="color:var(--green-text);">▲ 34%</td></tr>
+              <tr><td>Feb</td><td class="right mono">38.7B</td><td class="right mono">28.4B</td><td class="right" style="color:var(--green-text);">▲ 36%</td></tr>
+              <tr><td>Jan</td><td class="right mono">42.3B</td><td class="right mono">31.5B</td><td class="right" style="color:var(--green-text);">▲ 34%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <i class="ti ti-trending-up"></i>
+      <div class="insight-card__text">
+        <strong>Insight:</strong> Doanh thu tăng ổn định 34-39% YoY. Daily run-rate đang tăng (1.78B/day). Pattern weekend dip (~30% lower) consistent · có thể launch weekend campaign để tăng utilization.
+      </div>
+    </div>
+
+
+    <div id="statusbar-mount"></div>
+  </main>
+</div>
+
+<script src="../assets/shell.js"></script>
+<script>
+SMPAdmin.init({ page: 'reports', crumbs: ['SMP', 'Reports', 'Revenue trend'], search: 'Filter data...' });
+</script>
+</body>
+</html>
